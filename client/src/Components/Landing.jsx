@@ -1,0 +1,43 @@
+import React from "react";
+import mytineraryLogo from "../Images/mytinerary logo.svg";
+import circleright from "../Images/circle right.svg";
+import "../Styles/landing.css";
+import { Link } from "react-router-dom";
+
+import AwesomeSlider from "react-awesome-slider";
+import "react-awesome-slider/dist/styles.css";
+import carousel1img from "../Images/carousel1.jpg";
+import carousel2img from "../Images/carousel2.jpg";
+import carousel3img from "../Images/carousel3.jpg";
+import carousel4img from "../Images/carousel4.jpg";
+import carousel5img from "../Images/carousel5.jpg";
+
+function Landing() {
+  return (
+    <div>
+      <header className="hero">
+        <object className="logo" data={mytineraryLogo} type="image/svg+xml" />
+        <h1>
+          Find your perfect trip, designed by insiders who know and love their
+          cities.
+        </h1>
+        <Link to="/cities">
+          <img className="browse" src={circleright} />
+        </Link>
+      </header>
+      <section>
+        <h2>Popular MYtineraries</h2>
+        <AwesomeSlider>
+          {/* Temporary image carousel until i get a better one*/}
+          <div data-src={carousel1img} />
+          <div data-src={carousel2img} />
+          <div data-src={carousel3img} />
+          <div data-src={carousel4img} />
+          <div data-src={carousel5img} />
+        </AwesomeSlider>
+      </section>
+    </div>
+  );
+}
+
+export default Landing;

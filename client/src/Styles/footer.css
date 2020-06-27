@@ -1,0 +1,25 @@
+footer {
+  position: absolute;
+  z-index: 1000;
+  bottom: 0;
+  width: 100vw;
+  height: 2.8rem;
+  background-color: black;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+footer a {
+  text-align: center;
+  font-size: 0.9rem;
+  color: white;
+  text-decoration: none;
+}
+/*# sourceMappingURL=footer.css.map */

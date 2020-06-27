@@ -1,0 +1,38 @@
+.city {
+  width: 100vw;
+  height: 150px;
+  position: relative;
+  a {
+    color: white;
+    position: absolute;
+    text-decoration: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px;
+    font-size: 1.7rem;
+    white-space: nowrap;
+  }
+}
+
+.search {
+  h1 {
+    color: black;
+    width: 100%;
+    font-weight: 300;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 0;
+  }
+
+  .searchbar {
+    width: 90%;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    input {
+      width: 65%;
+    }
+  }
+}

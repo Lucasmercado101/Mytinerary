@@ -1,0 +1,17 @@
+footer {
+  position: absolute;
+  z-index: 1000;
+  bottom: 0;
+  width: 100vw;
+  height: 2.8rem;
+  background-color: rgb(0, 0, 0);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  a {
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+  }
+}
