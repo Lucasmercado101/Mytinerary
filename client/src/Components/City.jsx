@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getCity } from "../Redux/Actions/getCity";
 
 function City(props) {
-  const city = useSelector((state) => state.city);
+  const city = useSelector((state) => state.cities.city);
   const dispatch = useDispatch();
   const currentCity = props.match.params.city;
   useEffect(() => {

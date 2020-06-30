@@ -6,7 +6,7 @@ import LoadingRing from "./LoadingRing";
 import "../Styles/cities.css";
 
 function Cities(props) {
-  const cities = useSelector((state) => state.cities["cities"]);
+  const cities = useSelector((state) => state.cities.cities);
   const [filteredCities, setFilteredCities] = useState(cities);
   const dispatch = useDispatch();
   const areThereCities = cities.length;
