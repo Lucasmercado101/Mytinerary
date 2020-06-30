@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import pfp from "../Images/testpfp.jpeg";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { getLastPageVisited } from "../Redux/Actions/getLastPageVisited";
+import MyLink from "./MyLink";
 import "../Styles/navbar.css";
 
-function Nav() {
+function Nav(props) {
   const [expandMenu, setExpand] = useState(false);
   const [expandMenu2, setExpand2] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <nav>
@@ -22,12 +26,13 @@ function Nav() {
         >
           <ul>
             <li>
-              <Link to="/createAccount">Create account</Link>
+              <MyLink to="/createAccount">Create account</MyLink>
             </li>
+            {/*
             <li>
-              <Link>Log out</Link>
-              {/*log out with props here*/}
-            </li>
+              <MyLink to="/">Log out</MyLink>
+              //   log out with props here
+            </li>*/}
           </ul>
         </div>
       </div>
@@ -48,10 +53,10 @@ function Nav() {
         >
           <ul>
             <li>
-              <Link to="/cities">Cities</Link>
+              <MyLink to="/cities">Cities </MyLink>
             </li>
             <li>
-              <Link to="/">Home</Link>
+              <MyLink to="/">Home</MyLink>
             </li>
           </ul>
         </div>

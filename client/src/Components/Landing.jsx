@@ -3,6 +3,7 @@ import mytineraryLogo from "../Images/mytinerary logo.svg";
 import circleright from "../Images/circle right.svg";
 import "../Styles/landing.css";
 import { Link } from "react-router-dom";
+import MyLink from "./MyLink";
 
 import AwesomeSlider from "react-awesome-slider";
 import "react-awesome-slider/dist/styles.css";
@@ -11,7 +12,6 @@ import carousel2img from "../Images/carousel2.jpg";
 import carousel3img from "../Images/carousel3.jpg";
 import carousel4img from "../Images/carousel4.jpg";
 import carousel5img from "../Images/carousel5.jpg";
-
 function Landing() {
   return (
     <div>
@@ -21,9 +21,9 @@ function Landing() {
           Find your perfect trip, designed by insiders who know and love their
           cities.
         </h1>
-        <Link to="/cities">
+        <MyLink to="/cities">
           <img className="browse" src={circleright} />
-        </Link>
+        </MyLink>
       </header>
       <section>
         <h2>Popular MYtineraries</h2>

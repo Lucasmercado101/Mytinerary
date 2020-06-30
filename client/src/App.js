@@ -12,7 +12,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 function App() {
   return (
     <BrowserRouter>
-      <Nav />
+      <Route path="/" component={Nav} />
       <div className="content">
         <Switch>
           <Route path="/" exact component={Landing} />
@@ -21,7 +21,7 @@ function App() {
           <Route component={NotFound} />
         </Switch>
       </div>
-      <Footer />
+      <Route path="/" component={Footer} />
     </BrowserRouter>
   );
 }

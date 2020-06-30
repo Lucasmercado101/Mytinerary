@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.19.2",
     "cra-template": "1.0.3",
+    "dotenv": "^8.2.0",
     "npm-check": "^5.9.2",
     "react": "^16.13.1",
     "react-awesome-slider": "^4.1.0",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^3.4.1",
     "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
     "typescript": "^3.9.5"
   },
   "scripts": {
@@ -35,6 +38,7 @@
     ]
   },
   "devDependencies": {
+    "coffeescript": "^2.5.1",
     "react-redux": "^7.2.0",
     "redux-devtools": "^3.5.0"
   }
