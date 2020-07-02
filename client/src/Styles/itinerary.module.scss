@@ -1,0 +1,84 @@
+.itinerary {
+  width: 95%;
+  margin: 15px auto;
+  border: thin solid black;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.titleSection {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: rgb(49, 49, 49);
+  color: white;
+  height: 3.2rem;
+}
+
+.title {
+  text-align: center;
+  width: 70%;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.photo {
+  height: 80%;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.description {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0.6rem auto;
+}
+
+.hashtags {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0.6rem auto;
+}
+
+.descriptionItem {
+  display: flex;
+  align-items: center;
+}
+
+.viewMoreButton {
+  list-style: none;
+  text-align: center;
+  color: white;
+  background-color: rgb(49, 49, 49);
+  padding: 8px 0;
+  font-weight: 300;
+  font-size: 1.2rem;
+}
+
+.activities {
+  color: white;
+  background-color: rgb(26, 26, 26);
+  padding: 5px 0;
+  list-style: none;
+  .activity {
+    padding: 5px 0;
+    padding-left: 10px;
+    &:nth-child(odd) {
+      background-color: rgb(49, 49, 49);
+    }
+  }
+  h4 {
+    padding: 5px 0;
+    padding-bottom: 10px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+  }
+}

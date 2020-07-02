@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import pfp from "../Images/testpfp.jpeg";
-import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { getLastPageVisited } from "../Redux/Actions/getLastPageVisited";
 import MyLink from "./MyLink";
 import "../Styles/navbar.css";
 
 function Nav(props) {
   const [expandMenu, setExpand] = useState(false);
   const [expandMenu2, setExpand2] = useState(false);
-  const dispatch = useDispatch();
 
   return (
     <nav>

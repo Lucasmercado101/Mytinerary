@@ -15,7 +15,7 @@
   width: 85%;
 }
 
-h1 {
+.h1 {
   margin: 40px auto;
   font-weight: 300;
   font-size: 1.8rem;
@@ -31,12 +31,13 @@ h1 {
   fill: white;
 }
 
-section {
+.section {
   padding-top: 25px;
   padding-bottom: 55px;
-  h2 {
-    text-align: center;
-    font-weight: 400;
-    margin-bottom: 25px;
-  }
+}
+
+.h2 {
+  text-align: center;
+  font-weight: 400;
+  margin-bottom: 25px;
 }

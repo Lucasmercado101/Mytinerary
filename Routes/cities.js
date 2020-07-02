@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const City = require("../models/city");
 
-router.get("/cities", async (req, res) => {
+router.get("/", async (req, res) => {
   City.find()
     .then((data) => res.send(data))
     .catch((err) => {
@@ -10,7 +10,7 @@ router.get("/cities", async (req, res) => {
     });
 });
 
-router.get("/cities/:cityName", async (req, res) => {
+router.get("/:cityName", async (req, res) => {
   City.findOne({ name: req.params.cityName })
     .then((data) => res.send(data))
     .catch((err) => {
@@ -18,7 +18,6 @@ router.get("/cities/:cityName", async (req, res) => {
     });
 });
 
-/*
 router.post("/", async (req, res) => {
   const city = new City({
     name: req.body.name,
@@ -35,6 +34,5 @@ router.post("/", async (req, res) => {
       res.json({ message: err });
     });
 });
-*/
 
 module.exports = router;

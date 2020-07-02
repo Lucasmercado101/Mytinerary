@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getCities } from "../Redux/Actions/getCities";
 import MyLink from "./MyLink";
+import NewCityTemplate from "./NewCityTemplate";
 import LoadingRing from "./LoadingRing";
 import "../Styles/cities.css";
 
@@ -20,12 +21,6 @@ function Cities(props) {
   useEffect(() => {
     setFilteredCities(cities);
   }, [cities]);
-
-  /* this is what i need to add to every link  
-  onClick={() =>
-                dispatch(getLastPageVisited(props.location.pathname))
-              }
-  */
 
   const filterCities = (e) => {
     let searchedCity = e.target.value.toLowerCase();
@@ -67,7 +62,19 @@ function Cities(props) {
           <input type="text" id="filter" onChange={filterCities} />
         </div>
       </div>
-      {areThereCities ? <FilteredCities /> : <LoadingRing />}
+      {areThereCities ? (
+        <FilteredCities />
+      ) : (
+        <div
+          style={{
+            width: "25%",
+            margin: "25px auto",
+          }}
+        >
+          <LoadingRing />
+        </div>
+      )}
+      <NewCityTemplate />
     </div>
   );
 }

@@ -1,8 +1,7 @@
 import React from "react";
 import mytineraryLogo from "../Images/mytinerary logo.svg";
 import circleright from "../Images/circle right.svg";
-import "../Styles/landing.css";
-import { Link } from "react-router-dom";
+import styles from "../Styles/landing.module.css";
 import MyLink from "./MyLink";
 
 import AwesomeSlider from "react-awesome-slider";
@@ -12,21 +11,26 @@ import carousel2img from "../Images/carousel2.jpg";
 import carousel3img from "../Images/carousel3.jpg";
 import carousel4img from "../Images/carousel4.jpg";
 import carousel5img from "../Images/carousel5.jpg";
+
 function Landing() {
   return (
     <div>
-      <header className="hero">
-        <object className="logo" data={mytineraryLogo} type="image/svg+xml" />
-        <h1>
+      <header className={styles.hero}>
+        <object
+          className={styles.logo}
+          data={mytineraryLogo}
+          type="image/svg+xml"
+        />
+        <h1 className={styles.h1}>
           Find your perfect trip, designed by insiders who know and love their
           cities.
         </h1>
         <MyLink to="/cities">
-          <img className="browse" src={circleright} />
+          <img className={styles.browse} src={circleright} />
         </MyLink>
       </header>
-      <section>
-        <h2>Popular MYtineraries</h2>
+      <section className={styles.section}>
+        <h2 className={styles.h2}>Popular MYtineraries</h2>
         <AwesomeSlider>
           {/* Temporary image carousel until i get a better one*/}
           <div data-src={carousel1img} />

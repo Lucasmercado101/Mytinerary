@@ -1,0 +1,115 @@
+.itinerary {
+  width: 95%;
+  margin: 15px auto;
+  border: thin solid black;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.titleSection {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #313131;
+  color: white;
+  height: 3.2rem;
+}
+
+.title {
+  text-align: center;
+  width: 70%;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.photo {
+  height: 80%;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.description {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0.6rem auto;
+}
+
+.hashtags {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0.6rem auto;
+}
+
+.descriptionItem {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.viewMoreButton {
+  list-style: none;
+  text-align: center;
+  color: white;
+  background-color: #313131;
+  padding: 8px 0;
+  font-weight: 300;
+  font-size: 1.2rem;
+}
+
+.activities {
+  color: white;
+  background-color: #1a1a1a;
+  padding: 5px 0;
+  list-style: none;
+}
+
+.activities .activity {
+  padding: 5px 0;
+  padding-left: 10px;
+}
+
+.activities .activity:nth-child(odd) {
+  background-color: #313131;
+}
+
+.activities h4 {
+  padding: 5px 0;
+  padding-bottom: 10px;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 1px;
+  font-size: 1.2rem;
+}
+/*# sourceMappingURL=itinerary.module.css.map */

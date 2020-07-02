@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  width: 100vw;
+  color: white;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0.8rem 0;
+}
+
+.cityName {
+  font-weight: 300;
+  position: relative;
+  margin: 0;
+  margin-bottom: 8px;
+}
+
+.availableText {
+  text-align: center;
+  font-weight: 500;
+  margin-top: 0.8rem;
+}

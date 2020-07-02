@@ -12,7 +12,7 @@ function MyLink(props) {
     <Link
       to={destination}
       onClick={() =>
-        location == destination ? "" : dispatch(getLastPageVisited(location))
+        location === destination ? "" : dispatch(getLastPageVisited(location))
       }
     >
       {props.children}

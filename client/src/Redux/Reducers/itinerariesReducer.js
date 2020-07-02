@@ -1,21 +1,15 @@
 const initialState = {
-  cities: [],
-  city: [],
+  itineraries: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case "GET_CITIES":
+    case "GET_ITINERARIES":
       return {
         ...state,
-        cities: action.payload,
+        itineraries: action.payload,
       };
-    case "GET_CITY":
-      return {
-        ...state,
-        city: action.payload,
-      };
-    case "POST_CITY":
+    case "POST_ITINERARY":
       return {
         ...state,
       };
