@@ -1,4 +1,8 @@
 nav {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
   width: 100vw;
   position: fixed;
   height: 2.8rem;

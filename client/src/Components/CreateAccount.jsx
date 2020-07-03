@@ -50,14 +50,17 @@ function CreateAccount() {
         ref={imageUpload}
         onChange={imageHandler}
       />
-      <div onClick={() => imageUpload.current.click()}>
-        <img
-          src={
-            uploadedUserImage ? URL.createObjectURL(uploadedUserImage) : addUser
-          }
-        />
+      <div
+        style={{
+          backgroundImage: uploadedUserImage
+            ? `url(${URL.createObjectURL(uploadedUserImage)})`
+            : "",
+        }}
+        onClick={() => imageUpload.current.click()}
+      >
+        {uploadedUserImage ? "" : <img src={addUser} />}
       </div>
-      <label for="username">Username</label>
+      <label htmlFor="username">Username</label>
       <input
         type="text"
         name="username"
@@ -66,7 +69,7 @@ function CreateAccount() {
         value={formInfo.username}
         required
       />
-      <label for="password">Password</label>
+      <label htmlFor="password">Password</label>
       <input
         type="text"
         name="password"
@@ -75,7 +78,7 @@ function CreateAccount() {
         value={formInfo.password}
         required
       />
-      <label for="email">Email</label>
+      <label htmlFor="email">Email</label>
       <input
         type="email"
         name="email"
@@ -84,7 +87,7 @@ function CreateAccount() {
         value={formInfo.email}
         required
       />
-      <label for="firstName">First Name</label>
+      <label htmlFor="firstName">First Name</label>
       <input
         type="text"
         name="firstName"
@@ -93,7 +96,7 @@ function CreateAccount() {
         value={formInfo.firstName}
         required
       />
-      <label for="lastName">Last Name</label>
+      <label htmlFor="lastName">Last Name</label>
       <input
         type="text"
         name="lastName"
@@ -102,7 +105,7 @@ function CreateAccount() {
         value={formInfo.lastName}
         required
       />
-      <label for="country">Country</label>
+      <label htmlFor="country">Country</label>
       <select
         id="country"
         name="country"

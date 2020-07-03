@@ -1,6 +1,7 @@
 $height: 2.8rem;
 
 nav {
+  user-select: none;
   width: 100vw;
   position: fixed;
   height: $height;

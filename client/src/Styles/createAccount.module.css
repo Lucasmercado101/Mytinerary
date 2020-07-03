@@ -19,10 +19,8 @@
   margin: 0 auto;
   border: 8px solid #464646;
   overflow: hidden;
-}
-
-.form div img {
-  width: 100%;
+  background-position: center;
+  background-size: cover;
 }
 
 .form input:focus:valid {

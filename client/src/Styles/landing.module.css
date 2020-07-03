@@ -18,6 +18,10 @@
   margin: 0 auto;
   padding-top: 25px;
   width: 85%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .h1 {

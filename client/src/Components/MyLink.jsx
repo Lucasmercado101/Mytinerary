@@ -8,12 +8,27 @@ function MyLink(props) {
   const location = useLocation().pathname;
   const destination = props.to || "";
 
+  function handleClick() {
+    if (props.onClick) {
+      props.onClick();
+    }
+    if (location !== destination) {
+      dispatch(getLastPageVisited(location));
+    }
+  }
+
   return (
     <Link
       to={destination}
+      onClick={handleClick}
+      /*
       onClick={() =>
-        location === destination ? "" : dispatch(getLastPageVisited(location))
-      }
+        props.onClick
+          ? props.onClick()
+          : "" && location === destination
+          ? ""
+          : dispatch(getLastPageVisited(location))
+      }*/
     >
       {props.children}
     </Link>

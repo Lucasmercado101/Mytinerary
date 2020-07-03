@@ -5,7 +5,7 @@ import "../Styles/navbar.css";
 
 function Nav() {
   const [expandMenu, setExpand] = useState(false);
-  const [expandMenu2, setExpand2] = useState(false);
+  const [expandUserMenu, setExpandUserMenu] = useState(false);
 
   return (
     <nav>
@@ -13,16 +13,21 @@ function Nav() {
         <img
           src={pfp}
           alt="Profile picture"
-          onClick={() => setExpand2(!expandMenu2)}
+          onClick={() => setExpandUserMenu(!expandUserMenu)}
         />
         <div
           className={
-            "dropdown-user-menu-content " + (expandMenu2 ? "down" : "up")
+            "dropdown-user-menu-content " + (expandUserMenu ? "down" : "up")
           }
         >
           <ul>
             <li>
-              <MyLink to="/createAccount">Create account</MyLink>
+              <MyLink
+                onClick={() => setExpandUserMenu(false)}
+                to="/createAccount"
+              >
+                Create account
+              </MyLink>
             </li>
             {/*
             <li>
@@ -49,10 +54,14 @@ function Nav() {
         >
           <ul>
             <li>
-              <MyLink to="/cities">Cities </MyLink>
+              <MyLink onClick={() => setExpand(false)} to="/cities">
+                Cities
+              </MyLink>
             </li>
             <li>
-              <MyLink to="/createAccount">Home</MyLink>
+              <MyLink onClick={() => setExpand(false)} to="/">
+                Home
+              </MyLink>
             </li>
           </ul>
         </div>

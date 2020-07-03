@@ -15,8 +15,10 @@
     margin: 0 auto;
     border: 8px solid rgb(70, 70, 70);
     overflow: hidden;
+    background-position: center;
+    background-size: cover;
     img {
-      width: 100%;
+      //width: 100%;
     }
   }
   input:focus:valid {

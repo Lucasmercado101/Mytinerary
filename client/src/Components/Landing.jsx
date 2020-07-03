@@ -16,11 +16,7 @@ function Landing() {
   return (
     <div>
       <header className={styles.hero}>
-        <object
-          className={styles.logo}
-          data={mytineraryLogo}
-          type="image/svg+xml"
-        />
+        <img className={styles.logo} src={mytineraryLogo} />
         <h1 className={styles.h1}>
           Find your perfect trip, designed by insiders who know and love their
           cities.
