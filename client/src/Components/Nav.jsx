@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import pfp from "../Images/testpfp.jpeg";
-import { useDispatch } from "react-redux";
 import MyLink from "./MyLink";
 import "../Styles/navbar.css";
 
-function Nav(props) {
+function Nav() {
   const [expandMenu, setExpand] = useState(false);
   const [expandMenu2, setExpand2] = useState(false);
 
@@ -53,7 +52,7 @@ function Nav(props) {
               <MyLink to="/cities">Cities </MyLink>
             </li>
             <li>
-              <MyLink to="/">Home</MyLink>
+              <MyLink to="/createAccount">Home</MyLink>
             </li>
           </ul>
         </div>

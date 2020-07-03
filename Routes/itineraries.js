@@ -48,20 +48,14 @@ router.post("/itineraries", async (req, res) => {
 });
 
 router.post("/itineraries", async (req, res) => {
-  console.log(req.body);
-  console.log("here");
-
   const itinerary = new Itineraries({
     city: req.body.city,
     itineraries: [req.body.itineraries[0]],
   });
 
-  await itinerary
-    .save()
-    .then(() => console.log("YES"))
-    .catch((err) => {
-      res.json({ message: err });
-    });
+  await itinerary.save().catch((err) => {
+    res.json({ message: err });
+  });
 });
 
 module.exports = router;
