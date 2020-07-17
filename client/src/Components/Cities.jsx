@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getCities } from "../Redux/Actions/getCities";
-import MyLink from "./MyLink";
+import City from "./City";
 import NewCityTemplate from "./NewCityTemplate";
 import LoadingRing from "./LoadingRing";
-import "../Styles/cities.css";
+import styles from "../Styles/cities.module.css";
 
-function Cities(props) {
+function Cities() {
   const cities = useSelector((state) => state.cities.cities);
   const [filteredCities, setFilteredCities] = useState(cities);
   const dispatch = useDispatch();
   const areThereCities = cities.length;
 
-  //on mount
   useEffect(() => {
     dispatch(getCities());
   }, []);
 
-  //on cities update
   useEffect(() => {
     setFilteredCities(cities);
   }, [cities]);
@@ -29,53 +27,31 @@ function Cities(props) {
     );
   };
 
-  function FilteredCities() {
-    return (
-      <ul>
-        {filteredCities.map(({ _id, url, name, country }) => (
-          <li
-            key={_id}
-            style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-         url(${url})`,
-              backgroundSize: "cover",
-              zIndex: 1,
-            }}
-            className="city"
-          >
-            <MyLink to={`/cities/${name}`}>
-              {name}
-              <small>{country}</small>
-            </MyLink>
-          </li>
-        ))}
-      </ul>
-    );
-  }
-
   return (
-    <div>
-      <div className="search">
-        <h1>CITIES</h1>
-        <div className="searchbar">
-          <label htmlFor="filter">Filter by city: </label>
-          <input type="text" id="filter" onChange={filterCities} />
-        </div>
+    <>
+      <h1 className={styles.h1}>CITIES</h1>
+      <div className={styles.searchBar}>
+        <label htmlFor="filter">Filter by city: </label>
+        <input type="text" id="filter" onChange={filterCities} />
       </div>
       {areThereCities ? (
-        <FilteredCities />
+        <ul>
+          {filteredCities.map(({ _id, url, name, country }) => (
+            <li key={_id}>
+              <City url={url} city={name} country={country} />
+            </li>
+          ))}
+        </ul>
       ) : (
-        <div
+        <LoadingRing
           style={{
-            width: "25%",
-            margin: "25px auto",
+            display: "block",
+            margin: "10px auto",
           }}
-        >
-          <LoadingRing />
-        </div>
+        />
       )}
       <NewCityTemplate />
-    </div>
+    </>
   );
 }
 

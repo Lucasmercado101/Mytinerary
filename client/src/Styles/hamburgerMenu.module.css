@@ -1,0 +1,31 @@
+.burgerMenu {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.burgerMenu__bar {
+  width: 35px;
+  height: 5px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.burgerMenu__bar + .burgerMenu__bar {
+  margin-top: 6px;
+}
+
+.burgerMenu__bar____bar1____change {
+  -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+          transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+.burgerMenu__bar____bar2____change {
+  opacity: 0;
+}
+
+.burgerMenu__bar____bar3____change {
+  -webkit-transform: rotate(45deg) translate(-8px, -8px);
+          transform: rotate(45deg) translate(-8px, -8px);
+}
+/*# sourceMappingURL=hamburgerMenu.module.css.map */

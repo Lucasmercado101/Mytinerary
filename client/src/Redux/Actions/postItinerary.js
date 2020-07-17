@@ -1,8 +1,8 @@
 import axios from "axios";
 
-export const postItineraries = (data) => async (dispatch) => {
+export const postItinerary = (data) => async (dispatch) => {
   axios
-    .post("http://localhost:5000/api/itineraries/", data)
+    .post("http://localhost:5000/api/itineraries/" + data.city, data)
     .then(() =>
       dispatch({
         type: "POST_ITINERARY",

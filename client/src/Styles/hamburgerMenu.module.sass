@@ -1,0 +1,33 @@
+
+.burgerMenu 
+    display: inline-block
+    cursor: pointer
+
+    &__bar
+        width: 35px
+        height: 5px
+        background-color: rgb(255, 255, 255)
+        transition: 0.4s
+
+        & + &
+            margin-top: 6px
+
+        //  Animation 
+        //  Rotate first bar
+        &____bar1
+            &____change
+                transform: rotate(-45deg) translate(-9px, 6px)
+            
+        //  Fade out the second bar
+        &____bar2 
+            &____change
+                opacity: 0
+            
+        //  Rotate last bar
+        &____bar3 
+            &____change
+                transform: rotate(45deg) translate(-8px, -8px)
+        
+    
+  
+

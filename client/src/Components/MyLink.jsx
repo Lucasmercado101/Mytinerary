@@ -18,18 +18,7 @@ function MyLink(props) {
   }
 
   return (
-    <Link
-      to={destination}
-      onClick={handleClick}
-      /*
-      onClick={() =>
-        props.onClick
-          ? props.onClick()
-          : "" && location === destination
-          ? ""
-          : dispatch(getLastPageVisited(location))
-      }*/
-    >
+    <Link className={props.className} to={destination} onClick={handleClick}>
       {props.children}
     </Link>
   );

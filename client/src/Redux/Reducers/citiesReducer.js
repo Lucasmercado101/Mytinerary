@@ -1,6 +1,6 @@
 const initialState = {
   cities: [],
-  city: [],
+  city: null,
 };
 
 export default (state = initialState, action) => {

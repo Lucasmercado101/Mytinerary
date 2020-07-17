@@ -1,32 +1,40 @@
-.header {
+.city {
+  width: 100vw;
+  height: 150px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  width: 100vw;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-top: thin solid white;
+  border-bottom: thin solid white;
+  z-index: 1;
+  background-size: cover;
+}
+
+.city__cityName {
   color: white;
+  text-decoration: none;
+  font-size: 1.7rem;
+  white-space: nowrap;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 0.8rem 0;
 }
 
-.cityName {
-  font-weight: 300;
-  position: relative;
-  margin: 0;
-  margin-bottom: 8px;
-}
-
-.availableText {
-  text-align: center;
-  font-weight: 500;
-  margin-top: 0.8rem;
+.city__country {
+  color: white;
+  font-size: 0.8rem;
 }
 /*# sourceMappingURL=city.module.css.map */

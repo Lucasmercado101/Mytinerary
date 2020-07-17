@@ -1,0 +1,40 @@
+.dropDownMenu
+    position: relative
+    z-index: 1000
+    display: inline-block
+    
+    &__content
+        display: block
+        transform: scaleY(0)
+        padding: 10px
+        min-width: 80px
+        background-color: rgb(255, 255, 255)
+        position: absolute
+        white-space: nowrap
+        transform-origin: top
+        transition: all 0.2s
+
+        &____alignRight
+            right: 0
+
+        &____down 
+            display: block
+            transform: scaleY(1)
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5)
+        
+        &____up 
+            transition: all 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045) 
+
+.list 
+    list-style: none
+  
+    &__item
+        text-align: center
+        & + li 
+            margin-top: 0.4rem 
+        & > a
+            color: black
+            text-decoration: none
+        
+
+    

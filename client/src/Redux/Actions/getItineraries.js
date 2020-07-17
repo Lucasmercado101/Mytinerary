@@ -1,12 +1,12 @@
 import axios from "axios";
 
-export const getItineraries = () => async (dispatch) => {
+export const getItineraries = (city) => async (dispatch) => {
   axios
-    .get("http://localhost:5000/api/itineraries")
+    .get("http://localhost:5000/api/itineraries/" + city)
     .then((resp) =>
       dispatch({
         type: "GET_ITINERARIES",
-        payload: resp.data,
+        payload: resp.data.itineraries,
       })
     )
     .catch((err) => console.log(err));

@@ -1,0 +1,55 @@
+.dropDownMenu {
+  position: relative;
+  z-index: 1000;
+  display: inline-block;
+}
+
+.dropDownMenu__content {
+  display: block;
+  -webkit-transform: scaleY(0);
+          transform: scaleY(0);
+  padding: 10px;
+  min-width: 80px;
+  background-color: white;
+  position: absolute;
+  white-space: nowrap;
+  -webkit-transform-origin: top;
+          transform-origin: top;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.dropDownMenu__content____alignRight {
+  right: 0;
+}
+
+.dropDownMenu__content____down {
+  display: block;
+  -webkit-transform: scaleY(1);
+          transform: scaleY(1);
+  -webkit-box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+          box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.5);
+}
+
+.dropDownMenu__content____up {
+  -webkit-transition: all 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+  transition: all 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+}
+
+.list {
+  list-style: none;
+}
+
+.list__item {
+  text-align: center;
+}
+
+.list__item + li {
+  margin-top: 0.4rem;
+}
+
+.list__item > a {
+  color: black;
+  text-decoration: none;
+}
+/*# sourceMappingURL=dropDownMenu.module.css.map */

@@ -3,7 +3,6 @@
   color: white;
   margin: 0 auto;
   padding: 8px;
-  margin-top: 25px;
   display: -ms-grid;
   display: grid;
   -ms-grid-columns: 1fr;
@@ -11,7 +10,7 @@
   gap: 20px 0;
 }
 
-.form div {
+.form__userPicture {
   background-color: white;
   border-radius: 50%;
   height: 150px;
@@ -21,9 +20,5 @@
   overflow: hidden;
   background-position: center;
   background-size: cover;
-}
-
-.form input:focus:valid {
-  outline: medium solid #21be21;
 }
 /*# sourceMappingURL=createAccount.module.css.map */

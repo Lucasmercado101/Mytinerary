@@ -33,44 +33,33 @@ const styledButton = {
 function NewCityTemplate() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
-  const [url, setUrl] = useState("");
   const dispatch = useDispatch();
 
-  function handleCityChange(e) {
-    setCity(e.target.value);
-  }
-  function handleCountryChange(e) {
-    setCountry(e.target.value);
-  }
-  function handleURLChange(e) {
-    setUrl(e.target.value);
-  }
-
-  function createNewCity() {
-    if (city && country && url) {
+  const createNewCity = (e) => {
+    e.preventDefault();
+    if (city && country) {
       const newCity = {
         city,
         country,
-        url,
+        url: `https://source.unsplash.com/1600x900/?${city}?aerial`,
       };
       dispatch(postCity(newCity));
       dispatch(postItineraries({ city }));
       setCity("");
       setCountry("");
-      setUrl("");
     }
-  }
+  };
 
   return (
     <details style={{ marginBottom: "50px" }}>
       <summary style={styled}>New City</summary>
-      <div
-        style={{
-          backgroundColor: "black",
-        }}
-        className="city"
-      >
-        <div>
+      <form onSubmit={(e) => createNewCity(e)}>
+        <div
+          style={{
+            backgroundColor: "black",
+          }}
+          className="city"
+        >
           <div>
             <input
               style={{
@@ -86,10 +75,9 @@ function NewCityTemplate() {
               name="city"
               placeholder="City Name"
               value={city}
-              onChange={handleCityChange}
+              onChange={(e) => setCity(e.target.value)}
+              required
             />
-          </div>
-          <div>
             <small>
               <input
                 style={{
@@ -105,35 +93,14 @@ function NewCityTemplate() {
                 name="country"
                 placeholder="Country"
                 value={country}
-                onChange={handleCountryChange}
-              />
-            </small>
-          </div>
-          <div>
-            <small>
-              <input
-                style={{
-                  background: "black",
-                  color: "white",
-                  border: "thin solid white",
-                  width: "75%",
-                  margin: "0 12.5%",
-                  marginTop: "10px",
-                  fontSize: "0.8rem",
-                }}
-                type="text"
-                name="url"
-                placeholder="URL"
-                value={url}
-                onChange={handleURLChange}
+                onChange={(e) => setCountry(e.target.value)}
+                required
               />
             </small>
           </div>
         </div>
-      </div>
-      <button style={styledButton} onClick={createNewCity}>
-        Create
-      </button>
+        <input style={styledButton} type="submit" value="Create" />
+      </form>
     </details>
   );
 }

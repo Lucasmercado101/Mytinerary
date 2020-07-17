@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import styles from "../Styles/createAccount.module.css";
 import addUser from "../Images/add-user.svg";
+import axios from "axios";
 
 function CreateAccount() {
   const [formInfo, setFormInfo] = useState({
@@ -32,7 +33,25 @@ function CreateAccount() {
 
   function handleFormSubmit(e) {
     e.preventDefault();
-    console.log("a");
+    let data = new FormData();
+
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
+
+    for (const [key, value] of Object.entries(formInfo)) {
+      data.append(key, value);
+    }
+    data.append("file", uploadedUserImage);
+
+    axios
+      .post("http://localhost:5000/api/createUser", data, config)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   function imageHandler(e) {
@@ -42,6 +61,7 @@ function CreateAccount() {
 
   return (
     <form onSubmit={handleFormSubmit} className={styles.form}>
+      <button onClick={handleFormSubmit}>aaaaaaaaa</button>
       <input
         style={{ display: "none" }}
         type="file"
@@ -56,9 +76,10 @@ function CreateAccount() {
             ? `url(${URL.createObjectURL(uploadedUserImage)})`
             : "",
         }}
+        className={styles.form__userPicture}
         onClick={() => imageUpload.current.click()}
       >
-        {uploadedUserImage ? "" : <img src={addUser} />}
+        {uploadedUserImage ? "" : <img src={addUser} alt="profile pic" />}
       </div>
       <label htmlFor="username">Username</label>
       <input

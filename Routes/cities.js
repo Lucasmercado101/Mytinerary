@@ -2,15 +2,17 @@ const express = require("express");
 const router = express.Router();
 const City = require("../models/city");
 
-router.get("/", async (req, res) => {
+router.get("/", (req, res) => {
   City.find()
-    .then((data) => res.send(data))
+    .then((data) => {
+      res.send(data);
+    })
     .catch((err) => {
       res.json({ message: err });
     });
 });
 
-router.get("/:cityName", async (req, res) => {
+router.get("/:cityName", (req, res) => {
   City.findOne({ name: req.params.cityName })
     .then((data) => res.send(data))
     .catch((err) => {

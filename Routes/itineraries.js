@@ -1,20 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Itineraries = require("../models/itineraries");
+const Activities = require("../models/activities");
+const Itinerary = require("../models/itinerary");
 
-const mongoose = require("mongoose");
-var Schema = mongoose.Schema;
-
-var itinerarySchema = new Schema({
-  title: String,
-  rating: String,
-  time: String,
-  price: String,
-  activities: String,
-  hashtags: Array,
-});
-
-router.get("/itineraries", async (req, res) => {
+router.get("/", (req, res) => {
   Itineraries.find()
     .then((data) => res.send(data))
     .catch((err) => {
@@ -22,35 +12,49 @@ router.get("/itineraries", async (req, res) => {
     });
 });
 
-router.get("/itineraries/:cityName", async (req, res) => {
-  Itineraries.findOne({ name: req.params.cityName })
+router.get("/:cityName", (req, res) => {
+  Itineraries.findOne({ city: req.params.cityName })
     .then((data) => res.send(data))
     .catch((err) => {
       res.json({ message: err });
     });
 });
 
-router.post("/itineraries", async (req, res) => {
-  console.log(req.body);
-  console.log("here");
-
-  const itinerary = new Itineraries({
-    city: req.body.city,
-    itineraries: [],
+router.post("/:cityName", async (req, res) => {
+  const activities = new Activities({
+    activities: [...req.body.activities],
   });
 
-  await itinerary
+  await activities
     .save()
-    .then(() => console.log("YES"))
+    .then(async (resp) => {
+      const itinerary = new Itinerary({
+        title: req.body.title,
+        rating: "0",
+        time: req.body.time,
+        price: req.body.price,
+        activities: resp._id,
+        hashtags: [...req.body.hashtags],
+      });
+
+      await Itineraries.updateOne(
+        { city: req.params.cityName },
+        {
+          $push: {
+            itineraries: itinerary,
+          },
+        }
+      ).catch((err) => res.json({ message: err }));
+    })
     .catch((err) => {
       res.json({ message: err });
     });
 });
 
-router.post("/itineraries", async (req, res) => {
+router.post("/", async (req, res) => {
   const itinerary = new Itineraries({
     city: req.body.city,
-    itineraries: [req.body.itineraries[0]],
+    itineraries: [],
   });
 
   await itinerary.save().catch((err) => {

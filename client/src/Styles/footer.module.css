@@ -1,10 +1,10 @@
-footer {
+.footer {
   position: absolute;
   z-index: 1000;
   bottom: 0;
   width: 100vw;
   height: 2.8rem;
-  background-color: black;
+  background-color: #3a3a3a;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -16,10 +16,10 @@ footer {
           align-items: center;
 }
 
-footer a {
+.footer__link {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: white;
   text-decoration: none;
 }
-/*# sourceMappingURL=footer.css.map */
+/*# sourceMappingURL=footer.module.css.map */

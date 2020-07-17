@@ -7,7 +7,7 @@ export const postCity = (data) => async (dispatch) => {
     url: data.url,
   };
 
-  axios
+  await axios
     .post("http://localhost:5000/api/cities", newCity)
     .then(() =>
       dispatch({

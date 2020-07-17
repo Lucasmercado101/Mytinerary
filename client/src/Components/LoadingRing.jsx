@@ -1,8 +1,8 @@
 import React from "react";
 
-function LoadingRing() {
+function LoadingRing({ style }) {
   return (
-    <div className="lds-ring">
+    <div style={style} className="lds-ring">
       <div></div>
       <div></div>
       <div></div>
