@@ -1,9 +1,0 @@
-{
-    "version": 3,
-    "mappings": "AAAA,AAAA,GAAG,CAAC;EACA,KAAK,EAAE,KAAK;EACZ,KAAK,EAAE,IAAI;EACX,WAAW,EAAE,GAAG;EAChB,UAAU,EAAE,MAAM;EAClB,UAAU,EAAE,IAAI;EAChB,aAAa,EAAE,CAAC;CAAG;;AAEvB,AAAA,UAAU,CAAC;EACP,KAAK,EAAE,GAAG;EACV,MAAM,EAAE,SAAS;EACjB,OAAO,EAAE,IAAI;EACb,WAAW,EAAE,MAAM;EACnB,eAAe,EAAE,aAAa;CAAG",
-    "sources": [
-        "cities.module.sass"
-    ],
-    "names": [],
-    "file": "cities.module.css"
-}

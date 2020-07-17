@@ -28,7 +28,6 @@ function Landing() {
       <section className={styles.section}>
         <h2 className={styles.h2}>Popular MYtineraries</h2>
         <AwesomeSlider>
-          {/* Temporary image carousel until i get a better one*/}
           <div data-src={carousel1img} />
           <div data-src={carousel2img} />
           <div data-src={carousel3img} />

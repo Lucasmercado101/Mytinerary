@@ -61,7 +61,7 @@ function CreateAccount() {
 
   return (
     <form onSubmit={handleFormSubmit} className={styles.form}>
-      <button onClick={handleFormSubmit}>aaaaaaaaa</button>
+      <button onClick={handleFormSubmit}>Upload pfp test</button>
       <input
         style={{ display: "none" }}
         type="file"

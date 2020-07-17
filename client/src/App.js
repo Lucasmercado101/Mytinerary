@@ -1,6 +1,5 @@
 import React from "react";
 import "./Styles/app.css";
-import "./Vendors/normalize.css";
 import Landing from "./Components/Landing";
 import Nav from "./Components/Nav";
 import Footer from "./Components/Footer";

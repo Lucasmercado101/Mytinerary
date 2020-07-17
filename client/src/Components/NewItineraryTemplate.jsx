@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { postItinerary } from "../Redux/Actions/postItinerary";
+import DropdownMenu from "./DropdownMenu";
 import styles from "../Styles/itinerary.module.css";
 import clockIcon from "../Images/clock-icon.svg";
 
@@ -24,8 +25,6 @@ const styleButton = {
   color: "white",
   fontSize: "2rem",
 };
-
-const activityStyle = { marginLeft: "8px", marginTop: "5px" };
 
 function Itinerary({ city }) {
   const [hours, setHours] = useState("");
@@ -118,16 +117,18 @@ function Itinerary({ city }) {
   }
 
   return (
-    <details>
-      <summary style={styled}>New Itinerary</summary>
+    <DropdownMenu
+      style={{ width: "100%", zIndex: 1 }}
+      button={<p style={{ ...styled }}>New Itinerary</p>}
+    >
       <form onSubmit={submitItinerary}>
         <article className={styles.itinerary}>
-          <header className={styles.titleSection}>
+          <header className={styles.header}>
             <img
-              className={styles.photo}
+              className={styles.header__photo}
               src="https://source.unsplash.com/featured/600x600/?face,man"
             />
-            <h3 className={styles.title}>
+            <h3 className={styles.header__title}>
               <input
                 size="18"
                 type="text"
@@ -139,7 +140,7 @@ function Itinerary({ city }) {
             </h3>
           </header>
           <section className={styles.description}>
-            <p className={styles.descriptionItem}>
+            <p className={styles.description__item}>
               <object
                 style={{ height: "1.5em", marginRight: "5px" }}
                 data={clockIcon}
@@ -154,7 +155,7 @@ function Itinerary({ city }) {
               ></input>
               HS
             </p>
-            <p>
+            <p className={styles.description__item}>
               $
               <input
                 size="2"
@@ -202,15 +203,15 @@ function Itinerary({ city }) {
           </section>
           <section>
             <section className={styles.activities}>
-              <h4>Activities</h4>
+              <h4 className={styles.activities__title}>Activities</h4>
               <ul style={{ listStyle: "none" }}>
                 {activities.map((value, i) => (
                   <li key={i}>
                     <input
-                      style={activityStyle}
                       size="30"
                       type="text"
                       value={value}
+                      className={styles.activities__input}
                       onChange={(e) => handleActivitiesChange(i, e)}
                       required
                     ></input>
@@ -250,7 +251,7 @@ function Itinerary({ city }) {
           </section>
         </article>
       </form>
-    </details>
+    </DropdownMenu>
   );
 }
 

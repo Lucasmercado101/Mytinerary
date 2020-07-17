@@ -6,17 +6,34 @@ function LinkItem({ children }) {
   return <li className={styles.list__item}>{children}</li>;
 }
 
-function DropdownMenu({ children, button, align, className }) {
+function DropdownMenu({
+  children,
+  nav,
+  card,
+  button,
+  style,
+  align,
+  className,
+}) {
   const [expandMenu, setExpand] = useState(false);
 
   return (
     <div
+      style={style || {}}
       className={`${styles.dropDownMenu} ${className || ""}`}
-      onClick={() => setExpand(!expandMenu)}
     >
-      {button ? button : <HamburgerMenu toggleVar={expandMenu} />}
+      {button ? (
+        React.cloneElement(button, { onClick: () => setExpand(!expandMenu) })
+      ) : (
+        <HamburgerMenu
+          onClick={() => setExpand(!expandMenu)}
+          toggleVar={expandMenu}
+        />
+      )}
       <div
         className={`${styles.dropDownMenu__content} ${
+          nav ? styles.dropDownMenu__content____nav : ""
+        } ${card ? styles.dropDownMenu__content____card : ""} ${
           align === "right" ? styles.dropDownMenu__content____alignRight : ""
         }
           ${
@@ -34,9 +51,13 @@ function DropdownMenu({ children, button, align, className }) {
           })} */}
 
         <ul className={styles.list}>
-          {children.map((child) => (
-            <LinkItem>{child}</LinkItem>
-          ))}
+          {children.length > 1
+            ? children.map((child, i) => {
+                if (child.type.name === "MyLink") {
+                  return <LinkItem key={i}>{child}</LinkItem>;
+                }
+              })
+            : children}
         </ul>
       </div>
     </div>

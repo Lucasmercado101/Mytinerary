@@ -69,13 +69,16 @@ function CityItineraries(props) {
       <NewItineraryTemplate city={currentCity} />
     </>
   ) : (
-    <LoadingRing
-      style={{
-        display: "relative",
-        left: "50%",
-        transform: "translateX(-50%)",
-      }}
-    />
+    <div>
+      <LoadingRing
+        style={{
+          display: "relative",
+          left: "50%",
+          transform: "translateX(-50%)",
+        }}
+      />
+      <NewItineraryTemplate city={currentCity} />
+    </div>
   );
 }
 

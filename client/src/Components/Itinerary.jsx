@@ -16,15 +16,15 @@ function Itinerary({ title, time, rating, price, hashtags, activities }) {
 
   return (
     <article className={styles.itinerary}>
-      <header className={styles.titleSection}>
+      <header className={styles.header}>
         <img
-          className={styles.photo}
+          className={styles.header__photo}
           src="https://source.unsplash.com/featured/600x600/?face,man"
         />
-        <h3 className={styles.title}>{title}</h3>
+        <h3 className={styles.header__title}>{title}</h3>
       </header>
       <section className={styles.description}>
-        <p className={styles.descriptionItem}>
+        <p className={styles.description__item}>
           <object
             style={{ height: "1.2em", marginRight: "5px" }}
             data={likeIcon}
@@ -32,7 +32,7 @@ function Itinerary({ title, time, rating, price, hashtags, activities }) {
           />
           {rating}
         </p>
-        <p className={styles.descriptionItem}>
+        <p className={styles.description__item}>
           <object
             style={{ height: "1.5em", marginRight: "5px" }}
             data={clockIcon}
@@ -40,7 +40,7 @@ function Itinerary({ title, time, rating, price, hashtags, activities }) {
           />
           {time}HS
         </p>
-        <p>{price}</p>
+        <p className={styles.description__item}>{price}</p>
       </section>
       <section className={styles.hashtags}>
         {hashtags.map((hashtag, i) => (
@@ -53,10 +53,10 @@ function Itinerary({ title, time, rating, price, hashtags, activities }) {
             View more
           </summary>
           <section className={styles.activities}>
-            <h4>Activities</h4>
+            <h4 className={styles.activities__title}>Activities</h4>
             <ul>
               {allActivities.map((activity, i) => (
-                <li key={i} className={styles.activity}>
+                <li key={i} className={styles.activities__activity}>
                   {activity}
                 </li>
               ))}

@@ -8,6 +8,7 @@ function Nav() {
   return (
     <nav className={styles.navbar}>
       <DropdownMenu
+        card
         className={styles.userMenu}
         button={
           <img
@@ -24,7 +25,7 @@ function Nav() {
       {/*temp image for demo ||| terciary operator here for logged in button
       if logged out, or icon + menu for option of logging out*/}
 
-      <DropdownMenu align="right">
+      <DropdownMenu align="right" nav card>
         <MyLink to="/cities">Cities</MyLink>
         <MyLink to="/">Home</MyLink>
       </DropdownMenu>

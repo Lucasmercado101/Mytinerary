@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { postCity } from "../Redux/Actions/postCity";
 import { postItineraries } from "../Redux/Actions/postCreateCityItineraries";
+import DropdownMenu from "./DropdownMenu";
+import styles from "../Styles/newCityTemplate.module.css";
 
 const styled = {
   listStyle: "none",
@@ -51,57 +53,36 @@ function NewCityTemplate() {
   };
 
   return (
-    <details style={{ marginBottom: "50px" }}>
-      <summary style={styled}>New City</summary>
+    <DropdownMenu
+      style={{ width: "100%", zIndex: 1 }}
+      button={<p style={{ ...styled }}>New Itinerary</p>}
+    >
       <form onSubmit={(e) => createNewCity(e)}>
-        <div
-          style={{
-            backgroundColor: "black",
-          }}
-          className="city"
-        >
-          <div>
+        <div className={styles.newCity}>
+          <input
+            className={styles.newCity__city}
+            type="text"
+            name="city"
+            placeholder="City Name"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            required
+          />
+          <small>
             <input
-              style={{
-                background: "black",
-                color: "white",
-                border: "thin solid white",
-                fontSize: "1.7rem",
-                marginTop: "10px",
-                width: "85%",
-                margin: "0 7.5%",
-              }}
+              className={styles.newCity__country}
               type="text"
-              name="city"
-              placeholder="City Name"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
+              name="country"
+              placeholder="Country"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
               required
             />
-            <small>
-              <input
-                style={{
-                  background: "black",
-                  color: "white",
-                  border: "thin solid white",
-                  width: "45%",
-                  margin: "0 27.5%",
-                  marginTop: "10px",
-                  fontSize: "0.8rem",
-                }}
-                type="text"
-                name="country"
-                placeholder="Country"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                required
-              />
-            </small>
-          </div>
+          </small>
         </div>
-        <input style={styledButton} type="submit" value="Create" />
+        <input className={styles.submit} type="submit" value="Create" />
       </form>
-    </details>
+    </DropdownMenu>
   );
 }
 

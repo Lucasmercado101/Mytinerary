@@ -37,7 +37,10 @@
   margin-top: 55px;
   display: block;
   width: 40%;
-  fill: white;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .section {
@@ -50,4 +53,3 @@
   font-weight: 400;
   margin-bottom: 25px;
 }
-/*# sourceMappingURL=landing.module.css.map */

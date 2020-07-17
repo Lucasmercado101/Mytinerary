@@ -1,9 +1,13 @@
 .text {
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
   color: black;
-  padding: 60% 0;
-  margin: auto auto;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  white-space: nowrap;
 }
 /*# sourceMappingURL=notfound.module.css.map */
