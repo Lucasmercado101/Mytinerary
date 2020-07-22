@@ -6,6 +6,7 @@ import Footer from "./Components/Footer";
 import Cities from "./Components/Cities";
 import CityItineraries from "./Components/CityItineraries";
 import CreateAccount from "./Components/CreateAccount";
+import LogIn from "./Components/LogIn";
 import NotFound from "./Components/NotFound";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/cities" exact component={Cities} />
           <Route path="/cities/:city" exact component={CityItineraries} />
           <Route path="/createAccount" exact component={CreateAccount} />
+          <Route path="/logIn" exact component={LogIn} />
           <Route component={NotFound} />
         </Switch>
       </div>

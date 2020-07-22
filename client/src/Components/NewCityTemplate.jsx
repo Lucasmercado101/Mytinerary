@@ -55,7 +55,7 @@ function NewCityTemplate() {
   return (
     <DropdownMenu
       style={{ width: "100%", zIndex: 1 }}
-      button={<p style={{ ...styled }}>New Itinerary</p>}
+      button={<p style={{ ...styled }}>New City</p>}
     >
       <form onSubmit={(e) => createNewCity(e)}>
         <div className={styles.newCity}>

@@ -48,6 +48,8 @@
 }
 
 .list__item {
+  cursor: pointer;
+  color: black;
   padding: .4rem;
   text-align: center;
 }

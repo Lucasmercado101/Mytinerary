@@ -31,6 +31,10 @@
   height: 80%;
   border-radius: 50%;
   border: 2px solid white;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .description {
@@ -84,6 +88,10 @@
   padding: 8px 0;
   font-weight: 300;
   font-size: 1.2rem;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .activities {

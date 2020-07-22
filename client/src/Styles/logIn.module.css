@@ -1,0 +1,36 @@
+.form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  width: 95%;
+  border-radius: 6.5%;
+  background-color: black;
+  color: white;
+  margin: 0 auto;
+  padding: 8px;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr;
+      grid-template-columns: 1fr;
+  gap: 20px 0;
+  font-weight: 300;
+  font-size: 1.1rem;
+  padding: .9rem;
+}
+
+.form__input {
+  font-size: 1.15rem;
+}
+
+.form__submit {
+  cursor: pointer;
+  width: 75%;
+  margin: 0 auto;
+  font-size: 1.25rem;
+  background: none;
+  color: white;
+  border: 1px solid white;
+  border-radius: 5px;
+}

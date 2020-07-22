@@ -1,5 +1,6 @@
 .footer {
-  position: absolute;
+  position: -webkit-sticky;
+  position: sticky;
   z-index: 1000;
   bottom: 0;
   width: 100vw;
@@ -22,4 +23,3 @@
   color: white;
   text-decoration: none;
 }
-/*# sourceMappingURL=footer.module.css.map */

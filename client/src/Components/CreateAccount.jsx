@@ -10,7 +10,7 @@ function CreateAccount() {
     email: "",
     firstName: "",
     lastName: "",
-    country: "",
+    country: "England",
   });
   const [uploadedUserImage, setUploadedUserImage] = useState();
 
@@ -42,10 +42,10 @@ function CreateAccount() {
     for (const [key, value] of Object.entries(formInfo)) {
       data.append(key, value);
     }
-    data.append("file", uploadedUserImage);
+    data.append("file", uploadedUserImage, uploadedUserImage.name);
 
     axios
-      .post("http://localhost:5000/api/createUser", data, config)
+      .post("http://localhost:5000/api/users/create", data, config)
       .then((response) => {
         console.log(response);
       })
@@ -56,12 +56,12 @@ function CreateAccount() {
 
   function imageHandler(e) {
     const image = e.target.files[0];
+    console.log(image);
     setUploadedUserImage(image);
   }
 
   return (
     <form onSubmit={handleFormSubmit} className={styles.form}>
-      <button onClick={handleFormSubmit}>Upload pfp test</button>
       <input
         style={{ display: "none" }}
         type="file"

@@ -11,6 +11,7 @@ import City from "./City";
 function CityItineraries(props) {
   const city = useSelector((state) => state.cities.city);
   const itineraries = useSelector((state) => state.itineraries.itineraries);
+  const userData = useSelector((state) => state.user.userData);
   const thereAreItineraries = useSelector(
     (state) => state.itineraries.thereAreItineraries
   );
@@ -66,7 +67,11 @@ function CityItineraries(props) {
       ) : (
         <p style={{ textAlign: "center" }}>There are no Itineraries</p>
       )}
-      <NewItineraryTemplate city={currentCity} />
+      {Object.keys(userData).length !== 0 ? (
+        <NewItineraryTemplate city={currentCity} />
+      ) : (
+        ""
+      )}
     </>
   ) : (
     <div>
@@ -77,7 +82,6 @@ function CityItineraries(props) {
           transform: "translateX(-50%)",
         }}
       />
-      <NewItineraryTemplate city={currentCity} />
     </div>
   );
 }

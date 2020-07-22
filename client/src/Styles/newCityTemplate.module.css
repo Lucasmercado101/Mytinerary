@@ -11,6 +11,7 @@
       -ms-flex-align: center;
           align-items: center;
   padding: 20px 0;
+  margin-top: 20px;
 }
 
 .newCity__city {
@@ -41,4 +42,5 @@
   font-weight: 300;
   font-size: 1.2rem;
   border-radius: 25px;
+  margin: auto;
 }

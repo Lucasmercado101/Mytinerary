@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import styles from "../Styles/dropDownMenu.module.css";
 import HamburgerMenu from "./HamburgerMenu";
 
-function LinkItem({ children }) {
-  return <li className={styles.list__item}>{children}</li>;
+function ListItem({ children, onClick }) {
+  return (
+    <li onClick={onClick} className={styles.list__item}>
+      {children}
+    </li>
+  );
 }
 
 function DropdownMenu({
@@ -53,8 +57,11 @@ function DropdownMenu({
         <ul className={styles.list}>
           {children.length > 1
             ? children.map((child, i) => {
-                if (child.type.name === "MyLink") {
-                  return <LinkItem key={i}>{child}</LinkItem>;
+                if (child) {
+                  if (child.type.name === "MyLink") {
+                    return <ListItem key={i}>{child}</ListItem>;
+                  }
+                  return child;
                 }
               })
             : children}
@@ -65,3 +72,4 @@ function DropdownMenu({
 }
 
 export default DropdownMenu;
+export { ListItem };

@@ -1,11 +1,11 @@
 import axios from "axios";
 
-export const getCities = () => async (dispatch) => {
+export const logIn = (data) => async (dispatch) => {
   axios
-    .get("http://localhost:5000/api/cities")
+    .get("http://localhost:5000/api/users/get/", { params: data })
     .then((resp) =>
       dispatch({
-        type: "GET_CITIES",
+        type: "LOG_IN",
         payload: resp.data,
       })
     )

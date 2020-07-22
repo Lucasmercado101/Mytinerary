@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import mytineraryLogo from "../Images/mytinerary logo.svg";
 import circleright from "../Images/circle right.svg";
 import styles from "../Styles/landing.module.css";
@@ -13,8 +13,12 @@ import carousel4img from "../Images/carousel4.jpg";
 import carousel5img from "../Images/carousel5.jpg";
 
 function Landing() {
+  useEffect(() => {
+    document.title = "Mytinerary";
+  }, []);
+
   return (
-    <div>
+    <>
       <header className={styles.hero}>
         <img className={styles.logo} src={mytineraryLogo} />
         <h1 className={styles.h1}>
@@ -35,7 +39,7 @@ function Landing() {
           <div data-src={carousel5img} />
         </AwesomeSlider>
       </section>
-    </div>
+    </>
   );
 }
 
