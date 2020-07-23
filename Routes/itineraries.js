@@ -31,6 +31,7 @@ router.post("/:cityName", async (req, res) => {
       const itinerary = new Itinerary({
         title: req.body.title,
         rating: "0",
+        creator: req.body.creator,
         time: req.body.time,
         price: req.body.price,
         activities: resp._id,

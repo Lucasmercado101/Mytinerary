@@ -1,18 +1,15 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { logOut } from "../Redux/Actions/logOut";
-import MyLink from "./MyLink";
-import DropdownMenu, { ListItem } from "./DropdownMenu";
-import styles from "../Styles/navbar.module.css";
-import addUser from "../Images/add-user.svg";
+import { logOut } from "../../Redux/Actions/logOut";
+import MyLink from "../MyLink";
+import DropdownMenu, { ListItem } from "../DropdownMenu";
+import styles from "../../Styles/navbar.module.css";
+import addUser from "../../Images/add-user.svg";
+import useUserPfp from "../hooks/useUserPfp";
 
 function Nav() {
   const userData = useSelector((state) => state.user.userData);
-  const userPfp = userData.pfp
-    ? `data:image/${userData.pfp.type.split(".")[1]};base64,${Buffer.from(
-        userData.pfp.data
-      ).toString("base64")}`
-    : "";
+  const userPfp = useUserPfp();
 
   const isThereUserData = Object.keys(userData).length !== 0;
   const dispatch = useDispatch();
@@ -30,7 +27,6 @@ function Nav() {
           />
         }
       >
-        {/* an empty object ({}) is TRUTHY, so i can't do userData ? X : Y */}
         {isThereUserData ? (
           <ListItem
             onClick={() => {

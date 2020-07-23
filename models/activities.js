@@ -5,4 +5,4 @@ var activitiesSchema = new Schema({
   activities: Array,
 });
 
-module.exports = mongoose.model("activities", activitiesSchema);
+module.exports = mongoose.model("itineraries.activities", activitiesSchema);

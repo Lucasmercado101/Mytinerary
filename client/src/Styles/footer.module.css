@@ -1,6 +1,5 @@
 .footer {
-  position: -webkit-sticky;
-  position: sticky;
+  position: absolute;
   z-index: 1000;
   bottom: 0;
   width: 100vw;

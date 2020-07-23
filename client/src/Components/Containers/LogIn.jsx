@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styles from "../Styles/logIn.module.css";
+import styles from "../../Styles/logIn.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../Redux/Actions/logIn";
+import { logIn } from "../../Redux/Actions/logIn";
 
 function LogIn(props) {
   const userData = useSelector((state) => state.user.userData);
@@ -41,6 +41,7 @@ function LogIn(props) {
           onChange={handleInput}
           value={formInfo.username}
           className={styles.form__input}
+          required
         />
         <label htmlFor="password">Enter your password</label>
         <input
@@ -49,6 +50,7 @@ function LogIn(props) {
           value={formInfo.password}
           onChange={handleInput}
           className={styles.form__input}
+          required
         />
         <input type="submit" className={styles.form__submit} value="Log In" />
       </form>

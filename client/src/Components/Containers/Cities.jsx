@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getCities } from "../Redux/Actions/getCities";
-import City from "./City";
-import NewCityTemplate from "./NewCityTemplate";
-import LoadingRing from "./LoadingRing";
-import styles from "../Styles/cities.module.css";
+import { getCities } from "../../Redux/Actions/getCities";
+import City from "../City";
+import NewCityTemplate from "../NewCityTemplate";
+import LoadingRing from "../LoadingRing";
+import styles from "../../Styles/cities.module.css";
 
 function Cities() {
   const cities = useSelector((state) => state.cities.cities);

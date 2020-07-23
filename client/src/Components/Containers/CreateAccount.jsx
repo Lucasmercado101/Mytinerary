@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
-import styles from "../Styles/createAccount.module.css";
-import addUser from "../Images/add-user.svg";
+import styles from "../../Styles/createAccount.module.css";
+import addUser from "../../Images/add-user.svg";
 import axios from "axios";
 
 function CreateAccount() {
@@ -42,7 +42,8 @@ function CreateAccount() {
     for (const [key, value] of Object.entries(formInfo)) {
       data.append(key, value);
     }
-    data.append("file", uploadedUserImage, uploadedUserImage.name);
+    if (uploadedUserImage)
+      data.append("file", uploadedUserImage, uploadedUserImage.name);
 
     axios
       .post("http://localhost:5000/api/users/create", data, config)

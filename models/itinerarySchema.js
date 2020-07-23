@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 var itinerarySchema = new Schema({
   title: String,
+  creator: String,
   rating: String,
   time: String,
   price: String,

@@ -1,11 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import MyLink from "./MyLink";
 import styles from "../Styles/itinerary.module.css";
 import clockIcon from "../Images/clock-icon.svg";
 import likeIcon from "../Images/like-icon.svg";
+import genericPfp from "../Images/generic-user.svg";
 
-function Itinerary({ title, time, rating, price, hashtags, activities }) {
+function Itinerary({
+  title,
+  time,
+  rating,
+  price,
+  creator,
+  hashtags,
+  activities,
+}) {
   const [allActivities, setAllActivities] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [userImage, setUserImage] = useState("");
+  const [userPage, setUserPage] = useState("");
 
   const fetchActivities = async () => {
     await axios
@@ -14,13 +27,33 @@ function Itinerary({ title, time, rating, price, hashtags, activities }) {
       .catch((err) => console.log(err));
   };
 
+  useEffect(() => {
+    (async function () {
+      await axios
+        .get("http://localhost:5000/api/users/get/user/" + creator)
+        .then(({ data }) => {
+          setUserName(data.userName);
+          setUserPage(data.userID);
+          if (data.pfp.hasOwnProperty("data")) {
+            const type = data.pfp.type.split(".")[1];
+            const imageData = Buffer.from(data.pfp.data).toString("base64");
+            setUserImage(`data:image/${type};base64,${imageData}`);
+          }
+        })
+        .catch((err) => console.log(err));
+    })();
+  }, []);
+
   return (
     <article className={styles.itinerary}>
       <header className={styles.header}>
-        <img
-          className={styles.header__photo}
-          src="https://source.unsplash.com/featured/600x600/?face,man"
-        />
+        <MyLink to={"/users/user/" + userPage}>
+          <img
+            className={styles.header__photo}
+            title={userName}
+            src={userImage || genericPfp}
+          />
+        </MyLink>
         <h3 className={styles.header__title}>{title}</h3>
       </header>
       <section className={styles.description}>

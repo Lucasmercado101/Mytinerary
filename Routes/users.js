@@ -50,37 +50,9 @@ const upload = multer({
 });
 
 router.post("/create", upload.single("file"), async (req, res) => {
-  // console.log(req.body);
   const { username, password, email, firstName, lastName, country } = req.body;
   const saltHashedPassword = saltHashPassword(password);
-  const fileLocation = path.join(
-    __dirname,
-    "..",
-    "temp",
-    "images",
-    req.file.filename
-  );
-
-  let data = await fs.readFileSync(fileLocation);
-
-  // Delete after reading
-  await fs.unlink(fileLocation, (err) => {
-    if (err) throw err;
-  });
-
-  // Convert to Base64
-  let base64 = data.toString("base64");
-
-  // Feed out string to a buffer and then put it in the database
-  // let pfpData = new Buffer(base64, "base64");
-  let pfpData = new Buffer.from(base64, "base64");
-
-  const pfp = new Pfp({
-    type: path.extname(req.file.originalname),
-    data: pfpData,
-  });
-
-  const user = new User({
+  let userObject = {
     username,
     password: saltHashedPassword,
     email,
@@ -88,8 +60,41 @@ router.post("/create", upload.single("file"), async (req, res) => {
     lastName,
     country,
     favorites: [],
-    pfp,
-  });
+  };
+
+  if (req.file) {
+    const fileLocation = path.join(
+      __dirname,
+      "..",
+      "temp",
+      "images",
+      req.file.filename
+    );
+
+    let data = await fs.readFileSync(fileLocation);
+
+    // Delete after reading
+    await fs.unlink(fileLocation, (err) => {
+      if (err) throw err;
+    });
+
+    // Convert to Base64
+    let base64 = data.toString("base64");
+
+    // Feed out string to a buffer and then put it in the database
+    // let pfpData = new Buffer(base64, "base64");
+    let pfpData = new Buffer.from(base64, "base64");
+
+    const pfp = new Pfp({
+      type: path.extname(req.file.originalname),
+      data: pfpData,
+    });
+    userObject = { ...userObject, pfp };
+  } else {
+    userObject = { ...userObject, pfp: {} };
+  }
+
+  const user = new User(userObject);
   // path.extname(req.file.originalname)
   console.log("Saving user...");
   await user
@@ -127,19 +132,23 @@ router.get("/get/", async (req, res) => {
     });
 });
 
-// router.get("/get/:userID", async (req, res) => {
-//   console.log("Fetching user...");
-//   await User.findOne({ _id: req.params.userID })
-//     // .then((user) => {
-//     //   fs.writeFileSync(
-//     //     "./temp/images/Image_" + user.pfp._id + user.pfp.type,
-//     //     user.pfp.data
-//     //   );
-//     // })
-//     .then((data) => res.send(data))
-//     .catch((err) => {
-//       res.json({ message: err });
-//     });
-// });
+router.get("/get/user/:userID", async (req, res) => {
+  await User.findById(req.params.userID)
+    .then((data) => {
+      const pfp = data.pfp.data ? data.pfp : "";
+      const user = {
+        userName: data.username,
+        userID: data._id,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        country: data.country,
+        pfp: pfp,
+      };
+      res.send(user);
+    })
+    .catch((err) => {
+      res.json({ message: err });
+    });
+});
 
 module.exports = router;

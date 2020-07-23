@@ -27,8 +27,8 @@ html {
 
 .content {
   min-height: 100vh;
-  padding-bottom: 2.8rem;
   padding-top: 2.8rem;
+  padding-bottom: 2.8rem;
 }
 
 .lds-ring {

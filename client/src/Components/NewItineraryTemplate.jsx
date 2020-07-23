@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { postItinerary } from "../Redux/Actions/postItinerary";
 import DropdownMenu from "./DropdownMenu";
 import styles from "../Styles/itinerary.module.css";
 import clockIcon from "../Images/clock-icon.svg";
+import useUserPfp from "./hooks/useUserPfp";
+import genericPfp from "../Images/generic-user.svg";
 
 const styled = {
   listStyle: "none",
@@ -35,6 +37,9 @@ function Itinerary({ city }) {
   const [hashtag3, setHashtag3] = useState("");
   const [activities, setactivities] = useState([""]);
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.user.userData);
+
+  const userPfp = useUserPfp();
 
   function handlePriceInput(e) {
     const price = e.target.value;
@@ -51,7 +56,7 @@ function Itinerary({ city }) {
     if (hs.length < 3) {
       const isANumber = isNaN(hs) === false;
       if (isANumber) {
-        if (Number(hs > 24)) {
+        if (hs > 24) {
           setHours(24);
         } else {
           setHours(hs);
@@ -96,9 +101,11 @@ function Itinerary({ city }) {
 
   function submitItinerary(e) {
     e.preventDefault();
+
     const itinerary = {
       title: title,
       rating: 0,
+      creator: userData._id,
       time: hours,
       price: price,
       activities: "",
@@ -124,10 +131,7 @@ function Itinerary({ city }) {
       <form onSubmit={submitItinerary}>
         <article className={styles.itinerary}>
           <header className={styles.header}>
-            <img
-              className={styles.header__photo}
-              src="https://source.unsplash.com/featured/600x600/?face,man"
-            />
+            <img className={styles.header__photo} src={userPfp || genericPfp} />
             <h3 className={styles.header__title}>
               <input
                 size="18"
@@ -150,7 +154,7 @@ function Itinerary({ city }) {
                 size="1"
                 onChange={handleHoursInput}
                 value={hours}
-                style={{ border: "thin solid black" }}
+                className={styles.activities__templateInput}
                 required
               ></input>
               HS
@@ -161,7 +165,7 @@ function Itinerary({ city }) {
                 size="2"
                 onChange={handlePriceInput}
                 value={price}
-                style={{ border: "thin solid black" }}
+                className={styles.activities__templateInput}
                 required
               ></input>
             </p>
@@ -175,7 +179,7 @@ function Itinerary({ city }) {
                 name="hashtag1"
                 onChange={handleHashtagsInput}
                 value={hashtag1}
-                style={{ border: "thin solid black" }}
+                className={styles.activities__templateInput}
               ></input>
             </p>
             <p>
@@ -186,7 +190,7 @@ function Itinerary({ city }) {
                 name="hashtag2"
                 onChange={handleHashtagsInput}
                 value={hashtag2}
-                style={{ border: "thin solid black" }}
+                className={styles.activities__templateInput}
               ></input>
             </p>
             <p>
@@ -197,7 +201,7 @@ function Itinerary({ city }) {
                 name="hashtag3"
                 onChange={handleHashtagsInput}
                 value={hashtag3}
-                style={{ border: "thin solid black" }}
+                className={styles.activities__templateInput}
               ></input>
             </p>
           </section>

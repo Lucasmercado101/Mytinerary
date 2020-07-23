@@ -21,10 +21,13 @@
     font-size: 1.2rem
 
   &__photo 
-    height: 80%
+    height: 50px
+    width: 50px
+    object-fit: cover
     border-radius: 50%
     border: 2px solid white
     user-select: none
+    background-color: white
 
 
 .description 
@@ -83,6 +86,16 @@
     position: relative
     left: 50%
     transform: translateX(-50%)
+
+  &__templateInput
+    // &:not(:focus)
+    font-size: 1rem
+    outline: thin solid black
+    &:valid
+      outline: thin solid lightgreen
+      
+
+      
     
   
 

@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
-import mytineraryLogo from "../Images/mytinerary logo.svg";
-import circleright from "../Images/circle right.svg";
-import styles from "../Styles/landing.module.css";
-import MyLink from "./MyLink";
+import mytineraryLogo from "../../Images/mytinerary logo.svg";
+import circleright from "../../Images/circle right.svg";
+import styles from "../../Styles/landing.module.css";
+import MyLink from "../MyLink";
 
 import AwesomeSlider from "react-awesome-slider";
 import "react-awesome-slider/dist/styles.css";
-import carousel1img from "../Images/carousel1.jpg";
-import carousel2img from "../Images/carousel2.jpg";
-import carousel3img from "../Images/carousel3.jpg";
-import carousel4img from "../Images/carousel4.jpg";
-import carousel5img from "../Images/carousel5.jpg";
+import carousel1img from "../../Images/carousel1.jpg";
+import carousel2img from "../../Images/carousel2.jpg";
+import carousel3img from "../../Images/carousel3.jpg";
+import carousel4img from "../../Images/carousel4.jpg";
+import carousel5img from "../../Images/carousel5.jpg";
 
 function Landing() {
   useEffect(() => {

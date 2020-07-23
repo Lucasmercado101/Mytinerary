@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { getCity } from "../Redux/Actions/getCity";
-import { getItineraries } from "../Redux/Actions/getItineraries";
-import { emptyItineraries } from "../Redux/Actions/emptyItineraries";
-import LoadingRing from "./LoadingRing";
-import Itinerary from "./Itinerary";
-import NewItineraryTemplate from "./NewItineraryTemplate";
-import City from "./City";
+import { getCity } from "../../Redux/Actions/getCity";
+import { getItineraries } from "../../Redux/Actions/getItineraries";
+import { emptyItineraries } from "../../Redux/Actions/emptyItineraries";
+import LoadingRing from "../LoadingRing";
+import Itinerary from "../Itinerary";
+import NewItineraryTemplate from "../NewItineraryTemplate";
+import City from "../City";
 
 function CityItineraries(props) {
   const city = useSelector((state) => state.cities.city);
@@ -31,10 +32,12 @@ function CityItineraries(props) {
 
   function Itineraries() {
     return itineraries.map(
-      ({ _id, title, hashtags, rating, price, activities }) => (
+      ({ _id, title, time, hashtags, creator, rating, price, activities }) => (
         <Itinerary
           key={_id}
           title={title}
+          time={time}
+          creator={creator}
           hashtags={hashtags}
           rating={rating}
           price={price}
@@ -46,7 +49,7 @@ function CityItineraries(props) {
 
   return city ? (
     <>
-      <City city={city.name} country={city.country} />
+      <City city={city.name} url={city.url} country={city.country} />
       <h2
         style={{ textAlign: "center", fontWeight: "500", margin: "0.8rem 0" }}
       >

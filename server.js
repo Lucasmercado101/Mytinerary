@@ -1,11 +1,6 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const path = require("path");
-const Grid = require("gridfs-stream");
-const GridFsStorage = require("multer-gridfs-storage");
-const multer = require("multer");
-const crypto = require("crypto");
 const cors = require("cors");
 require("dotenv/config");
 

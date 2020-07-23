@@ -28,13 +28,17 @@
 }
 
 .header__photo {
-  height: 80%;
+  height: 50px;
+  width: 50px;
+  -o-object-fit: cover;
+     object-fit: cover;
   border-radius: 50%;
   border: 2px solid white;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  background-color: white;
 }
 
 .description {
@@ -128,4 +132,13 @@
   left: 50%;
   -webkit-transform: translateX(-50%);
           transform: translateX(-50%);
+}
+
+.activities__templateInput {
+  font-size: 1rem;
+  outline: thin solid black;
+}
+
+.activities__templateInput:valid {
+  outline: thin solid lightgreen;
 }
