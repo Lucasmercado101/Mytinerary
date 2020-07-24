@@ -33,29 +33,27 @@ function LogIn(props) {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <label htmlFor="username">Enter your username</label>
-        <input
-          type="text"
-          name="username"
-          onChange={handleInput}
-          value={formInfo.username}
-          className={styles.form__input}
-          required
-        />
-        <label htmlFor="password">Enter your password</label>
-        <input
-          type="password"
-          name="password"
-          value={formInfo.password}
-          onChange={handleInput}
-          className={styles.form__input}
-          required
-        />
-        <input type="submit" className={styles.form__submit} value="Log In" />
-      </form>
-    </>
+    <form onSubmit={handleSubmit} className={styles.form}>
+      <label htmlFor="username">Enter your username</label>
+      <input
+        type="text"
+        name="username"
+        onChange={handleInput}
+        value={formInfo.username}
+        className={styles.form__input}
+        required
+      />
+      <label htmlFor="password">Enter your password</label>
+      <input
+        type="password"
+        name="password"
+        value={formInfo.password}
+        onChange={handleInput}
+        className={styles.form__input}
+        required
+      />
+      <input type="submit" className={styles.form__submit} value="Log In" />
+    </form>
   );
 }
 

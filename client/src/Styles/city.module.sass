@@ -1,25 +1,34 @@
 .city 
     width: 100vw
     height: 150px
-    display: flex
-    align-items: center
-    justify-content: center
-    border-top: thin solid white
-    border-bottom: thin solid white
-    z-index: 1
-    background-size: cover
+    background-color: black
+    position: relative
+    margin-top: 5px
+    
+    &__image
+        filter: brightness(50%) blur(.5px)
+        width: 100%
+        height: 100%
+        object-fit: cover
 
-    &__cityName
+.link
+    position: absolute
+    display: flex
+    font-size: 1.8rem
+    flex-direction: column
+    color: white
+    text-decoration: none
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    
+    &__city
         color: white
-        text-decoration: none
-        font-size: 1.7rem
         white-space: nowrap
-        display: flex
-        flex-direction: column
-        align-items: center
-  
+
     &__country
         color: white
+        text-align: center
         font-size: 0.8rem
 
         

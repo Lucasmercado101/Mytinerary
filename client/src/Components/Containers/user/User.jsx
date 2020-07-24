@@ -32,7 +32,7 @@ function User({ userID }) {
 
       <ul className={styles.userInfoList}>
         <li className={styles.userInfoList__item}>
-          First name: {userData.firstName}
+          First name: {userData.firstname}
         </li>
         <li className={styles.userInfoList__item}>
           Last name: {userData.lastName}

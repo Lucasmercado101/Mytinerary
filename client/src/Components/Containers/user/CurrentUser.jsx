@@ -5,6 +5,7 @@ import { getLoggedInUserData } from "../../../Redux/Actions/getLoggedInUserData"
 import genericPfp from "../../../Images/generic-user.svg";
 import styles from "../../../Styles/user.module.css";
 import useUserPfp from "../../hooks/useUserPfp";
+import Button from "../../Button";
 
 function CurrentUser() {
   const userData = useSelector((state) => state.user.userData);
@@ -41,15 +42,18 @@ function CurrentUser() {
     }
   };
 
+  const deleteAccount = async () => {
+    // Delete account along with all posts and comments
+  };
+
   return (
     <>
       <img className={styles.userPfp} src={userPfp || genericPfp}></img>
-      <button
+      <Button
         onClick={() => imageUpload.current.click()}
-        className={styles.changePfp}
-      >
-        Change profile picture
-      </button>
+        text={"Change profile picture"}
+        centered
+      />
       <small style={{ textAlign: "center", display: "block" }}>
         Image must be smaller than 10MB
       </small>
@@ -75,6 +79,7 @@ function CurrentUser() {
           country: {userData.country}
         </li>
       </ul>
+      <Button text={"Delete Account"} onClick={deleteAccount} alert centered />
     </>
   );
 }

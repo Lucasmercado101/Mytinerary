@@ -4,16 +4,11 @@ import MyLink from "./MyLink";
 
 function City({ url, city, country }) {
   return (
-    <div
-      style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-         url(${url})`,
-      }}
-      className={styles.city}
-    >
-      <MyLink to={`/cities/${city}`} className={styles.city__cityName}>
-        {city}
-        <small className={styles.city__country}>{country}</small>
+    <div className={styles.city}>
+      <img src={url} className={styles.city__image} />
+      <MyLink to={`/cities/${city}`} className={styles.link}>
+        <p className={styles.link__city}>{city}</p>
+        <small className={styles.link__country}>{country}</small>
       </MyLink>
     </div>
   );
