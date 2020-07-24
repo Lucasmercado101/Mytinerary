@@ -1,9 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "../../Styles/createAccount.module.css";
+import { useDispatch } from "react-redux";
 import addUser from "../../Images/add-user.svg";
 import axios from "axios";
+import { logIn } from "../../Redux/Actions/logIn";
 
-function CreateAccount() {
+function CreateAccount(props) {
   const [formInfo, setFormInfo] = useState({
     username: "",
     password: "",
@@ -13,7 +15,7 @@ function CreateAccount() {
     country: "England",
   });
   const [uploadedUserImage, setUploadedUserImage] = useState();
-
+  const dispatch = useDispatch();
   const options = [
     "England",
     "France",
@@ -25,6 +27,10 @@ function CreateAccount() {
   ];
 
   const imageUpload = useRef();
+
+  useEffect(() => {
+    document.title = "Create Account";
+  }, []);
 
   function handleFormInput(e) {
     const { name, value } = e.target;
@@ -47,18 +53,26 @@ function CreateAccount() {
 
     axios
       .post("http://localhost:5000/api/users/create", data, config)
-      .then((response) => {
-        console.log(response);
+      .then((data) => {
+        alert("Account created succesfuly!");
+        props.history.push("/");
+        dispatch(
+          logIn({ username: formInfo.username, password: formInfo.password })
+        );
       })
       .catch((error) => {
-        console.log(error);
+        alert(error.response.statusText);
       });
   }
 
   function imageHandler(e) {
     const image = e.target.files[0];
-    console.log(image);
-    setUploadedUserImage(image);
+    const tenMB = 10000000;
+    if (image.size < tenMB) {
+      setUploadedUserImage(image);
+    } else {
+      alert("File is too big");
+    }
   }
 
   return (
@@ -70,6 +84,7 @@ function CreateAccount() {
         id="profilePic"
         ref={imageUpload}
         onChange={imageHandler}
+        accept="image/*"
       />
       <div
         style={{
@@ -82,6 +97,9 @@ function CreateAccount() {
       >
         {uploadedUserImage ? "" : <img src={addUser} alt="profile pic" />}
       </div>
+      <small style={{ textAlign: "center" }}>
+        Image must be smaller than 10MB
+      </small>
       <label htmlFor="username">Username</label>
       <input
         type="text"

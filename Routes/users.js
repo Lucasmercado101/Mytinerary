@@ -38,9 +38,9 @@ let sha512 = function (password, salt) {
 function saltHashPassword(userpassword) {
   let salt = genRandomString(16); /** Gives us salt of length 16 */
   let passwordData = sha512(userpassword, salt);
-  console.log("UserPassword = " + userpassword);
-  console.log("Passwordhash = " + passwordData.passwordHash);
-  console.log("nSalt = " + passwordData.salt);
+  // console.log("UserPassword = " + userpassword);
+  // console.log("Passwordhash = " + passwordData.passwordHash);
+  // console.log("nSalt = " + passwordData.salt);
   return passwordData;
 }
 
@@ -82,7 +82,6 @@ router.post("/create", upload.single("file"), async (req, res) => {
     let base64 = data.toString("base64");
 
     // Feed out string to a buffer and then put it in the database
-    // let pfpData = new Buffer(base64, "base64");
     let pfpData = new Buffer.from(base64, "base64");
 
     const pfp = new Pfp({
@@ -97,15 +96,24 @@ router.post("/create", upload.single("file"), async (req, res) => {
   const user = new User(userObject);
   // path.extname(req.file.originalname)
   console.log("Saving user...");
-  await user
-    .save()
-    .then((data) => {
-      console.log("Saved");
-      res.json(data);
+
+  await User.findOne({ username })
+    .then(async (data) => {
+      if (data === null) {
+        await user
+          .save()
+          .then((data) => {
+            res.json(data);
+          })
+          .catch((err) => {
+            res.json({ message: err });
+          });
+      } else {
+        res.statusMessage = `Account "${username}" already exists`;
+        res.status(409).end();
+      }
     })
-    .catch((err) => {
-      res.json({ message: err });
-    });
+    .catch((err) => console.log(err));
 });
 
 router.get("/get/", async (req, res) => {
@@ -132,13 +140,37 @@ router.get("/get/", async (req, res) => {
     });
 });
 
+router.get("/", async (req, res) => {
+  console.log("here");
+  await User.find()
+    .then((resp) => {
+      console.log("finished");
+      const users = [];
+      resp.forEach((user) =>
+        users.push({
+          _id: user._id,
+          username: user.username,
+          favorites: user.favorites,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          country: user.country,
+          pfp: user.pfp,
+        })
+      );
+      res.json(users);
+    })
+    .catch((err) => {
+      res.json({ message: err });
+    });
+});
+
 router.get("/get/user/:userID", async (req, res) => {
   await User.findById(req.params.userID)
     .then((data) => {
       const pfp = data.pfp.data ? data.pfp : "";
       const user = {
         userName: data.username,
-        userID: data._id,
+        _id: data._id,
         firstName: data.firstName,
         lastName: data.lastName,
         country: data.country,
@@ -149,6 +181,43 @@ router.get("/get/user/:userID", async (req, res) => {
     .catch((err) => {
       res.json({ message: err });
     });
+});
+
+router.put("/user/pfp/:userID", upload.single("file"), async (req, res) => {
+  const fileLocation = path.join(
+    __dirname,
+    "..",
+    "temp",
+    "images",
+    req.file.filename
+  );
+
+  let data = await fs.readFileSync(fileLocation);
+
+  // Delete after reading
+  await fs.unlink(fileLocation, (err) => {
+    if (err) throw err;
+  });
+
+  // Convert to Base64
+  let base64 = data.toString("base64");
+
+  // Feed out string to a buffer and then put it in the database
+  let pfpData = new Buffer.from(base64, "base64");
+  await User.findOneAndUpdate(
+    req.params.userID,
+    {
+      pfp: {
+        type: path.extname(req.file.originalname),
+        data: pfpData,
+      },
+    },
+    { useFindAndModify: false }
+  )
+    .then(() => {
+      res.status(200).end();
+    })
+    .catch((err) => console.log(err));
 });
 
 module.exports = router;

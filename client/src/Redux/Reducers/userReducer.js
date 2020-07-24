@@ -1,20 +1,34 @@
 const initialState = {
-  userData: JSON.parse(localStorage.getItem("userData")) || {},
+  userData: {},
+  currentlyLoggedInUser: JSON.parse(localStorage.getItem("loggedInUser")) || "",
+  users: [],
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case "LOG_IN":
-      localStorage.setItem("userData", JSON.stringify(action.payload));
+      localStorage.setItem("loggedInUser", JSON.stringify(action.payload._id));
+      return {
+        ...state,
+        userData: action.payload,
+        currentlyLoggedInUser: action.payload._id,
+      };
+    case "LOG_OUT":
+      localStorage.removeItem("loggedInUser");
+      return {
+        ...state,
+        userData: {},
+        currentlyLoggedInUser: "",
+      };
+    case "GET_LOGGED_IN_USER_DATA":
       return {
         ...state,
         userData: action.payload,
       };
-    case "LOG_OUT":
-      localStorage.removeItem("userData");
+    case "GET_USERS":
       return {
         ...state,
-        userData: {},
+        users: action.payload,
       };
     default:
       return state;

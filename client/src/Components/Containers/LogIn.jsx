@@ -16,8 +16,9 @@ function LogIn(props) {
     }
   }, [userData]);
 
-  // useEffect to redirect when USERDATA has something e.g when logged in
-  // props.history.push("/");
+  useEffect(() => {
+    document.title = "Log in";
+  }, []);
 
   const dispatch = useDispatch();
 

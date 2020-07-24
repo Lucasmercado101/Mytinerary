@@ -33,7 +33,7 @@ function Itinerary({
         .get("http://localhost:5000/api/users/get/user/" + creator)
         .then(({ data }) => {
           setUserName(data.userName);
-          setUserPage(data.userID);
+          setUserPage(data._id);
           if (data.pfp.hasOwnProperty("data")) {
             const type = data.pfp.type.split(".")[1];
             const imageData = Buffer.from(data.pfp.data).toString("base64");

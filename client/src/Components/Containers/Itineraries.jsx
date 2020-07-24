@@ -22,6 +22,7 @@ function CityItineraries(props) {
   useEffect(() => {
     dispatch(getCity(currentCity));
     dispatch(getItineraries(currentCity));
+    document.title = `${currentCity} Itineraries`;
   }, []);
 
   useEffect(() => {

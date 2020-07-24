@@ -6,12 +6,13 @@ import DropdownMenu, { ListItem } from "../DropdownMenu";
 import styles from "../../Styles/navbar.module.css";
 import addUser from "../../Images/add-user.svg";
 import useUserPfp from "../hooks/useUserPfp";
+import genericPfp from "../../Images/generic-user.svg";
 
 function Nav() {
   const userData = useSelector((state) => state.user.userData);
+  const loggedInUser = useSelector((state) => state.user.currentlyLoggedInUser);
   const userPfp = useUserPfp();
 
-  const isThereUserData = Object.keys(userData).length !== 0;
   const dispatch = useDispatch();
 
   return (
@@ -22,12 +23,12 @@ function Nav() {
         button={
           <img
             className={styles.userMenu__pfp}
-            src={userPfp || addUser}
+            src={loggedInUser ? (userPfp ? userPfp : genericPfp) : addUser}
             alt="Profile picture"
           />
         }
       >
-        {isThereUserData ? (
+        {loggedInUser ? (
           <ListItem
             onClick={() => {
               dispatch(logOut());
@@ -38,12 +39,17 @@ function Nav() {
         ) : (
           <MyLink to="/createAccount">Create account</MyLink>
         )}
-        {isThereUserData ? "" : <MyLink to="/logIn">Log in</MyLink>}
+        {loggedInUser ? (
+          <MyLink to={"/users/user/" + userData._id}>My profile</MyLink>
+        ) : (
+          <MyLink to="/logIn">Log in</MyLink>
+        )}
         {/* fix this ugly 2 tertiary, it should be only one */}
       </DropdownMenu>
 
       <DropdownMenu align="right" nav card>
         <MyLink to="/cities">Cities</MyLink>
+        <MyLink to="/users">Users</MyLink>
         <MyLink to="/">Home</MyLink>
       </DropdownMenu>
     </nav>
