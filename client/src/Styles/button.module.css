@@ -5,6 +5,8 @@
   padding: .3rem .9rem;
   font-size: 1rem;
   cursor: pointer;
+  margin: 5px;
+  border: none;
 }
 
 .button__centered {
@@ -15,4 +17,8 @@
 
 .button__alert {
   background-color: #ff0019;
+}
+
+.button__big {
+  font-size: 1.6em;
 }

@@ -1,16 +1,20 @@
 const initialState = {
   itineraries: [],
-  thereAreItineraries: true,
+  fetchingItineraries: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case "GET_ITINERARIES":
-      const thereAreItineraries = !(action.payload.length === 0);
+    case "FETCHING_ITINERARIES":
+      return {
+        ...state,
+        fetchingItineraries: true,
+      };
+    case "FETCHED_ITINERARIES":
       return {
         ...state,
         itineraries: action.payload,
-        thereAreItineraries,
+        fetchingItineraries: false,
       };
     case "POST_ITINERARY":
       return {

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { getLoggedInUserData } from "./Redux/Actions/getLoggedInUserData";
+import { getLoggedInUserData } from "./Redux/Actions/userActions";
 import "./Styles/app.css";
 
 // Containers / Pages
@@ -12,7 +12,7 @@ import Cities from "./Components/Containers/Cities";
 import CityItineraries from "./Components/Containers/Itineraries";
 import CreateAccount from "./Components/Containers/CreateAccount";
 import Users from "./Components/Containers/Users";
-import User from "./Components/Containers/user/Index";
+import UserPage from "./Components/Containers/UserPage";
 import LogIn from "./Components/Containers/LogIn";
 import NotFound from "./Components/Containers/NotFound";
 
@@ -38,7 +38,7 @@ function App() {
           <Route path="/createAccount" exact component={CreateAccount} />
           <Route path="/logIn" exact component={LogIn} />
           <Route path="/users" exact component={Users} />
-          <Route path="/users/user/:user" exact component={User} />
+          <Route path="/users/user/:user" exact component={UserPage} />
           <Route component={NotFound} />
         </Switch>
       </div>

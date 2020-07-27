@@ -1,21 +1,57 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getUsers } from "../../Redux/Actions/getUsers";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import User from "../UserCard";
+import SearchBar from "../SearchBar";
+import LoadingRing from "../LoadingRing";
 
 function Users() {
-  const dispatch = useDispatch();
-  const users = useSelector((state) => state.user.users);
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState(users);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getUsers());
+    (async function () {
+      setIsLoading(true);
+      axios
+        .get("http://localhost:5000/api/users")
+        .then((resp) => {
+          setUsers(resp.data);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+    })();
   }, []);
+
+  useEffect(() => {
+    setFilteredUsers(users);
+  }, [users]);
 
   return (
     <>
-      {users.map((user) => (
-        <User user={user} />
-      ))}
+      <h1
+        style={{
+          color: "black",
+          width: "100%",
+          fontWeight: "300",
+          textAlign: "center",
+          marginTop: "15px",
+          marginBottom: "0",
+        }}
+      >
+        USERS
+      </h1>
+      <SearchBar
+        label={"Search users:"}
+        data={users}
+        filter={"username"}
+        setFilteredResults={setFilteredUsers}
+      />
+
+      {isLoading ? (
+        <LoadingRing centered />
+      ) : (
+        filteredUsers.map((user, i) => <User key={i} user={user} />)
+      )}
     </>
   );
 }

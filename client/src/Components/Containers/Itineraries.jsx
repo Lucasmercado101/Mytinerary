@@ -1,21 +1,22 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { getCity } from "../../Redux/Actions/getCity";
-import { getItineraries } from "../../Redux/Actions/getItineraries";
-import { emptyItineraries } from "../../Redux/Actions/emptyItineraries";
+import {
+  emptyItineraries,
+  getItineraries,
+} from "../../Redux/Actions/itinerariesActions";
 import LoadingRing from "../LoadingRing";
 import Itinerary from "../Itinerary";
 import NewItineraryTemplate from "../NewItineraryTemplate";
-import City from "../City";
+import CityCard from "../CityCard";
 
 function CityItineraries(props) {
   const city = useSelector((state) => state.cities.city);
   const itineraries = useSelector((state) => state.itineraries.itineraries);
-  const userData = useSelector((state) => state.user.userData);
-  const thereAreItineraries = useSelector(
-    (state) => state.itineraries.thereAreItineraries
+  const fetchingItineraries = useSelector(
+    (state) => state.itineraries.fetchingItineraries
   );
+  const userData = useSelector((state) => state.user.userData);
   const dispatch = useDispatch();
   const currentCity = props.match.params.city;
 
@@ -50,26 +51,27 @@ function CityItineraries(props) {
 
   return city ? (
     <>
-      <City city={city.name} url={city.url} country={city.country} />
-      <h2
-        style={{ textAlign: "center", fontWeight: "500", margin: "0.8rem 0" }}
-      >
-        Available Itineraries
-      </h2>
-      {thereAreItineraries ? (
-        itineraries !== undefined && itineraries.length ? (
-          <Itineraries />
+      <CityCard city={city.name} url={city.url} country={city.country} />
+
+      {!fetchingItineraries ? (
+        itineraries.length > 0 ? (
+          <>
+            <h2
+              style={{
+                textAlign: "center",
+                fontWeight: "500",
+                margin: "0.8rem 0",
+              }}
+            >
+              Available Itineraries
+            </h2>
+            <Itineraries />
+          </>
         ) : (
-          <LoadingRing
-            style={{
-              position: "relative",
-              left: "50%",
-              transform: "translateX(-50%)",
-            }}
-          />
+          <h2 style={{ textAlign: "center" }}>There are no Itineraries</h2>
         )
       ) : (
-        <p style={{ textAlign: "center" }}>There are no Itineraries</p>
+        <LoadingRing centered />
       )}
       {Object.keys(userData).length !== 0 ? (
         <NewItineraryTemplate city={currentCity} />
@@ -78,15 +80,7 @@ function CityItineraries(props) {
       )}
     </>
   ) : (
-    <div>
-      <LoadingRing
-        style={{
-          display: "relative",
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      />
-    </div>
+    <LoadingRing absoluteCentered />
   );
 }
 

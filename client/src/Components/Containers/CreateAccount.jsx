@@ -3,7 +3,7 @@ import styles from "../../Styles/createAccount.module.css";
 import { useDispatch } from "react-redux";
 import addUser from "../../Images/add-user.svg";
 import axios from "axios";
-import { logIn } from "../../Redux/Actions/logIn";
+import { logIn } from "../../Redux/Actions/userActions";
 
 function CreateAccount(props) {
   const [formInfo, setFormInfo] = useState({

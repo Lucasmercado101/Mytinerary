@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../Styles/logIn.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../../Redux/Actions/logIn";
+import { logIn } from "../../Redux/Actions/userActions";
 
 function LogIn(props) {
   const userData = useSelector((state) => state.user.userData);

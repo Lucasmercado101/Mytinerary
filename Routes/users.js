@@ -205,7 +205,7 @@ router.put("/user/pfp/:userID", upload.single("file"), async (req, res) => {
   // Feed out string to a buffer and then put it in the database
   let pfpData = new Buffer.from(base64, "base64");
   await User.findOneAndUpdate(
-    req.params.userID,
+    { _id: req.params.userID },
     {
       pfp: {
         type: path.extname(req.file.originalname),
@@ -214,7 +214,8 @@ router.put("/user/pfp/:userID", upload.single("file"), async (req, res) => {
     },
     { useFindAndModify: false }
   )
-    .then(() => {
+    .then((resp) => {
+      // console.log(resp);
       res.status(200).end();
     })
     .catch((err) => console.log(err));

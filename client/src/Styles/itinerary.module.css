@@ -4,6 +4,8 @@
   border: thin solid black;
   border-radius: 10px;
   overflow: hidden;
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
 }
 
 .header {

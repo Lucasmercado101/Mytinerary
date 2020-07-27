@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logOut } from "../../Redux/Actions/logOut";
 import MyLink from "../MyLink";
-import DropdownMenu, { ListItem } from "../DropdownMenu";
+import DropDownMenu, { MenuItem } from "../DropDownMenu";
 import styles from "../../Styles/navbar.module.css";
 import addUser from "../../Images/add-user.svg";
 import useUserPfp from "../hooks/useUserPfp";
@@ -17,41 +17,41 @@ function Nav() {
 
   return (
     <nav className={styles.navbar}>
-      <DropdownMenu
-        card
-        className={styles.userMenu}
+      <DropDownMenu
+        closeOnClick
         button={
           <img
             className={styles.userMenu__pfp}
             src={loggedInUser ? (userPfp ? userPfp : genericPfp) : addUser}
-            alt="Profile picture"
+            alt={userData.userName || "Generic user"}
           />
         }
       >
         {loggedInUser ? (
-          <ListItem
-            onClick={() => {
-              dispatch(logOut());
-            }}
-          >
-            Log out
-          </ListItem>
+          <>
+            <MyLink to={"/users/user/" + userData._id}>My profile</MyLink>
+            <MenuItem
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                dispatch(logOut());
+              }}
+            >
+              Log out
+            </MenuItem>
+          </>
         ) : (
-          <MyLink to="/createAccount">Create account</MyLink>
+          <>
+            <MyLink to="/createAccount">Create account</MyLink>
+            <MyLink to="/logIn">Log in</MyLink>
+          </>
         )}
-        {loggedInUser ? (
-          <MyLink to={"/users/user/" + userData._id}>My profile</MyLink>
-        ) : (
-          <MyLink to="/logIn">Log in</MyLink>
-        )}
-        {/* fix this ugly 2 tertiary, it should be only one */}
-      </DropdownMenu>
+      </DropDownMenu>
 
-      <DropdownMenu align="right" nav card>
+      <DropDownMenu closeOnClick align="right">
         <MyLink to="/cities">Cities</MyLink>
         <MyLink to="/users">Users</MyLink>
         <MyLink to="/">Home</MyLink>
-      </DropdownMenu>
+      </DropDownMenu>
     </nav>
   );
 }

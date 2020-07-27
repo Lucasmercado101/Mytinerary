@@ -1,11 +1,17 @@
 const initialState = {
   cities: [],
   city: null,
+  isFetching: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case "GET_CITIES":
+    case "FETCHING_CITIES":
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case "FETCHED_CITIES":
       const sortedCities = action.payload.sort(function (city, city2) {
         if (city.name < city2.name) {
           return -1;
@@ -18,7 +24,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         cities: sortedCities,
+        isFetching: false,
       };
+    // case "FETCHING_CITIES_ERROR":
+    //   return {
+    //     ...state,
+    //     isFetching: false,
+    //   };
     case "GET_CITY":
       return {
         ...state,

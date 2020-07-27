@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { postItinerary } from "../Redux/Actions/postItinerary";
-import DropdownMenu from "./DropdownMenu";
+import DropdownMenu from "./DropDownMenu";
 import styles from "../Styles/itinerary.module.css";
 import clockIcon from "../Images/clock-icon.svg";
 import useUserPfp from "./hooks/useUserPfp";

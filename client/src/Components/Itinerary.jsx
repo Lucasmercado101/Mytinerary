@@ -75,11 +75,15 @@ function Itinerary({
         </p>
         <p className={styles.description__item}>{price}</p>
       </section>
-      <section className={styles.hashtags}>
-        {hashtags.map((hashtag, i) => (
-          <p key={i}>#{hashtag}</p>
-        ))}
-      </section>
+      {hashtags.length > 0 ? (
+        <section className={styles.hashtags}>
+          {hashtags.map((hashtag, i) => (
+            <p key={i}>#{hashtag}</p>
+          ))}
+        </section>
+      ) : (
+        ""
+      )}
       <section>
         <details>
           <summary className={styles.viewMoreButton} onClick={fetchActivities}>
