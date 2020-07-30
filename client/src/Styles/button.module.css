@@ -7,6 +7,13 @@
   cursor: pointer;
   margin: 5px;
   border: none;
+  -webkit-transition: all .35s;
+  transition: all .35s;
+}
+
+.button:disabled {
+  -webkit-filter: brightness(50%);
+          filter: brightness(50%);
 }
 
 .button__centered {
@@ -17,6 +24,11 @@
 
 .button__alert {
   background-color: #ff0019;
+}
+
+.button__white {
+  background-color: white;
+  color: black;
 }
 
 .button__big {

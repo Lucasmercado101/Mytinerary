@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { getLoggedInUserData } from "./Redux/Actions/userActions";
+import { getPfp } from "./Redux/Actions/userActions";
 import "./Styles/app.css";
 
 // Containers / Pages
@@ -17,15 +17,17 @@ import LogIn from "./Components/Containers/LogIn";
 import NotFound from "./Components/Containers/NotFound";
 
 function App() {
-  const loggedInUser = useSelector((state) => state.user.currentlyLoggedInUser);
   const userData = useSelector((state) => state.user.userData);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (loggedInUser && Object.keys(userData).length === 0) {
-      dispatch(getLoggedInUserData(loggedInUser));
+    if (Object.keys(userData).length > 0) {
+      if (userData.hasOwnProperty("pfp")) {
+        console.log(userData);
+        dispatch(getPfp(userData.pfp));
+      }
     }
-  }, [loggedInUser]);
+  }, [userData]);
 
   return (
     <BrowserRouter>

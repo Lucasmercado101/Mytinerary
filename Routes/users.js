@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const multer = require("multer");
 const User = require("../models/user");
 const Pfp = require("../models/pfp");
+const { json } = require("express");
 
 /**
  * generates random string of characters i.e salt
@@ -38,9 +39,6 @@ let sha512 = function (password, salt) {
 function saltHashPassword(userpassword) {
   let salt = genRandomString(16); /** Gives us salt of length 16 */
   let passwordData = sha512(userpassword, salt);
-  // console.log("UserPassword = " + userpassword);
-  // console.log("Passwordhash = " + passwordData.passwordHash);
-  // console.log("nSalt = " + passwordData.salt);
   return passwordData;
 }
 
@@ -60,7 +58,9 @@ router.post("/create", upload.single("file"), async (req, res) => {
     lastName,
     country,
     favorites: [],
+    itineraries: [],
   };
+  let pfpID;
 
   if (req.file) {
     const fileLocation = path.join(
@@ -84,22 +84,22 @@ router.post("/create", upload.single("file"), async (req, res) => {
     // Feed out string to a buffer and then put it in the database
     let pfpData = new Buffer.from(base64, "base64");
 
-    const pfp = new Pfp({
+    await new Pfp({
       type: path.extname(req.file.originalname),
       data: pfpData,
-    });
-    userObject = { ...userObject, pfp };
-  } else {
-    userObject = { ...userObject, pfp: {} };
+    })
+      .save()
+      .then((data) => {
+        userObject = { ...userObject, pfp: data._id };
+      })
+      .catch((err) => console.log(err));
   }
 
   const user = new User(userObject);
-  // path.extname(req.file.originalname)
-  console.log("Saving user...");
-
   await User.findOne({ username })
     .then(async (data) => {
-      if (data === null) {
+      const accountDoesNotExist = data === null;
+      if (accountDoesNotExist) {
         await user
           .save()
           .then((data) => {
@@ -119,16 +119,13 @@ router.post("/create", upload.single("file"), async (req, res) => {
 router.get("/get/", async (req, res) => {
   const { username, password } = req.query;
   await User.findOne({ username })
-    // .then((user) => {
-    //   fs.writeFileSync(
-    //     "./temp/images/Image_" + user.pfp._id + user.pfp.type,
-    //     user.pfp.data
-    //   );
-    // })
     .then((data) => {
-      let passwordData = sha512(password, data.password.salt);
-      if (passwordData.passwordHash === data.password.passwordHash) {
-        res.send(data);
+      if (data) {
+        let passwordData = sha512(password, data.password.salt);
+        if (passwordData.passwordHash === data.password.passwordHash) {
+          delete data.password;
+          res.send(data);
+        }
       } else {
         res
           .status(404)
@@ -141,10 +138,8 @@ router.get("/get/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  console.log("here");
   await User.find()
     .then((resp) => {
-      console.log("finished");
       const users = [];
       resp.forEach((user) =>
         users.push({
@@ -164,26 +159,32 @@ router.get("/", async (req, res) => {
     });
 });
 
-router.get("/get/user/:userID", async (req, res) => {
-  await User.findById(req.params.userID)
-    .then((data) => {
-      const pfp = data.pfp.data ? data.pfp : "";
-      const user = {
-        userName: data.username,
-        _id: data._id,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        country: data.country,
-        pfp: pfp,
-      };
-      res.send(user);
-    })
-    .catch((err) => {
-      res.json({ message: err });
-    });
+router.delete("/user/:userID", async (req, res) => {
+  const ID = req.params.userID;
+  const user = await User.findById(ID).catch((err) => console.log(err));
+  if (user.pfp) {
+    await Pfp.findByIdAndDelete(user.pfp, { useFindAndModify: false });
+  }
+
+  await User.findByIdAndDelete(ID, { useFindAndModify: false }).catch((err) =>
+    console.log(err)
+  );
+
+  res.status(200).end();
 });
 
-router.put("/user/pfp/:userID", upload.single("file"), async (req, res) => {
+router.get("/get/user/pfp/:ID", async (req, res) => {
+  const ID = req.params.ID;
+  console.log(ID);
+  Pfp.findById(ID)
+    .then((resp) => {
+      res.json(resp.data);
+    })
+    .catch((err) => console.log(err));
+});
+
+router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {
+  const ID = req.params.ID;
   const fileLocation = path.join(
     __dirname,
     "..",
@@ -204,21 +205,69 @@ router.put("/user/pfp/:userID", upload.single("file"), async (req, res) => {
 
   // Feed out string to a buffer and then put it in the database
   let pfpData = new Buffer.from(base64, "base64");
-  await User.findOneAndUpdate(
-    { _id: req.params.userID },
+  await Pfp.findByIdAndUpdate(
+    ID,
     {
-      pfp: {
-        type: path.extname(req.file.originalname),
-        data: pfpData,
-      },
+      type: path.extname(req.file.originalname),
+      data: pfpData,
     },
     { useFindAndModify: false }
   )
-    .then((resp) => {
-      // console.log(resp);
+    .then(() => {
       res.status(200).end();
     })
     .catch((err) => console.log(err));
 });
 
+router.post("/user/pfp/:userID", upload.single("file"), async (req, res) => {
+  console.log("changing pfp");
+  const fileLocation = path.join(
+    __dirname,
+    "..",
+    "temp",
+    "images",
+    req.file.filename
+  );
+
+  let data = await fs.readFileSync(fileLocation);
+
+  // Delete after reading
+  await fs.unlink(fileLocation, (err) => {
+    if (err) throw err;
+  });
+
+  // Convert to Base64
+  let base64 = data.toString("base64");
+
+  // Feed out string to a buffer and then put it in the database
+  let pfpData = new Buffer.from(base64, "base64");
+
+  await new Pfp({
+    type: path.extname(req.file.originalname),
+    data: pfpData,
+  })
+    .save()
+    .then((data) => {
+      User.findByIdAndUpdate(
+        req.params.userID,
+        { pfp: data._id },
+        { useFindAndModify: false }
+      )
+        .then((resp) => {
+          resp.pfp = data._id;
+          res.json(resp);
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+});
+
 module.exports = router;
+
+// await User.findOne({ username })
+// .then((user) => {
+//   fs.writeFileSync(
+//     "./temp/images/Image_" + user.pfp._id + user.pfp.type,
+//     user.pfp.data
+//   );
+// })

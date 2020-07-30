@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../Styles/logIn.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../../Redux/Actions/userActions";
+import { logIn, clearLogInFailure } from "../../Redux/Actions/userActions";
+import { button, button__white } from "../../Styles/button.module.css";
 
 function LogIn(props) {
   const userData = useSelector((state) => state.user.userData);
+  const isFetchingLogIn = useSelector((state) => state.user.isFetchingLogIn);
+  const failedLogIn = useSelector((state) => state.user.failedLogIn);
   const [formInfo, setFormInfo] = useState({
     username: "",
     password: "",
@@ -19,6 +22,13 @@ function LogIn(props) {
   useEffect(() => {
     document.title = "Log in";
   }, []);
+
+  useEffect(() => {
+    if (failedLogIn) {
+      alert(failedLogIn);
+      dispatch(clearLogInFailure());
+    }
+  }, [failedLogIn]);
 
   const dispatch = useDispatch();
 
@@ -52,7 +62,12 @@ function LogIn(props) {
         className={styles.form__input}
         required
       />
-      <input type="submit" className={styles.form__submit} value="Log In" />
+      <input
+        type="submit"
+        className={`${button} ${button__white}`}
+        value="Log In"
+        disabled={isFetchingLogIn}
+      />
     </form>
   );
 }

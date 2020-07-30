@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import usePrevious from "../hooks/usePrevious";
 import MyModal from "../MyModal";
 import Button from "../Button";
 import { getCities } from "../../Redux/Actions/citiesActions";
@@ -11,7 +12,9 @@ import SearchBar from "../SearchBar";
 function Cities() {
   const cities = useSelector((state) => state.cities.cities);
   const isFetching = useSelector((state) => state.cities.isFetching);
-  const loggedInUser = useSelector((state) => state.user.currentlyLoggedInUser);
+  const isPostingCity = useSelector((state) => state.cities.isPostingCity);
+  const userData = useSelector((state) => state.user.userData);
+  const prevIsPostingCity = usePrevious(isPostingCity);
   const [filteredCities, setFilteredCities] = useState(cities);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
@@ -20,6 +23,15 @@ function Cities() {
     dispatch(getCities());
     document.title = "Cities";
   }, []);
+
+  useEffect(() => {
+    const justPostedACity =
+      isPostingCity === false && prevIsPostingCity === true;
+    if (justPostedACity) {
+      dispatch(getCities());
+      setIsModalOpen(false);
+    }
+  }, [isPostingCity, prevIsPostingCity]);
 
   useEffect(() => {
     setFilteredCities(cities);
@@ -67,13 +79,14 @@ function Cities() {
           ))}
         </ul>
       )}
-      {loggedInUser ? (
+      {Object.keys(userData).length > 0 ? (
         <>
           <Button
-            text={"New City"}
+            text="New City"
             onClick={() => setIsModalOpen(true)}
             centered
             big
+            disabled={isPostingCity}
           />
           <MyModal
             onRequestClose={() => setIsModalOpen(false)}
@@ -85,7 +98,6 @@ function Cities() {
       ) : (
         ""
       )}
-      {/* {loggedInUser ? <NewCityTemplate /> : ""} */}
     </>
   );
 }

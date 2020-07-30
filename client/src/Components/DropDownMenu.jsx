@@ -39,14 +39,7 @@ function DropDownMenu({ children, button, align, closeOnClick }) {
         }`}
       >
         {closeOnClick ? (
-          <div
-            onClick={() => {
-              console.log(location);
-              setOpen(false);
-            }}
-          >
-            {children}
-          </div>
+          <div onClick={() => setOpen(false)}>{children}</div>
         ) : (
           children
         )}

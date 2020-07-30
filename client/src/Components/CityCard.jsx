@@ -5,7 +5,7 @@ import MyLink from "./MyLink";
 function City({ style, url, city, country, link }) {
   return (
     <div style={style} className={styles.cityCard}>
-      <img src={url} className={styles.cityCard__image} />
+      <img src={url} className={styles.cityCard__image} alt={city} />
       {link ? (
         <MyLink to={`/cities/${city}`} className={styles.cityInfo}>
           <p className={styles.cityInfo__city}>{city}</p>

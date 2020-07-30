@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-const pfpSchema = require("./pfpSchema");
 
 var userSchema = new Schema({
   username: String,
@@ -10,7 +9,8 @@ var userSchema = new Schema({
   lastName: String,
   country: String,
   favorites: Array,
-  pfp: pfpSchema,
+  pfp: String,
+  itineraries: Array, // Array of IDs of Itineraries posted
 });
 
 module.exports = mongoose.model("user", userSchema);

@@ -43,4 +43,11 @@
   font-size: 1.2rem;
   border-radius: 25px;
   margin: auto;
+  -webkit-transition: all .6s;
+  transition: all .6s;
+}
+
+.submit:disabled {
+  -webkit-filter: brightness(50%);
+          filter: brightness(50%);
 }

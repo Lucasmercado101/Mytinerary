@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { getLoggedInUserData } from "../../Redux/Actions/userActions";
+import { logOut, getPfp, deleteUser } from "../../Redux/Actions/userActions";
+import usePrevious from "../hooks/usePrevious";
 import genericPfp from "../../Images/generic-user.svg";
 import styles from "../../Styles/user.module.css";
 import LoadingRing from "../LoadingRing";
@@ -9,12 +10,13 @@ import Button from "../Button";
 
 function UserPage(props) {
   const userData = useSelector((state) => state.user.userData);
-  const isFetchingUserLoggedIn = useSelector(
-    (state) => state.user.isFetchingUserLoggedIn
-  );
-  const loggedInUser = useSelector((state) => state.user.currentlyLoggedInUser);
+  const userPfp = useSelector((state) => state.user.userPfp);
+  const isFetchingPfp = useSelector((state) => state.user.isFetchingPfp);
+  const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
+  const prevIsDeletingUser = usePrevious(isDeletingUser);
   const userID = props.match.params.user;
-  const currentUser = userID === loggedInUser;
+  const currentUser = userID === userData._id;
+
   const [userImage, setUserImage] = useState("");
   const [user, setUser] = useState({});
   const imageUpload = useRef();
@@ -23,15 +25,12 @@ function UserPage(props) {
 
   useEffect(() => {
     if (currentUser) {
-      const thereIsUserData = Object.keys(userData).length > 0;
-      if (thereIsUserData) {
-        document.title = `${userData.userName}'s Profile`;
-        setUser(userData);
-        if (userData.pfp.hasOwnProperty("data")) {
-          const type = userData.pfp.type.split(".")[1];
-          const imageData = Buffer.from(userData.pfp.data).toString("base64");
-          setUserImage(`data:image/${type};base64,${imageData}`);
-        }
+      document.title = `${userData.username}'s Profile`;
+      setUser(userData);
+      if (userPfp) {
+        const type = userPfp.type.split(".")[1];
+        const imageData = Buffer.from(userPfp.data).toString("base64");
+        setUserImage(`data:image/${type};base64,${imageData}`);
       }
     } else {
       (async function () {
@@ -50,7 +49,14 @@ function UserPage(props) {
       })();
     }
     return () => setUser({});
-  }, [userData, userID]);
+  }, [userData, userID, userPfp]);
+
+  useEffect(() => {
+    if ((isDeletingUser === false, prevIsDeletingUser === true)) {
+      dispatch(logOut());
+      props.history.push("/");
+    }
+  }, [isDeletingUser, prevIsDeletingUser]);
 
   const changePfp = async (e) => {
     const image = e.target.files[0];
@@ -62,62 +68,87 @@ function UserPage(props) {
     data.append("file", image, image.name);
     if (image.size < tenMB) {
       setIsImageChanging(true);
-      await axios
-        .put(
-          "http://localhost:5000/api/users/user/pfp/" + userData._id,
-          data,
-          config
-        )
-        .then(() => {
-          setIsImageChanging(false);
-          dispatch(getLoggedInUserData(userData._id));
-        })
-        .catch((err) => console.log(err));
+      if (userData.pfp) {
+        // update pfp if there is one already
+        await axios
+          .put(
+            "http://localhost:5000/api/users/user/pfp/" + userData.pfp,
+            data,
+            config
+          )
+          .then(() => {
+            setIsImageChanging(false);
+            dispatch(getPfp(userData.pfp));
+          })
+          .catch((err) => console.log(err));
+      } else {
+        // create one if there isn't
+        await axios
+          .post(
+            "http://localhost:5000/api/users/user/pfp/" + userData._id,
+            data,
+            config
+          )
+          .then((resp) => {
+            setIsImageChanging(false);
+            dispatch({ type: "SET_USER_DATA", payload: resp.data });
+            dispatch(getPfp(resp.data.pfp));
+            // Fix this so that it it gets the pfp
+            // using the userdata that was UPDATED
+            // with the dispatch above, does not get latest state for some reason
+            // dispatch(getPfp(userData.pfp));
+          })
+          .catch((err) => console.log(err));
+      }
     } else {
       alert("File is too big");
     }
   };
 
   const deleteAccount = async () => {
-    // Delete account along with all posts and comments
+    dispatch(deleteUser(userData._id));
   };
 
   return (
     <>
       {Object.keys(user).length > 0 ? (
         <>
-          {!isImageChanging && !isFetchingUserLoggedIn ? (
+          {!isImageChanging && !isFetchingPfp ? (
             <>
               <img
                 className={styles.userPfp}
                 src={userImage || genericPfp}
               ></img>
-              {currentUser ? (
-                <>
-                  <Button
-                    onClick={() => imageUpload.current.click()}
-                    text={"Change profile picture"}
-                    centered
-                  />
-                  <small style={{ textAlign: "center", display: "block" }}>
-                    Image must be smaller than 10MB
-                  </small>
-                  <input
-                    style={{ display: "none" }}
-                    type="file"
-                    name="profilePic"
-                    id="profilePic"
-                    ref={imageUpload}
-                    onChange={changePfp}
-                    accept="image/*"
-                  />
-                </>
-              ) : (
-                ""
-              )}
             </>
           ) : (
             <LoadingRing centered />
+          )}
+
+          {currentUser ? (
+            <>
+              <Button
+                onClick={() => imageUpload.current.click()}
+                text={"Change profile picture"}
+                centered
+                disabled={
+                  !(!isImageChanging && !isFetchingPfp) || isDeletingUser
+                }
+              />
+              <small style={{ textAlign: "center", display: "block" }}>
+                Image must be smaller than 10MB
+              </small>
+              <input
+                style={{ display: "none" }}
+                type="file"
+                name="profilePic"
+                id="profilePic"
+                ref={imageUpload}
+                onChange={changePfp}
+                accept="image/*"
+              />
+            </>
+          ) : (
+            ""
           )}
 
           <h1 className={styles.userName}>{user.userName}</h1>
@@ -133,16 +164,17 @@ function UserPage(props) {
               country: {user.country}
             </li>
           </ul>
-          {/* {currentUser ? (
+          {currentUser ? (
             <Button
               text={"Delete Account"}
               onClick={deleteAccount}
               alert
               centered
+              disabled={isDeletingUser || isImageChanging}
             />
           ) : (
             ""
-          )} */}
+          )}
         </>
       ) : (
         <LoadingRing absoluteCentered />

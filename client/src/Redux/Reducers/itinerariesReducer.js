@@ -1,6 +1,7 @@
 const initialState = {
   itineraries: [],
   fetchingItineraries: false,
+  isPostingItinerary: false,
 };
 
 export default (state = initialState, action) => {
@@ -16,9 +17,15 @@ export default (state = initialState, action) => {
         itineraries: action.payload,
         fetchingItineraries: false,
       };
-    case "POST_ITINERARY":
+    case "POSTING_ITINERARY":
       return {
         ...state,
+        isPostingItinerary: true,
+      };
+    case "POSTED_ITINERARY":
+      return {
+        ...state,
+        isPostingItinerary: false,
       };
     case "EMPTY_ITINERARIES":
       return {

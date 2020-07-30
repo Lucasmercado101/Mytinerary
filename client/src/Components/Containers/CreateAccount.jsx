@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "../../Styles/createAccount.module.css";
+import { button, button__white } from "../../Styles/button.module.css";
 import { useDispatch } from "react-redux";
 import addUser from "../../Images/add-user.svg";
 import axios from "axios";
@@ -15,6 +16,7 @@ function CreateAccount(props) {
     country: "England",
   });
   const [uploadedUserImage, setUploadedUserImage] = useState();
+  const [creatingUser, isCreatingUser] = useState(false);
   const dispatch = useDispatch();
   const options = [
     "England",
@@ -51,9 +53,11 @@ function CreateAccount(props) {
     if (uploadedUserImage)
       data.append("file", uploadedUserImage, uploadedUserImage.name);
 
+    isCreatingUser(true);
     axios
       .post("http://localhost:5000/api/users/create", data, config)
-      .then((data) => {
+      .then((resp) => {
+        isCreatingUser(false);
         alert("Account created succesfuly!");
         props.history.push("/");
         dispatch(
@@ -161,7 +165,12 @@ function CreateAccount(props) {
           );
         })}
       </select>
-      <input type="submit" value="Create" />
+      <input
+        type="submit"
+        className={`${button} ${button__white}`}
+        disabled={creatingUser}
+        value="Create"
+      />
     </form>
   );
 }

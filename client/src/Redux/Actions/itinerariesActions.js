@@ -18,3 +18,17 @@ export const emptyItineraries = () => {
     type: "EMPTY_ITINERARIES",
   };
 };
+
+export const postItinerary = (data) => async (dispatch) => {
+  dispatch({
+    type: "POSTING_ITINERARY",
+  });
+  axios
+    .post("http://localhost:5000/api/itineraries/" + data.city, data)
+    .then(() => {
+      dispatch({
+        type: "POSTED_ITINERARY",
+      });
+    })
+    .catch((err) => console.log(err));
+};

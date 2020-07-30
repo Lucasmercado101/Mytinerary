@@ -22,7 +22,7 @@ router.get("/:cityName", (req, res) => {
 
 router.post("/", async (req, res) => {
   const city = new City({
-    name: req.body.name,
+    name: req.body.city,
     country: req.body.country,
     url: req.body.url,
   });

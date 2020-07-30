@@ -1,17 +1,16 @@
 import React from "react";
 import styles from "../Styles/button.module.css";
 
-function button(props) {
+function button({ big, centered, text, alert, onClick, disabled }) {
   return (
     <button
-      className={`${styles.button} ${
-        props.centered ? styles.button__centered : ""
-      } ${props.alert ? styles.button__alert : ""} ${
-        props.big ? styles.button__big : ""
-      }`}
-      {...props}
+      className={`${styles.button} ${centered ? styles.button__centered : ""} ${
+        alert ? styles.button__alert : ""
+      } ${big ? styles.button__big : ""}`}
+      onClick={onClick}
+      disabled={disabled}
     >
-      {props.text}
+      {text}
     </button>
   );
 }

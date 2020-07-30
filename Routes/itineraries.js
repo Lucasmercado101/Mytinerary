@@ -4,16 +4,25 @@ const Itineraries = require("../models/itineraries");
 const Activities = require("../models/activities");
 const Itinerary = require("../models/itinerary");
 
-router.get("/", (req, res) => {
-  Itineraries.find()
+router.get("/", async (req, res) => {
+  await Itineraries.find()
     .then((data) => res.send(data))
     .catch((err) => {
       res.json({ message: err });
     });
 });
 
-router.get("/:cityName", (req, res) => {
-  Itineraries.findOne({ city: req.params.cityName })
+router.get("/:cityName", async (req, res) => {
+  // Itineraries.findOne(
+  //   { "itineraries._id": "5f1db53fd3f0d215f87e5ba9" },
+  //   { "itineraries.$": 1 }
+  // )
+  // Itineraries.updateMany
+  //   .then((resp) =>{
+  //     console.log(resp)
+  //   })
+  //   .catch((err) => console.log(err));
+  await Itineraries.findOne({ city: req.params.cityName })
     .then((data) => res.send(data))
     .catch((err) => {
       res.json({ message: err });
@@ -45,7 +54,9 @@ router.post("/:cityName", async (req, res) => {
             itineraries: itinerary,
           },
         }
-      ).catch((err) => res.json({ message: err }));
+      )
+        .then(() => res.status(200).end())
+        .catch((err) => res.json({ message: err }));
     })
     .catch((err) => {
       res.json({ message: err });

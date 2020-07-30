@@ -2,6 +2,7 @@ const initialState = {
   cities: [],
   city: null,
   isFetching: false,
+  isPostingCity: false,
 };
 
 export default (state = initialState, action) => {
@@ -26,19 +27,20 @@ export default (state = initialState, action) => {
         cities: sortedCities,
         isFetching: false,
       };
-    // case "FETCHING_CITIES_ERROR":
-    //   return {
-    //     ...state,
-    //     isFetching: false,
-    //   };
     case "GET_CITY":
       return {
         ...state,
         city: action.payload,
       };
-    case "POST_CITY":
+    case "POSTING_CITY":
       return {
         ...state,
+        isPostingCity: true,
+      };
+    case "POSTED_CITY":
+      return {
+        ...state,
+        isPostingCity: false,
       };
     default:
       return state;

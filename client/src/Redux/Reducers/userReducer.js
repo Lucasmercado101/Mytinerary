@@ -1,8 +1,11 @@
 const initialState = {
-  userData: {},
-  currentlyLoggedInUser: JSON.parse(localStorage.getItem("loggedInUser")) || "",
+  userData: JSON.parse(localStorage.getItem("userData")) || {},
+  userPfp: null,
   isFetchingLogIn: false,
   isFetchingUserLoggedIn: false,
+  failedLogIn: null,
+  isFetchingPfp: false,
+  isDeletingUser: false,
 };
 
 export default (state = initialState, action) => {
@@ -13,30 +16,57 @@ export default (state = initialState, action) => {
         isFetchingLogIn: true,
       };
     case "FETCHED_LOG_IN_DATA":
-      localStorage.setItem("loggedInUser", JSON.stringify(action.payload._id));
+      localStorage.setItem("userData", JSON.stringify(action.payload));
       return {
         ...state,
         isFetchingLogIn: false,
         userData: action.payload,
-        currentlyLoggedInUser: action.payload._id,
       };
-    case "LOG_OUT":
-      localStorage.removeItem("loggedInUser");
+    case "FETCHED_LOG_IN_DATA_FAILED":
       return {
         ...state,
-        userData: {},
-        currentlyLoggedInUser: "",
+        isFetchingLogIn: false,
+        failedLogIn: action.payload,
       };
-    case "FETCHING_LOGGED_IN_USER_DATA":
+    case "FETCHING_PFP":
       return {
         ...state,
-        isFetchingUserLoggedIn: true,
+        userPfp: action.payload,
+        isFetchingPfp: true,
       };
-    case "FETCHED_LOGGED_IN_USER_DATA":
+    case "FETCHED_PFP":
+      return {
+        ...state,
+        userPfp: action.payload,
+        isFetchingPfp: false,
+      };
+    case "CLEAR_LOG_IN_FAILURE":
+      return {
+        ...state,
+        failedLogIn: null,
+      };
+    case "DELETING_USER":
+      return {
+        ...state,
+        isDeletingUser: true,
+      };
+    case "DELETED_USER":
+      return {
+        ...state,
+        isDeletingUser: false,
+      };
+    case "SET_USER_DATA":
+      localStorage.setItem("userData", JSON.stringify(action.payload));
       return {
         ...state,
         userData: action.payload,
-        isFetchingUserLoggedIn: false,
+      };
+    case "LOG_OUT":
+      localStorage.removeItem("userData");
+      return {
+        ...state,
+        userData: {},
+        userPfp: null,
       };
     default:
       return state;

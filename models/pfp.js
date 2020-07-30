@@ -1,4 +1,9 @@
 const mongoose = require("mongoose");
-const pfpSchema = require("./pfpSchema");
+var Schema = mongoose.Schema;
 
-module.exports = mongoose.model("pfp", pfpSchema);
+var pfpSchema = new Schema({
+  type: String,
+  data: Buffer,
+});
+
+module.exports = mongoose.model("users.pfp", pfpSchema);

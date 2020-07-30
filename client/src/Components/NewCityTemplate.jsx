@@ -1,27 +1,26 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { postCity } from "../Redux/Actions/postCity";
-import { postItineraries } from "../Redux/Actions/postCreateCityItineraries";
+import { useSelector, useDispatch } from "react-redux";
+import { postingCity } from "../Redux/Actions/citiesActions";
 import styles from "../Styles/newCityTemplate.module.css";
 
 function NewCityTemplate() {
+  const isPostingCity = useSelector((state) => state.cities.isPostingCity);
+  const dispatch = useDispatch();
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
-  const dispatch = useDispatch();
 
-  const createNewCity = (e) => {
+  const createNewCity = async (e) => {
     e.preventDefault();
-    if (city && country) {
-      const newCity = {
-        city,
-        country,
-        url: `https://source.unsplash.com/1600x900/?${city}?aerial`,
-      };
-      dispatch(postCity(newCity));
-      dispatch(postItineraries({ city }));
-      setCity("");
-      setCountry("");
-    }
+    setCity("");
+    setCountry("");
+
+    const newCity = {
+      city,
+      country,
+      url: `https://source.unsplash.com/1600x900/?${city}?aerial`,
+    };
+
+    dispatch(postingCity(newCity));
   };
 
   return (
@@ -48,7 +47,12 @@ function NewCityTemplate() {
           />
         </small>
       </div>
-      <input className={styles.submit} type="submit" value="Create" />
+      <input
+        className={styles.submit}
+        disabled={isPostingCity}
+        type="submit"
+        value="Create"
+      />
     </form>
   );
 }

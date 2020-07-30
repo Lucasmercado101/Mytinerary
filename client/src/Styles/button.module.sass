@@ -7,6 +7,9 @@
     cursor: pointer
     margin: 5px
     border: none
+    transition: all .35s
+    &:disabled
+        filter: brightness(50%)
 
     &__centered
         display: block
@@ -15,6 +18,10 @@
 
     &__alert
         background-color: rgb(255, 0, 25)
+
+    &__white
+        background-color: white
+        color: black
 
     &__big
         font-size: 1.6em

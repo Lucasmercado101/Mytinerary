@@ -1,25 +1,27 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import genericPfp from "../../Images/generic-user.svg";
+import addUser from "../../Images/add-user.svg";
 
 function useUserPfp() {
   const userData = useSelector((state) => state.user.userData);
-  const [userPfp, setUserPfp] = useState("");
+  const userPfp = useSelector((state) => state.user.userPfp);
+  const [pfpData, setPfpData] = useState(null);
 
   useEffect(() => {
-    if (Object.keys(userData).length !== 0) {
-      if (userData.pfp.hasOwnProperty("data")) {
-        const type = userData.pfp.type.split(".")[1];
-        const imageData = Buffer.from(userData.pfp.data).toString("base64");
-        setUserPfp(`data:image/${type};base64,${imageData}`);
+    if (Object.keys(userData).length > 0) {
+      if (userPfp) {
+        const type = userPfp.type.split(".")[1];
+        const imageData = Buffer.from(userPfp.data).toString("base64");
+        setPfpData(`data:image/${type};base64,${imageData}`);
       } else {
-        setUserPfp(genericPfp);
+        setPfpData(genericPfp);
       }
     } else {
-      setUserPfp("");
+      setPfpData(addUser);
     }
-  }, [userData]);
-  return userPfp;
+  }, [userPfp, pfpData, userData]);
+  return pfpData;
 }
 
 export default useUserPfp;
