@@ -67,17 +67,19 @@ function CityItineraries(props) {
     return () => {
       dispatch(emptyItineraries());
     };
-  }, []);
+  }, [currentCity]);
 
   useEffect(() => {
     const justPostedACity =
       isPostingItinerary === false && prevIsPostingItinerary === true;
     if (justPostedACity) {
-      dispatch(emptyItineraries());
-      dispatch(getItineraries(currentCity));
-      setIsModalOpen(false);
+      setTimeout(function () {
+        dispatch(emptyItineraries());
+        dispatch(getItineraries(currentCity));
+        setIsModalOpen(false);
+      }, 500);
     }
-  }, [isPostingItinerary, prevIsPostingItinerary]);
+  }, [isPostingItinerary, prevIsPostingItinerary, currentCity]);
 
   return city ? (
     <>

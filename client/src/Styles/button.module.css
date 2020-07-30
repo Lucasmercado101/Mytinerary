@@ -22,8 +22,13 @@
   margin-right: auto;
 }
 
-.button__alert {
+.button__danger {
   background-color: #ff0019;
+}
+
+.button__warning {
+  background-color: #ebeb00;
+  color: #383838;
 }
 
 .button__white {

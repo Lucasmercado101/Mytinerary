@@ -18,7 +18,12 @@ function MyLink(props) {
   }
 
   return (
-    <Link className={props.className} to={destination} onClick={handleClick}>
+    <Link
+      className={props.className}
+      style={props.style}
+      to={destination}
+      onClick={handleClick}
+    >
       {props.children}
     </Link>
   );

@@ -5,6 +5,8 @@ const path = require("path");
 const crypto = require("crypto");
 const multer = require("multer");
 const User = require("../models/user");
+const Itineraries = require("../models/itineraries");
+const Activities = require("../models/activities");
 const Pfp = require("../models/pfp");
 const { json } = require("express");
 
@@ -166,6 +168,31 @@ router.delete("/user/:userID", async (req, res) => {
     await Pfp.findByIdAndDelete(user.pfp, { useFindAndModify: false });
   }
 
+  const postedItineraries = user.itineraries;
+  if (postedItineraries) {
+    postedItineraries.forEach(async (i) => {
+      await Activities.findByIdAndDelete(i["activities"], {
+        useFindAndModify: false,
+      }).catch((err) => console.log(err));
+
+      await Itineraries.updateOne(
+        {},
+        {
+          $pull: {
+            itineraries: {
+              _id: {
+                $in: i["itinerary"],
+              },
+            },
+          },
+        }
+      )
+        .then(() => {
+          res.status(200).end();
+        })
+        .catch((err) => console.log(err));
+    });
+  }
   await User.findByIdAndDelete(ID, { useFindAndModify: false }).catch((err) =>
     console.log(err)
   );
@@ -175,7 +202,6 @@ router.delete("/user/:userID", async (req, res) => {
 
 router.get("/get/user/pfp/:ID", async (req, res) => {
   const ID = req.params.ID;
-  console.log(ID);
   Pfp.findById(ID)
     .then((resp) => {
       res.json(resp.data);
@@ -217,6 +243,15 @@ router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {
       res.status(200).end();
     })
     .catch((err) => console.log(err));
+});
+
+router.delete("/user/pfp/:userID", upload.single("file"), async (req, res) => {
+  const user = await User.findById(req.params.userID);
+  Pfp.findByIdAndRemove(user.pfp, { useFindAndModify: false }).then((resp) => {
+    user.pfp = undefined;
+    user.save();
+    res.json(user);
+  });
 });
 
 router.post("/user/pfp/:userID", upload.single("file"), async (req, res) => {

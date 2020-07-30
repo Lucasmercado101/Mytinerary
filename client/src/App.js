@@ -22,10 +22,7 @@ function App() {
 
   useEffect(() => {
     if (Object.keys(userData).length > 0) {
-      if (userData.hasOwnProperty("pfp")) {
-        console.log(userData);
-        dispatch(getPfp(userData.pfp));
-      }
+      if (userData.hasOwnProperty("pfp")) dispatch(getPfp(userData.pfp));
     }
   }, [userData]);
 

@@ -106,6 +106,7 @@ function CreateAccount(props) {
       </small>
       <label htmlFor="username">Username</label>
       <input
+        className={styles.form__input}
         type="text"
         name="username"
         id="username"
@@ -115,6 +116,7 @@ function CreateAccount(props) {
       />
       <label htmlFor="password">Password</label>
       <input
+        className={styles.form__input}
         type="text"
         name="password"
         id="password"
@@ -124,6 +126,7 @@ function CreateAccount(props) {
       />
       <label htmlFor="email">Email</label>
       <input
+        className={styles.form__input}
         type="email"
         name="email"
         id="email"
@@ -133,6 +136,7 @@ function CreateAccount(props) {
       />
       <label htmlFor="firstName">First Name</label>
       <input
+        className={styles.form__input}
         type="text"
         name="firstName"
         id="firstName"
@@ -142,6 +146,7 @@ function CreateAccount(props) {
       />
       <label htmlFor="lastName">Last Name</label>
       <input
+        className={styles.form__input}
         type="text"
         name="lastName"
         id="lastName"

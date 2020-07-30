@@ -27,11 +27,6 @@ function UserPage(props) {
     if (currentUser) {
       document.title = `${userData.username}'s Profile`;
       setUser(userData);
-      if (userPfp) {
-        const type = userPfp.type.split(".")[1];
-        const imageData = Buffer.from(userPfp.data).toString("base64");
-        setUserImage(`data:image/${type};base64,${imageData}`);
-      }
     } else {
       (async function () {
         await axios
@@ -49,7 +44,7 @@ function UserPage(props) {
       })();
     }
     return () => setUser({});
-  }, [userData, userID, userPfp]);
+  }, [userData, userID]);
 
   useEffect(() => {
     if ((isDeletingUser === false, prevIsDeletingUser === true)) {
@@ -57,6 +52,16 @@ function UserPage(props) {
       props.history.push("/");
     }
   }, [isDeletingUser, prevIsDeletingUser]);
+
+  useEffect(() => {
+    if (userPfp) {
+      const type = userPfp.type.split(".")[1];
+      const imageData = Buffer.from(userPfp.data).toString("base64");
+      setUserImage(`data:image/${type};base64,${imageData}`);
+    } else {
+      setUserImage("");
+    }
+  }, [userPfp]);
 
   const changePfp = async (e) => {
     const image = e.target.files[0];
@@ -105,8 +110,13 @@ function UserPage(props) {
     }
   };
 
-  const deleteAccount = async () => {
-    dispatch(deleteUser(userData._id));
+  const removePfp = async () => {
+    await axios
+      .delete(`http://localhost:5000/api/users/user/pfp/${userData._id}`)
+      .then((resp) => {
+        dispatch({ type: "CLEAR_PFP" });
+        dispatch({ type: "SET_USER_DATA", payload: resp.data });
+      });
   };
 
   return (
@@ -128,12 +138,27 @@ function UserPage(props) {
             <>
               <Button
                 onClick={() => imageUpload.current.click()}
-                text={"Change profile picture"}
+                text={
+                  userPfp ? "Change profile picture" : "Add profile picture"
+                }
                 centered
                 disabled={
                   !(!isImageChanging && !isFetchingPfp) || isDeletingUser
                 }
               />
+              {userPfp ? (
+                <Button
+                  onClick={removePfp}
+                  text={"Remove profile picture"}
+                  centered
+                  warning
+                  disabled={
+                    !(!isImageChanging && !isFetchingPfp) || isDeletingUser
+                  }
+                />
+              ) : (
+                ""
+              )}
               <small style={{ textAlign: "center", display: "block" }}>
                 Image must be smaller than 10MB
               </small>
@@ -167,8 +192,8 @@ function UserPage(props) {
           {currentUser ? (
             <Button
               text={"Delete Account"}
-              onClick={deleteAccount}
-              alert
+              onClick={() => dispatch(deleteUser(userData._id))}
+              danger
               centered
               disabled={isDeletingUser || isImageChanging}
             />

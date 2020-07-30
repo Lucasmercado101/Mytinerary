@@ -1,22 +1,25 @@
 .hero {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.7)), to(rgba(0, 0, 0, 0.7))), url("../Images/hero background2.jpg");
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("../Images/hero background2.jpg");
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.7)), to(rgba(0, 0, 0, 0.7))), url("../Images/heroBgr.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("../Images/heroBgr.jpg");
   background-position: center;
   background-size: cover;
-  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: calc(100vh - 2.8rem);
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto;
-  padding-top: 25px;
+.hero__logo {
   width: 85%;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -24,8 +27,7 @@
           user-select: none;
 }
 
-.h1 {
-  margin: 40px auto;
+.hero__myTinerary {
   font-weight: 300;
   font-size: 1.8rem;
   color: white;
@@ -33,10 +35,9 @@
 }
 
 .browse {
-  margin: 0 auto;
-  margin-top: 55px;
   display: block;
-  width: 40%;
+  margin: auto;
+  width: 50%;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;

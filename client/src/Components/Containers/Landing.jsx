@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import mytineraryLogo from "../../Images/mytinerary logo.svg";
-import circleright from "../../Images/circle right.svg";
+import circleright from "../../Images/arrowRight.svg";
 import styles from "../../Styles/landing.module.css";
 import MyLink from "../MyLink";
-
 import AwesomeSlider from "react-awesome-slider";
 import "react-awesome-slider/dist/styles.css";
 import carousel1img from "../../Images/carousel1.jpg";
@@ -20,8 +19,8 @@ function Landing() {
   return (
     <>
       <header className={styles.hero}>
-        <img className={styles.logo} src={mytineraryLogo} />
-        <h1 className={styles.h1}>
+        <img className={styles.hero__logo} src={mytineraryLogo} />
+        <h1 className={styles.hero__myTinerary}>
           Find your perfect trip, designed by insiders who know and love their
           cities.
         </h1>

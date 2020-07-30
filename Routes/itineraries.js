@@ -3,6 +3,9 @@ const router = express.Router();
 const Itineraries = require("../models/itineraries");
 const Activities = require("../models/activities");
 const Itinerary = require("../models/itinerary");
+const User = require("../models/user");
+const Pfp = require("../models/pfp");
+const pfp = require("../models/pfp");
 
 router.get("/", async (req, res) => {
   await Itineraries.find()
@@ -13,15 +16,6 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:cityName", async (req, res) => {
-  // Itineraries.findOne(
-  //   { "itineraries._id": "5f1db53fd3f0d215f87e5ba9" },
-  //   { "itineraries.$": 1 }
-  // )
-  // Itineraries.updateMany
-  //   .then((resp) =>{
-  //     console.log(resp)
-  //   })
-  //   .catch((err) => console.log(err));
   await Itineraries.findOne({ city: req.params.cityName })
     .then((data) => res.send(data))
     .catch((err) => {
@@ -29,7 +23,24 @@ router.get("/:cityName", async (req, res) => {
     });
 });
 
+router.get("/userPfp/:userID", (req, res) => {
+  User.findById(req.params.userID)
+    .then((user) => {
+      if (user.pfp) {
+        Pfp.findById(user.pfp).then((pfp) => {
+          user.password = undefined;
+          res.json({ user, pfp });
+        });
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((err) => console.log(err));
+});
+
 router.post("/:cityName", async (req, res) => {
+  res.status(200).end();
+
   const activities = new Activities({
     activities: [...req.body.activities],
   });
@@ -55,7 +66,19 @@ router.post("/:cityName", async (req, res) => {
           },
         }
       )
-        .then(() => res.status(200).end())
+        .then(async () => {
+          await User.findByIdAndUpdate(
+            req.body.creator,
+            {
+              $push: {
+                itineraries: { itinerary: itinerary._id, activities: resp._id },
+              },
+            },
+            { useFindAndModify: false }
+          )
+            .then(() => res.status(200).end())
+            .catch((err) => res.json({ message: err }));
+        })
         .catch((err) => res.json({ message: err }));
     })
     .catch((err) => {

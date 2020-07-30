@@ -61,6 +61,11 @@ export default (state = initialState, action) => {
         ...state,
         userData: action.payload,
       };
+    case "CLEAR_PFP":
+      return {
+        ...state,
+        userPfp: null,
+      };
     case "LOG_OUT":
       localStorage.removeItem("userData");
       return {

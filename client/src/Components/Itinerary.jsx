@@ -30,17 +30,17 @@ function Itinerary({
   useEffect(() => {
     (async function () {
       await axios
-        .get("http://localhost:5000/api/users/get/user/" + creator)
-        .then(({ data }) => {
-          setUserName(data.userName);
-          setUserPage(data._id);
-          if (data.pfp.hasOwnProperty("data")) {
-            const type = data.pfp.type.split(".")[1];
-            const imageData = Buffer.from(data.pfp.data).toString("base64");
+        .get("http://localhost:5000/api/itineraries/userPfp/" + creator)
+        .then((resp) => {
+          const { user, pfp } = resp.data;
+          setUserName(user.username);
+          setUserPage(user._id);
+          if (pfp) {
+            const type = pfp.type.split(".")[1];
+            const imageData = Buffer.from(pfp.data).toString("base64");
             setUserImage(`data:image/${type};base64,${imageData}`);
           }
-        })
-        .catch((err) => console.log(err));
+        });
     })();
   }, []);
 
