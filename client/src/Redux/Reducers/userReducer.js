@@ -16,11 +16,13 @@ export default (state = initialState, action) => {
         isFetchingLogIn: true,
       };
     case "FETCHED_LOG_IN_DATA":
-      localStorage.setItem("userData", JSON.stringify(action.payload));
+      localStorage.setItem("userData", JSON.stringify(action.payload.userData));
+      localStorage.setItem("accessToken", action.payload.accessToken);
+      localStorage.setItem("refreshToken", action.payload.refreshToken);
       return {
         ...state,
         isFetchingLogIn: false,
-        userData: action.payload,
+        userData: action.payload.userData,
       };
     case "FETCHED_LOG_IN_DATA_FAILED":
       return {
@@ -68,6 +70,8 @@ export default (state = initialState, action) => {
       };
     case "LOG_OUT":
       localStorage.removeItem("userData");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       return {
         ...state,
         userData: {},

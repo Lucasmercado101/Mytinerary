@@ -20,13 +20,7 @@
   background-color: #313131;
   color: white;
   height: 3.2rem;
-}
-
-.header__title {
-  text-align: center;
-  width: 70%;
-  font-weight: 500;
-  font-size: 1.2rem;
+  padding: 0 10px;
 }
 
 .header__photo {
@@ -41,6 +35,18 @@
       -ms-user-select: none;
           user-select: none;
   background-color: white;
+}
+
+.header__title {
+  text-align: center;
+  width: 70%;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.header__configure {
+  cursor: pointer;
+  width: 45px;
 }
 
 .description {

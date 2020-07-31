@@ -13,6 +13,9 @@ function Cities() {
   const cities = useSelector((state) => state.cities.cities);
   const isFetching = useSelector((state) => state.cities.isFetching);
   const isPostingCity = useSelector((state) => state.cities.isPostingCity);
+  const postingCityError = useSelector(
+    (state) => state.cities.postingCityError
+  );
   const userData = useSelector((state) => state.user.userData);
   const prevIsPostingCity = usePrevious(isPostingCity);
   const [filteredCities, setFilteredCities] = useState(cities);
@@ -25,13 +28,20 @@ function Cities() {
   }, []);
 
   useEffect(() => {
+    if (postingCityError) {
+      alert(postingCityError);
+      dispatch({ type: "CLEAR_POSTING_CITY_ERROR" });
+    }
+  }, [postingCityError]);
+
+  useEffect(() => {
     const justPostedACity =
       isPostingCity === false && prevIsPostingCity === true;
-    if (justPostedACity) {
+    if (justPostedACity && !postingCityError) {
       dispatch(getCities());
       setIsModalOpen(false);
     }
-  }, [isPostingCity, prevIsPostingCity]);
+  }, [isPostingCity, prevIsPostingCity, postingCityError]);
 
   useEffect(() => {
     setFilteredCities(cities);

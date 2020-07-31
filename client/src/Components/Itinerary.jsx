@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import MyLink from "./MyLink";
+import useUserPfp from "./hooks/useUserPfp";
+import {
+  emptyItineraries,
+  getItineraries,
+} from "../Redux/Actions/itinerariesActions";
 import styles from "../Styles/itinerary.module.css";
 import clockIcon from "../Images/clock-icon.svg";
 import likeIcon from "../Images/like-icon.svg";
 import genericPfp from "../Images/generic-user.svg";
+import deleteIcon from "../Images/delete.svg";
 
 function Itinerary({
   title,
@@ -14,7 +21,13 @@ function Itinerary({
   creator,
   hashtags,
   activities,
+  id,
+  currentCity,
 }) {
+  const userData = useSelector((state) => state.user.userData);
+  const userPfp = useUserPfp();
+  const dispatch = useDispatch();
+  const isLoggedInUserItinerary = creator === userData._id;
   const [allActivities, setAllActivities] = useState([]);
   const [userName, setUserName] = useState("");
   const [userImage, setUserImage] = useState("");
@@ -27,22 +40,53 @@ function Itinerary({
       .catch((err) => console.log(err));
   };
 
+  const deleteItinerary = async () => {
+    await axios
+      .delete("http://localhost:5000/api/itineraries/", {
+        params: {
+          itineraryId: id,
+          activitiesId: activities,
+        },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      })
+      .then(() => {
+        dispatch(getItineraries(currentCity));
+        dispatch(emptyItineraries());
+      })
+      .catch((err) => console.log(err));
+  };
+
   useEffect(() => {
-    (async function () {
-      await axios
-        .get("http://localhost:5000/api/itineraries/userPfp/" + creator)
-        .then((resp) => {
-          const { user, pfp } = resp.data;
-          setUserName(user.username);
-          setUserPage(user._id);
-          if (pfp) {
-            const type = pfp.type.split(".")[1];
-            const imageData = Buffer.from(pfp.data).toString("base64");
-            setUserImage(`data:image/${type};base64,${imageData}`);
-          }
-        });
-    })();
-  }, []);
+    const source = axios.CancelToken.source();
+    if (isLoggedInUserItinerary) {
+      setUserName(userData.username);
+      setUserPage(userData._id);
+      setUserImage(userPfp);
+    } else {
+      (async function () {
+        await axios
+          .get("http://localhost:5000/api/itineraries/userPfp/" + creator, {
+            cancelToken: source.token,
+          })
+          .then((resp) => {
+            const { user, pfp } = resp.data;
+            setUserName(user.username);
+            setUserPage(user._id);
+            if (pfp) {
+              const type = pfp.type.split(".")[1];
+              const imageData = Buffer.from(pfp.data).toString("base64");
+              setUserImage(`data:image/${type};base64,${imageData}`);
+            }
+          })
+          .catch((err) => console.log(err));
+      })();
+    }
+    return () => {
+      source.cancel();
+    };
+  }, [creator, userPfp, userData, isLoggedInUserItinerary]);
 
   return (
     <article className={styles.itinerary}>
@@ -55,6 +99,17 @@ function Itinerary({
           />
         </MyLink>
         <h3 className={styles.header__title}>{title}</h3>
+        {isLoggedInUserItinerary ? (
+          <img
+            className={styles.header__configure}
+            src={deleteIcon}
+            onClick={() => deleteItinerary()}
+            title={`Delete '${title}'`}
+            alt={`Delete '${title}'`}
+          />
+        ) : (
+          ""
+        )}
       </header>
       <section className={styles.description}>
         <p className={styles.description__item}>

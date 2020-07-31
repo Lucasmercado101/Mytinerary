@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../Styles/logIn.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn, clearLogInFailure } from "../../Redux/Actions/userActions";
+import { logIn, clearLogInFailure } from "../../Redux/Actions/authActions";
 import { button, button__white } from "../../Styles/button.module.css";
 
 function LogIn(props) {

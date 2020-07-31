@@ -4,7 +4,7 @@ import { button, button__white } from "../../Styles/button.module.css";
 import { useDispatch } from "react-redux";
 import addUser from "../../Images/add-user.svg";
 import axios from "axios";
-import { logIn } from "../../Redux/Actions/userActions";
+import { logIn } from "../../Redux/Actions/authActions";
 
 function CreateAccount(props) {
   const [formInfo, setFormInfo] = useState({

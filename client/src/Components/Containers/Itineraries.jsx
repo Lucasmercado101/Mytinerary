@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getCity } from "../../Redux/Actions/getCity";
+import { getCity } from "../../Redux/Actions/citiesActions";
 import {
   emptyItineraries,
   getItineraries,
@@ -13,7 +13,7 @@ import Itinerary from "../Itinerary";
 import NewItineraryTemplate from "../NewItineraryTemplate";
 import CityCard from "../CityCard";
 
-function ItinerariesList({ itineraries }) {
+function ItinerariesList({ itineraries, currentCity }) {
   return (
     <ul style={{ listStyle: "none" }}>
       {itineraries.map(
@@ -29,6 +29,8 @@ function ItinerariesList({ itineraries }) {
         }) => (
           <li key={_id}>
             <Itinerary
+              currentCity={currentCity}
+              id={_id}
               title={title}
               time={time}
               creator={creator}
@@ -72,12 +74,17 @@ function CityItineraries(props) {
   useEffect(() => {
     const justPostedACity =
       isPostingItinerary === false && prevIsPostingItinerary === true;
+    const justSubmitted =
+      isPostingItinerary === true && prevIsPostingItinerary === false;
     if (justPostedACity) {
       setTimeout(function () {
         dispatch(emptyItineraries());
         dispatch(getItineraries(currentCity));
         setIsModalOpen(false);
       }, 500);
+    }
+    if (justSubmitted) {
+      setIsModalOpen(false);
     }
   }, [isPostingItinerary, prevIsPostingItinerary, currentCity]);
 
@@ -97,7 +104,10 @@ function CityItineraries(props) {
             >
               Available Itineraries
             </h2>
-            <ItinerariesList itineraries={itineraries} />
+            <ItinerariesList
+              currentCity={currentCity}
+              itineraries={itineraries}
+            />
           </>
         ) : (
           <h2 style={{ textAlign: "center" }}>There are no Itineraries</h2>

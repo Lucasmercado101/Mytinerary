@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const authenticateToken = require("../authenticateToken");
 const Itineraries = require("../models/itineraries");
 const Activities = require("../models/activities");
 const Itinerary = require("../models/itinerary");
 const User = require("../models/user");
 const Pfp = require("../models/pfp");
-const pfp = require("../models/pfp");
 
 router.get("/", async (req, res) => {
   await Itineraries.find()
@@ -38,9 +38,35 @@ router.get("/userPfp/:userID", (req, res) => {
     .catch((err) => console.log(err));
 });
 
-router.post("/:cityName", async (req, res) => {
-  res.status(200).end();
+router.use(authenticateToken);
 
+router.delete("/", async (req, res) => {
+  const { itineraryId, activitiesId } = req.query;
+
+  await Activities.findByIdAndDelete(activitiesId, { useFindAndModify: false })
+    .then(
+      async () =>
+        await Itineraries.updateOne(
+          {},
+          {
+            $pull: {
+              itineraries: {
+                _id: {
+                  $in: itineraryId,
+                },
+              },
+            },
+          }
+        )
+          .then(() => {
+            res.status(200).end();
+          })
+          .catch((err) => console.log(err))
+    )
+    .catch((err) => console.log(err));
+});
+
+router.post("/:cityName", async (req, res) => {
   const activities = new Activities({
     activities: [...req.body.activities],
   });
@@ -92,9 +118,12 @@ router.post("/", async (req, res) => {
     itineraries: [],
   });
 
-  await itinerary.save().catch((err) => {
-    res.json({ message: err });
-  });
+  await itinerary
+    .save()
+    .then(() => res.sendStatus(200))
+    .catch((err) => {
+      res.json({ message: err });
+    });
 });
 
 module.exports = router;

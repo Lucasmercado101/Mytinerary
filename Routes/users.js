@@ -3,12 +3,13 @@ const fs = require("fs");
 const router = express.Router();
 const path = require("path");
 const crypto = require("crypto");
+const authenticateToken = require("../authenticateToken");
 const multer = require("multer");
+require("dotenv/config");
 const User = require("../models/user");
 const Itineraries = require("../models/itineraries");
 const Activities = require("../models/activities");
 const Pfp = require("../models/pfp");
-const { json } = require("express");
 
 /**
  * generates random string of characters i.e salt
@@ -47,6 +48,37 @@ function saltHashPassword(userpassword) {
 const upload = multer({
   dest: "./temp/images",
   fileSize: "15000000",
+});
+
+router.get("/", async (req, res) => {
+  await User.find()
+    .then((resp) => {
+      const users = [];
+      resp.forEach((user) =>
+        users.push({
+          _id: user._id,
+          username: user.username,
+          favorites: user.favorites,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          country: user.country,
+          pfp: user.pfp,
+        })
+      );
+      res.json(users);
+    })
+    .catch((err) => {
+      res.json({ message: err });
+    });
+});
+
+router.get("/get/user/pfp/:ID", async (req, res) => {
+  const ID = req.params.ID;
+  Pfp.findById(ID)
+    .then((resp) => {
+      res.json(resp.data);
+    })
+    .catch((err) => console.log(err));
 });
 
 router.post("/create", upload.single("file"), async (req, res) => {
@@ -118,48 +150,7 @@ router.post("/create", upload.single("file"), async (req, res) => {
     .catch((err) => console.log(err));
 });
 
-router.get("/get/", async (req, res) => {
-  const { username, password } = req.query;
-  await User.findOne({ username })
-    .then((data) => {
-      if (data) {
-        let passwordData = sha512(password, data.password.salt);
-        if (passwordData.passwordHash === data.password.passwordHash) {
-          delete data.password;
-          res.send(data);
-        }
-      } else {
-        res
-          .status(404)
-          .json({ message: "Error incorrect password or username" });
-      }
-    })
-    .catch((err) => {
-      res.json({ message: err });
-    });
-});
-
-router.get("/", async (req, res) => {
-  await User.find()
-    .then((resp) => {
-      const users = [];
-      resp.forEach((user) =>
-        users.push({
-          _id: user._id,
-          username: user.username,
-          favorites: user.favorites,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          country: user.country,
-          pfp: user.pfp,
-        })
-      );
-      res.json(users);
-    })
-    .catch((err) => {
-      res.json({ message: err });
-    });
-});
+router.use(authenticateToken);
 
 router.delete("/user/:userID", async (req, res) => {
   const ID = req.params.userID;
@@ -198,15 +189,6 @@ router.delete("/user/:userID", async (req, res) => {
   );
 
   res.status(200).end();
-});
-
-router.get("/get/user/pfp/:ID", async (req, res) => {
-  const ID = req.params.ID;
-  Pfp.findById(ID)
-    .then((resp) => {
-      res.json(resp.data);
-    })
-    .catch((err) => console.log(err));
 });
 
 router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {

@@ -9,6 +9,7 @@ const citiesRoute = require("./Routes/cities");
 const itinerariesRoute = require("./Routes/itineraries");
 const activitiesRoute = require("./Routes/activities");
 const usersRoute = require("./Routes/users");
+const authRoute = require("./Routes/auth");
 
 // Middlewares
 app.use(cors());
@@ -21,9 +22,14 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log("Connected to MongoDB..."))
-  .catch((err) => console.log(err));
+  .catch((err) => {
+    if ((err.message = "connection timed out"))
+      console.log("Error: Mongoose Timed out!");
+  });
 
 // Routes
+
+app.use("/api/auth", authRoute);
 
 app.use("/api/cities", citiesRoute);
 app.use("/api/itineraries", itinerariesRoute);

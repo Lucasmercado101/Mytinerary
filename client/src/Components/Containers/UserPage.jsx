@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { logOut, getPfp, deleteUser } from "../../Redux/Actions/userActions";
+import { getPfp, deleteUser } from "../../Redux/Actions/userActions";
+import { logOut } from "../../Redux/Actions/authActions";
 import usePrevious from "../hooks/usePrevious";
 import genericPfp from "../../Images/generic-user.svg";
 import styles from "../../Styles/user.module.css";

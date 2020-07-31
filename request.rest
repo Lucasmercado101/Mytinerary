@@ -1,0 +1,6 @@
+GET http://localhost:5000/api/cities
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImEiLCJpYXQiOjE1OTYyMTY2MjksImV4cCI6MTU5NjIxNzUyOX0.-czGuhV-qZ7ye_HyohIsvWJujRzsBjHZ3UtOvAhIpyU
+
+###
+
+GET http://localhost:5000/api/users/
