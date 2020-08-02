@@ -1,0 +1,15 @@
+.title {
+  text-align: center;
+  font-weight: 500;
+  margin: 0.8rem 0;
+}
+
+.itineraries {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (minmax(300px, 1fr))[auto-fit];
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: start;
+}

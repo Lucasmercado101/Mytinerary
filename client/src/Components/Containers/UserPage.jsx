@@ -23,36 +23,41 @@ function UserPage(props) {
   const imageUpload = useRef();
   const dispatch = useDispatch();
   const [isImageChanging, setIsImageChanging] = useState(false);
+  const [isFetchingData, setIsFetchingData] = useState(false);
 
   useEffect(() => {
     if (currentUser) {
       document.title = `${userData.username}'s Profile`;
       setUser(userData);
     } else {
-      (async function () {
-        await axios
-          .get("http://localhost:5000/api/users/get/user/" + userID)
-          .then(({ data }) => {
-            document.title = `${data.userName}'s Profile`;
-            setUser(data);
-            if (data.pfp.hasOwnProperty("data")) {
-              const type = data.pfp.type.split(".")[1];
-              const imageData = Buffer.from(data.pfp.data).toString("base64");
-              setUserImage(`data:image/${type};base64,${imageData}`);
-            }
-          })
-          .catch((err) => console.log(err));
-      })();
+      if (!isFetchingData) {
+        (async function () {
+          setIsFetchingData(true);
+          await axios
+            .get("http://localhost:5000/api/users/get/user/" + userID)
+            .then(({ data }) => {
+              setIsFetchingData(false);
+              document.title = `${data.userName}'s Profile`;
+              setUser(data);
+              if (data.pfp.hasOwnProperty("data")) {
+                const type = data.pfp.type.split(".")[1];
+                const imageData = Buffer.from(data.pfp.data).toString("base64");
+                setUserImage(`data:image/${type};base64,${imageData}`);
+              }
+            })
+            .catch((err) => console.log(err));
+        })();
+      }
     }
     return () => setUser({});
-  }, [userData, userID]);
+  }, [userData, userID, currentUser, isFetchingData]);
 
   useEffect(() => {
     if ((isDeletingUser === false, prevIsDeletingUser === true)) {
       dispatch(logOut());
       props.history.push("/");
     }
-  }, [isDeletingUser, prevIsDeletingUser]);
+  }, [isDeletingUser, prevIsDeletingUser, dispatch, props]);
 
   useEffect(() => {
     if (userPfp) {
@@ -127,6 +132,7 @@ function UserPage(props) {
           {!isImageChanging && !isFetchingPfp ? (
             <>
               <img
+                alt={userData.username}
                 className={styles.userPfp}
                 src={userImage || genericPfp}
               ></img>

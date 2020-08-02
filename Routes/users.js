@@ -72,13 +72,13 @@ router.get("/", async (req, res) => {
     });
 });
 
-router.get("/get/user/pfp/:ID", async (req, res) => {
+router.get("/get/user/pfp/:ID", (req, res) => {
   const ID = req.params.ID;
   Pfp.findById(ID)
     .then((resp) => {
-      res.json(resp.data);
+      res.json(resp);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.json(err));
 });
 
 router.post("/create", upload.single("file"), async (req, res) => {
@@ -237,7 +237,6 @@ router.delete("/user/pfp/:userID", upload.single("file"), async (req, res) => {
 });
 
 router.post("/user/pfp/:userID", upload.single("file"), async (req, res) => {
-  console.log("changing pfp");
   const fileLocation = path.join(
     __dirname,
     "..",
@@ -274,9 +273,9 @@ router.post("/user/pfp/:userID", upload.single("file"), async (req, res) => {
           resp.pfp = data._id;
           res.json(resp);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => res.json(err));
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.json(err));
 });
 
 module.exports = router;

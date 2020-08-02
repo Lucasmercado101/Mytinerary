@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import style from "../../Styles/notfound.module.css";
 
-function NotFound() {
+function NotFound({ thing = "page" }) {
   useEffect(() => {
-    document.title = "Page not found";
-  }, []);
+    document.title = `${thing} not found`;
+  }, [thing]);
 
-  return <h1 className={style.text}>404: page not found</h1>;
+  return <h1 className={style.text}>404: {thing} not found</h1>;
 }
 
 export default NotFound;

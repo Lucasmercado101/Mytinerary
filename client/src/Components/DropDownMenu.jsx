@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import styles from "../Styles/dropDownMenu.module.css";
-import { useLocation } from "react-router-dom";
 import HamburgerMenu from "./HamburgerMenu";
 import useOutsideAlerter from "./hooks/useOutsideAlerter";
 
@@ -14,7 +13,6 @@ export function MenuItem({ children, onClick, style }) {
 
 function DropDownMenu({ children, button, align, closeOnClick }) {
   const [open, setOpen] = useState(false);
-  const location = useLocation().pathname;
 
   const ref = useRef();
   useOutsideAlerter(

@@ -9,7 +9,7 @@ import Landing from "./Components/Containers/Landing";
 import Nav from "./Components/Containers/Nav";
 import Footer from "./Components/Containers/Footer";
 import Cities from "./Components/Containers/Cities";
-import CityItineraries from "./Components/Containers/Itineraries";
+import CityItineraries from "./Components/Containers/CityItineraries";
 import CreateAccount from "./Components/Containers/CreateAccount";
 import Users from "./Components/Containers/Users";
 import UserPage from "./Components/Containers/UserPage";
@@ -24,7 +24,7 @@ function App() {
     if (Object.keys(userData).length > 0) {
       if (userData.hasOwnProperty("pfp")) dispatch(getPfp(userData.pfp));
     }
-  }, [userData]);
+  }, [userData, dispatch]);
 
   return (
     <BrowserRouter>

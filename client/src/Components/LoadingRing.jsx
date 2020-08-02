@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../Styles/loadingRing.module.css";
 
-function LoadingRing({ style, centered, absoluteCentered }) {
+function LoadingRing({ style, centered, absoluteCentered, white }) {
   return (
     <div
       style={style}
@@ -9,10 +9,10 @@ function LoadingRing({ style, centered, absoluteCentered }) {
         absoluteCentered ? styles.absoluteCentered : ""
       }`}
     >
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
+      <div style={white ? { borderTopColor: "white" } : {}}></div>
+      <div style={white ? { borderTopColor: "white" } : {}}></div>
+      <div style={white ? { borderTopColor: "white" } : {}}></div>
+      <div style={white ? { borderTopColor: "white" } : {}}></div>
     </div>
   );
 }

@@ -1,47 +1,84 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 import usePrevious from "../hooks/usePrevious";
 import MyModal from "../MyModal";
 import Button from "../Button";
-import { getCities } from "../../Redux/Actions/citiesActions";
 import CityCard from "../CityCard";
 import NewCityTemplate from "../NewCityTemplate";
 import LoadingRing from "../LoadingRing";
 import SearchBar from "../SearchBar";
 
 function Cities() {
-  const cities = useSelector((state) => state.cities.cities);
-  const isFetching = useSelector((state) => state.cities.isFetching);
   const isPostingCity = useSelector((state) => state.cities.isPostingCity);
   const postingCityError = useSelector(
     (state) => state.cities.postingCityError
   );
   const userData = useSelector((state) => state.user.userData);
   const prevIsPostingCity = usePrevious(isPostingCity);
+  const [isFetching, setIsFetching] = useState(true);
+  const [cities, setCities] = useState([]);
   const [filteredCities, setFilteredCities] = useState(cities);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
 
+  const getCities = () => {
+    return axios
+      .get("http://localhost:5000/api/cities")
+      .then((resp) => {
+        const sortedCities = resp.data.sort(function (city, city2) {
+          if (city.name < city2.name) {
+            return -1;
+          }
+          if (city.name > city2.name) {
+            return 1;
+          }
+          return 0;
+        });
+        return sortedCities;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
-    dispatch(getCities());
     document.title = "Cities";
-  }, []);
+    let isMounted = true;
+    getCities().then((sortedCities) => {
+      if (isMounted) {
+        setIsFetching(false);
+        setCities(sortedCities);
+      }
+    });
+
+    return () => (isMounted = false);
+  }, [dispatch]);
 
   useEffect(() => {
     if (postingCityError) {
       alert(postingCityError);
       dispatch({ type: "CLEAR_POSTING_CITY_ERROR" });
     }
-  }, [postingCityError]);
+  }, [postingCityError, dispatch]);
 
-  useEffect(() => {
-    const justPostedACity =
-      isPostingCity === false && prevIsPostingCity === true;
-    if (justPostedACity && !postingCityError) {
-      dispatch(getCities());
-      setIsModalOpen(false);
-    }
-  }, [isPostingCity, prevIsPostingCity, postingCityError]);
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const justPostedACity =
+  //     isPostingCity === false && prevIsPostingCity === true;
+  //   //TODO: fix this, since removed previous dispatch
+  //   //! may not work
+  //   if (justPostedACity && !postingCityError) {
+  //     getCities().then((sortedCities) => {
+  //       if (isMounted) {
+  //         setIsFetching(false);
+  //         setCities(sortedCities);
+  //         setIsModalOpen(false);
+  //       }
+  //     });
+  //   }
+  //   return () => (isMounted = false);
+  // }, [dispatch, isPostingCity, prevIsPostingCity, postingCityError]);
 
   useEffect(() => {
     setFilteredCities(cities);
@@ -89,7 +126,8 @@ function Cities() {
           ))}
         </ul>
       )}
-      {Object.keys(userData).length > 0 ? (
+      {/* //TODO Re-add this */}
+      {/* {Object.keys(userData).length > 0 ? (
         <>
           <Button
             text="New City"
@@ -107,7 +145,7 @@ function Cities() {
         </>
       ) : (
         ""
-      )}
+      )} */}
     </>
   );
 }

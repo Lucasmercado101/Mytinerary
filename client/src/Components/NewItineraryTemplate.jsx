@@ -97,7 +97,6 @@ function Itinerary({ city }) {
       creator: userData._id,
       time: hours,
       price: price,
-      activities: "",
       hashtags: [hashtag1, hashtag2, hashtag3].filter((i) => i),
       city,
       activities: [...activities],
@@ -116,7 +115,11 @@ function Itinerary({ city }) {
     <form onSubmit={submitItinerary}>
       <article className={styles.itinerary}>
         <header className={styles.header}>
-          <img className={styles.header__photo} src={userPfp || genericPfp} />
+          <img
+            className={styles.header__photo}
+            alt={userData.username}
+            src={userPfp || genericPfp}
+          />
           <h3 className={styles.header__title}>
             <input
               size="18"
@@ -133,6 +136,7 @@ function Itinerary({ city }) {
             <object
               style={{ height: "1.5em", marginRight: "5px" }}
               data={clockIcon}
+              aria-label={"Clock icon"}
               type="image/svg+xml"
             />
             <input

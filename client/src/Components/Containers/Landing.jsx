@@ -19,13 +19,21 @@ function Landing() {
   return (
     <>
       <header className={styles.hero}>
-        <img className={styles.hero__logo} src={mytineraryLogo} />
+        <img
+          className={styles.hero__logo}
+          alt={"Mytinerary log"}
+          src={mytineraryLogo}
+        />
         <h1 className={styles.hero__myTinerary}>
           Find your perfect trip, designed by insiders who know and love their
           cities.
         </h1>
         <MyLink to="/cities">
-          <img className={styles.browse} src={circleright} />
+          <img
+            className={styles.browse}
+            alt={"White right arrow"}
+            src={circleright}
+          />
         </MyLink>
       </header>
       <section className={styles.section}>

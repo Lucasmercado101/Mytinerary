@@ -12,12 +12,13 @@ function LogIn(props) {
     username: "",
     password: "",
   });
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (Object.keys(userData).length !== 0) {
       props.history.push("/");
     }
-  }, [userData]);
+  }, [userData, props]);
 
   useEffect(() => {
     document.title = "Log in";
@@ -28,9 +29,7 @@ function LogIn(props) {
       alert(failedLogIn);
       dispatch(clearLogInFailure());
     }
-  }, [failedLogIn]);
-
-  const dispatch = useDispatch();
+  }, [failedLogIn, dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

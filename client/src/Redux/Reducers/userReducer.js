@@ -1,6 +1,6 @@
 const initialState = {
   userData: JSON.parse(localStorage.getItem("userData")) || {},
-  userPfp: null,
+  userPfp: {},
   isFetchingLogIn: false,
   isFetchingUserLoggedIn: false,
   failedLogIn: null,
@@ -66,7 +66,7 @@ export default (state = initialState, action) => {
     case "CLEAR_PFP":
       return {
         ...state,
-        userPfp: null,
+        userPfp: {},
       };
     case "LOG_OUT":
       localStorage.removeItem("userData");
@@ -75,7 +75,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         userData: {},
-        userPfp: null,
+        userPfp: {},
       };
     default:
       return state;

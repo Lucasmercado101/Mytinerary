@@ -16,7 +16,13 @@ router.get("/", (req, res) => {
 
 router.get("/:cityName", (req, res) => {
   City.findOne({ name: req.params.cityName })
-    .then((data) => res.send(data))
+    .then((city) => {
+      if (city) return res.send(city);
+      else {
+        res.statusMessage = "City does not exist";
+        res.sendStatus(404);
+      }
+    })
     .catch((err) => {
       res.json({ message: err });
     });
