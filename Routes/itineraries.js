@@ -5,7 +5,6 @@ const Itineraries = require("../models/itineraries");
 const Activities = require("../models/activities");
 const Itinerary = require("../models/itinerary");
 const User = require("../models/user");
-const Pfp = require("../models/pfp");
 
 router.get("/cityItineraries/:cityName", async (req, res) => {
   await Itineraries.findOne({ city: req.params.cityName })

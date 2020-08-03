@@ -117,7 +117,7 @@ router.post("/create", upload.single("file"), async (req, res) => {
       .then((data) => {
         userObject = { ...userObject, pfp: data._id };
       })
-      .catch((err) => console.log(err));
+      .catch((err) => res.json({ message: err }));
   }
 
   const user = new User(userObject);
@@ -138,7 +138,7 @@ router.post("/create", upload.single("file"), async (req, res) => {
         res.status(409).end();
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.json({ message: err }));
 });
 
 router.get("/user/pfp/:ID", (req, res) => {
@@ -157,20 +157,22 @@ router.get("/user/:ID", (req, res) => {
   const { ID } = req.params;
   User.findById(ID)
     .then((user) => {
+      if (!user)
+        return res.status(404).json({ message: "User does not exist" });
       user.password = undefined;
       user.email = undefined;
       res.json(user);
     })
-    .catch((err) => {
-      res.json({ message: err });
-    });
+    .catch((err) => res.json({ message: err }));
 });
 
 router.use(authenticateToken);
 
 router.delete("/user/:userID", async (req, res) => {
   const ID = req.params.userID;
-  const user = await User.findById(ID).catch((err) => console.log(err));
+  const user = await User.findById(ID).catch((err) =>
+    res.json({ message: err })
+  );
   if (user.pfp) {
     await Pfp.findByIdAndDelete(user.pfp, { useFindAndModify: false });
   }
@@ -180,7 +182,7 @@ router.delete("/user/:userID", async (req, res) => {
     postedItineraries.forEach(async (i) => {
       await Activities.findByIdAndDelete(i["activities"], {
         useFindAndModify: false,
-      }).catch((err) => console.log(err));
+      }).catch((err) => res.json({ message: err }));
 
       await Itineraries.updateOne(
         {},
@@ -197,11 +199,11 @@ router.delete("/user/:userID", async (req, res) => {
         .then(() => {
           res.status(200).end();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => res.json({ message: err }));
     });
   }
   await User.findByIdAndDelete(ID, { useFindAndModify: false }).catch((err) =>
-    console.log(err)
+    res.json({ message: err })
   );
 
   res.status(200).end();
@@ -229,6 +231,7 @@ router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {
 
   // Feed out string to a buffer and then put it in the database
   let pfpData = new Buffer.from(base64, "base64");
+
   await Pfp.findByIdAndUpdate(
     ID,
     {
@@ -240,16 +243,17 @@ router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {
     .then(() => {
       res.status(200).end();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.json({ message: err }));
 });
 
-router.delete("/user/pfp/:ID", upload.single("file"), async (req, res) => {
-  const user = await User.findById(req.params.ID);
-  Pfp.findByIdAndRemove(user.pfp, { useFindAndModify: false }).then((resp) => {
-    user.pfp = undefined;
-    user.save();
-    res.json(user);
-  });
+router.delete("/user/pfp/:ID", async (req, res) => {
+  const user = await User.findOne({ pfp: req.params.ID });
+  Pfp.findByIdAndRemove(user.pfp, { useFindAndModify: false })
+    .then(async () => {
+      user.pfp = undefined;
+      return user.save();
+    })
+    .then(res.sendStatus(200));
 });
 
 router.post("/user/pfp/:ID", upload.single("file"), async (req, res) => {
@@ -273,24 +277,19 @@ router.post("/user/pfp/:ID", upload.single("file"), async (req, res) => {
 
   // Feed out string to a buffer and then put it in the database
   let pfpData = new Buffer.from(base64, "base64");
-
   await new Pfp({
     type: path.extname(req.file.originalname),
     data: pfpData,
   })
     .save()
     .then((data) => {
-      User.findByIdAndUpdate(
+      return User.findByIdAndUpdate(
         req.params.ID,
         { pfp: data._id },
         { useFindAndModify: false }
-      )
-        .then((resp) => {
-          resp.pfp = data._id;
-          res.json(resp);
-        })
-        .catch((err) => res.json(err));
+      );
     })
+    .then(() => res.sendStatus(200))
     .catch((err) => res.json(err));
 });
 

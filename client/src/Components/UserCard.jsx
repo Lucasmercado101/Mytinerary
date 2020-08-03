@@ -16,7 +16,7 @@ function UserCard({ userData }) {
         .then((data) => {
           if (isMounted) setPfp(data);
         })
-        .catch((err) => console.log(err));
+        .catch(() => {});
     }
     return () => {
       isMounted = false;

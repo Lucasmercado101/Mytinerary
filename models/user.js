@@ -8,7 +8,6 @@ var userSchema = new Schema({
   firstName: String,
   lastName: String,
   country: String,
-  favorites: Array,
   pfp: String,
   itineraries: Array, // Array of IDs of Itineraries posted
 });

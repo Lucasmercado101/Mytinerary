@@ -37,6 +37,7 @@ router.get("/login", async (req, res) => {
       if (userData) {
         let passwordData = sha512(password, userData.password.salt);
         if (passwordData.passwordHash === userData.password.passwordHash) {
+          userData.password = undefined;
           const accessToken = generateAccessToken(userData.username);
           const refreshToken = jwt.sign(
             //* add an "admin", that's what's needed to
