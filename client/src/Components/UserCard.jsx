@@ -1,39 +1,42 @@
 import React, { useEffect, useState } from "react";
-import genericPfp from "../Images/generic-user.svg";
 import axios from "axios";
+import genericPfp from "../Images/generic-user.svg";
+import { getPfp } from "../api";
 import MyLink from "./MyLink";
 import styles from "../Styles/userCard.module.css";
 
-function UserCard({ user }) {
+function UserCard({ userData }) {
   const [pfp, setPfp] = useState();
 
   useEffect(() => {
     let isMounted = true;
-    if (user.pfp) {
-      axios
-        .get(`http://localhost:5000/api/users/get/user/pfp/${user.pfp}`)
-        .then((resp) => {
-          const type = resp.data.type.split(".")[1];
-          const data = Buffer.from(resp.data.data).toString("base64");
-          if (isMounted) setPfp(`data:image/${type};base64,${data}`);
-        });
+    let source = axios.CancelToken.source();
+    if (userData.pfp) {
+      getPfp(userData.pfp, { cancelToken: source.token })
+        .then((data) => {
+          if (isMounted) setPfp(data);
+        })
+        .catch((err) => console.log(err));
     }
-    return () => (isMounted = false);
-  }, [user]);
+    return () => {
+      isMounted = false;
+      source.cancel();
+    };
+  }, [userData]);
 
   return (
-    <MyLink className={styles.userCard} to={"/users/user/" + user._id}>
+    <MyLink className={styles.userCard} to={"/users/user/" + userData._id}>
       <div className={styles.pfp}>
         <img
           className={styles.pfp__image}
-          alt={user.username}
+          alt={userData.username}
           src={pfp || genericPfp}
         ></img>
-        <h2 className={styles.pfp__text}>{user.username}</h2>
+        <h2 className={styles.pfp__text}>{userData.username}</h2>
       </div>
       <ul className={styles.detailsList}>
-        <p className={styles.detailsList__item}>{user.firstName}</p>
-        <p className={styles.detailsList__item}>{user.lastName}</p>
+        <p className={styles.detailsList__item}>{userData.firstName}</p>
+        <p className={styles.detailsList__item}>{userData.lastName}</p>
       </ul>
     </MyLink>
   );

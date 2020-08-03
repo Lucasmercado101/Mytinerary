@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { getPfp, deleteUser } from "../../Redux/Actions/userActions";
+import { getUserPfp, deleteUser } from "../../Redux/Actions/userActions";
+import { getUser, getPfp, deletePfp } from "../../api";
 import { logOut } from "../../Redux/Actions/authActions";
 import usePrevious from "../hooks/usePrevious";
 import genericPfp from "../../Images/generic-user.svg";
@@ -20,37 +21,45 @@ function UserPage(props) {
 
   const [userImage, setUserImage] = useState("");
   const [user, setUser] = useState({});
+  const [isImageChanging, setIsImageChanging] = useState(false);
+  const [isRemovingImage, setIsRemovingImage] = useState(false);
   const imageUpload = useRef();
   const dispatch = useDispatch();
-  const [isImageChanging, setIsImageChanging] = useState(false);
-  const [isFetchingData, setIsFetchingData] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    let source = axios.CancelToken.source();
+
+    if (!currentUser) {
+      getUser(userID, { cancelToken: source.token })
+        .then((fetchedUserData) => {
+          if (isMounted) {
+            setUser(fetchedUserData);
+            if (fetchedUserData.pfp) {
+              return getPfp(fetchedUserData.pfp, { cancelToken: source.token });
+            }
+          }
+        })
+        .then((image) => {
+          if (isMounted) setUserImage(image);
+        });
+    }
+
+    return () => {
+      isMounted = false;
+      source.cancel();
+      setUser({});
+      setUserImage("");
+    };
+  }, [currentUser, userID]);
 
   useEffect(() => {
     if (currentUser) {
       document.title = `${userData.username}'s Profile`;
       setUser(userData);
-    } else {
-      if (!isFetchingData) {
-        (async function () {
-          setIsFetchingData(true);
-          await axios
-            .get("http://localhost:5000/api/users/get/user/" + userID)
-            .then(({ data }) => {
-              setIsFetchingData(false);
-              document.title = `${data.userName}'s Profile`;
-              setUser(data);
-              if (data.pfp.hasOwnProperty("data")) {
-                const type = data.pfp.type.split(".")[1];
-                const imageData = Buffer.from(data.pfp.data).toString("base64");
-                setUserImage(`data:image/${type};base64,${imageData}`);
-              }
-            })
-            .catch((err) => console.log(err));
-        })();
-      }
+      setUserImage(userPfp);
     }
-    return () => setUser({});
-  }, [userData, userID, currentUser, isFetchingData]);
+  }, [currentUser, userData, userPfp]);
 
   useEffect(() => {
     if ((isDeletingUser === false, prevIsDeletingUser === true)) {
@@ -58,16 +67,6 @@ function UserPage(props) {
       props.history.push("/");
     }
   }, [isDeletingUser, prevIsDeletingUser, dispatch, props]);
-
-  useEffect(() => {
-    if (userPfp) {
-      const type = userPfp.type.split(".")[1];
-      const imageData = Buffer.from(userPfp.data).toString("base64");
-      setUserImage(`data:image/${type};base64,${imageData}`);
-    } else {
-      setUserImage("");
-    }
-  }, [userPfp]);
 
   const changePfp = async (e) => {
     const image = e.target.files[0];
@@ -89,7 +88,7 @@ function UserPage(props) {
           )
           .then(() => {
             setIsImageChanging(false);
-            dispatch(getPfp(userData.pfp));
+            dispatch(getUserPfp(userData.pfp));
           })
           .catch((err) => console.log(err));
       } else {
@@ -103,7 +102,7 @@ function UserPage(props) {
           .then((resp) => {
             setIsImageChanging(false);
             dispatch({ type: "SET_USER_DATA", payload: resp.data });
-            dispatch(getPfp(resp.data.pfp));
+            dispatch(getUserPfp(resp.data.pfp));
             // Fix this so that it it gets the pfp
             // using the userdata that was UPDATED
             // with the dispatch above, does not get latest state for some reason
@@ -116,13 +115,15 @@ function UserPage(props) {
     }
   };
 
-  const removePfp = async () => {
-    await axios
-      .delete(`http://localhost:5000/api/users/user/pfp/${userData._id}`)
+  const removePfp = () => {
+    setIsRemovingImage(true);
+    deletePfp(userID)
       .then((resp) => {
         dispatch({ type: "CLEAR_PFP" });
-        dispatch({ type: "SET_USER_DATA", payload: resp.data });
-      });
+        dispatch({ type: "SET_USER_DATA", payload: resp });
+        setIsRemovingImage(false);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -132,7 +133,7 @@ function UserPage(props) {
           {!isImageChanging && !isFetchingPfp ? (
             <>
               <img
-                alt={userData.username}
+                alt={user.username}
                 className={styles.userPfp}
                 src={userImage || genericPfp}
               ></img>
@@ -160,7 +161,9 @@ function UserPage(props) {
                   centered
                   warning
                   disabled={
-                    !(!isImageChanging && !isFetchingPfp) || isDeletingUser
+                    isRemovingImage ||
+                    !(!isImageChanging && !isFetchingPfp) ||
+                    isDeletingUser
                   }
                 />
               ) : (

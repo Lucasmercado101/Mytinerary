@@ -4,12 +4,14 @@ import { logOut } from "../../Redux/Actions/authActions";
 import MyLink from "../MyLink";
 import DropDownMenu, { MenuItem } from "../DropDownMenu";
 import styles from "../../Styles/navbar.module.css";
-import useUserPfp from "../hooks/useUserPfp";
+import genericPfp from "../../Images/generic-user.svg";
+import addUser from "../../Images/add-user.svg";
 
 function Nav() {
   const userData = useSelector((state) => state.user.userData);
-  const userPfp = useUserPfp();
+  const userPfp = useSelector((state) => state.user.userPfp);
   const dispatch = useDispatch();
+  const userIsLoggedIn = Object.keys(userData).length > 0;
 
   return (
     <nav className={styles.navbar}>
@@ -18,13 +20,13 @@ function Nav() {
         button={
           <img
             className={styles.userMenu__pfp}
-            src={userPfp}
+            src={userIsLoggedIn ? userPfp || genericPfp : addUser}
             alt={userData.username || "Generic user"}
             title={userData.username || "Generic user"}
           />
         }
       >
-        {Object.keys(userData).length > 0 ? (
+        {userIsLoggedIn ? (
           <>
             <MyLink to={"/users/user/" + userData._id}>My profile</MyLink>
             <MenuItem

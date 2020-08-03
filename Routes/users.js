@@ -72,15 +72,6 @@ router.get("/", async (req, res) => {
     });
 });
 
-router.get("/get/user/pfp/:ID", (req, res) => {
-  const ID = req.params.ID;
-  Pfp.findById(ID)
-    .then((resp) => {
-      res.json(resp);
-    })
-    .catch((err) => res.json(err));
-});
-
 router.post("/create", upload.single("file"), async (req, res) => {
   const { username, password, email, firstName, lastName, country } = req.body;
   const saltHashedPassword = saltHashPassword(password);
@@ -148,6 +139,31 @@ router.post("/create", upload.single("file"), async (req, res) => {
       }
     })
     .catch((err) => console.log(err));
+});
+
+router.get("/user/pfp/:ID", (req, res) => {
+  const ID = req.params.ID;
+  Pfp.findById(ID)
+    .then((pfp) => {
+      const type = pfp.type.split(".")[1];
+      const data = Buffer.from(pfp.data).toString("base64");
+      const image = `data:image/${type};base64,${data}`;
+      res.json({ image });
+    })
+    .catch((err) => res.json(err));
+});
+
+router.get("/user/:ID", (req, res) => {
+  const { ID } = req.params;
+  User.findById(ID)
+    .then((user) => {
+      user.password = undefined;
+      user.email = undefined;
+      res.json(user);
+    })
+    .catch((err) => {
+      res.json({ message: err });
+    });
 });
 
 router.use(authenticateToken);
@@ -227,8 +243,8 @@ router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {
     .catch((err) => console.log(err));
 });
 
-router.delete("/user/pfp/:userID", upload.single("file"), async (req, res) => {
-  const user = await User.findById(req.params.userID);
+router.delete("/user/pfp/:ID", upload.single("file"), async (req, res) => {
+  const user = await User.findById(req.params.ID);
   Pfp.findByIdAndRemove(user.pfp, { useFindAndModify: false }).then((resp) => {
     user.pfp = undefined;
     user.save();
@@ -236,7 +252,7 @@ router.delete("/user/pfp/:userID", upload.single("file"), async (req, res) => {
   });
 });
 
-router.post("/user/pfp/:userID", upload.single("file"), async (req, res) => {
+router.post("/user/pfp/:ID", upload.single("file"), async (req, res) => {
   const fileLocation = path.join(
     __dirname,
     "..",
@@ -265,7 +281,7 @@ router.post("/user/pfp/:userID", upload.single("file"), async (req, res) => {
     .save()
     .then((data) => {
       User.findByIdAndUpdate(
-        req.params.userID,
+        req.params.ID,
         { pfp: data._id },
         { useFindAndModify: false }
       )

@@ -1,66 +1,54 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { getCities } from "../../api";
 import axios from "axios";
-import usePrevious from "../hooks/usePrevious";
-import MyModal from "../MyModal";
-import Button from "../Button";
+// import usePrevious from "../hooks/usePrevious";
+// import MyModal from "../MyModal";
+// import Button from "../Button";
 import CityCard from "../CityCard";
-import NewCityTemplate from "../NewCityTemplate";
+// import NewCityTemplate from "../NewCityTemplate";
 import LoadingRing from "../LoadingRing";
 import SearchBar from "../SearchBar";
 
 function Cities() {
-  const isPostingCity = useSelector((state) => state.cities.isPostingCity);
-  const postingCityError = useSelector(
-    (state) => state.cities.postingCityError
-  );
-  const userData = useSelector((state) => state.user.userData);
-  const prevIsPostingCity = usePrevious(isPostingCity);
+  // const isPostingCity = useSelector((state) => state.cities.isPostingCity);
+  // const postingCityError = useSelector(
+  //   (state) => state.cities.postingCityError
+  // );
+  // const userData = useSelector((state) => state.user.userData);
+  // const prevIsPostingCity = usePrevious(isPostingCity);
   const [isFetching, setIsFetching] = useState(true);
   const [cities, setCities] = useState([]);
   const [filteredCities, setFilteredCities] = useState(cities);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
-
-  const getCities = () => {
-    return axios
-      .get("http://localhost:5000/api/cities")
-      .then((resp) => {
-        const sortedCities = resp.data.sort(function (city, city2) {
-          if (city.name < city2.name) {
-            return -1;
-          }
-          if (city.name > city2.name) {
-            return 1;
-          }
-          return 0;
-        });
-        return sortedCities;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   useEffect(() => {
     document.title = "Cities";
+    let source = axios.CancelToken.source();
     let isMounted = true;
-    getCities().then((sortedCities) => {
-      if (isMounted) {
-        setIsFetching(false);
-        setCities(sortedCities);
-      }
-    });
 
-    return () => (isMounted = false);
+    getCities({ cancelToken: source.token })
+      .then((sortedCities) => {
+        if (isMounted) {
+          setIsFetching(false);
+          setCities(sortedCities);
+        }
+      })
+      .catch((err) => console.log(err));
+
+    return () => {
+      source.cancel();
+      isMounted = false;
+    };
   }, [dispatch]);
 
-  useEffect(() => {
-    if (postingCityError) {
-      alert(postingCityError);
-      dispatch({ type: "CLEAR_POSTING_CITY_ERROR" });
-    }
-  }, [postingCityError, dispatch]);
+  // useEffect(() => {
+  //   if (postingCityError) {
+  //     alert(postingCityError);
+  //     dispatch({ type: "CLEAR_POSTING_CITY_ERROR" });
+  //   }
+  // }, [postingCityError, dispatch]);
 
   // useEffect(() => {
   //   let isMounted = true;

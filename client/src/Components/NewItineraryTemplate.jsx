@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { postItinerary } from "../Redux/Actions/itinerariesActions";
 import styles from "../Styles/itinerary.module.css";
 import clockIcon from "../Images/clock-icon.svg";
-import useUserPfp from "./hooks/useUserPfp";
 import genericPfp from "../Images/generic-user.svg";
 
 const styleButton = {
@@ -28,7 +27,7 @@ function Itinerary({ city }) {
     (state) => state.itineraries.isPostingItinerary
   );
 
-  const userPfp = useUserPfp();
+  const userPfp = useSelector((state) => state.user.userPfp);
 
   function handlePriceInput(e) {
     const price = e.target.value;

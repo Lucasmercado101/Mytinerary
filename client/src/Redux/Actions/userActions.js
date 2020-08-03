@@ -1,17 +1,17 @@
 import axios from "axios";
+import { getPfp } from "../../api";
 
-export const getPfp = (pfpID) => (dispatch) => {
+export const getUserPfp = (pfpID) => (dispatch) => {
   dispatch({
     type: "FETCHING_PFP",
   });
-  axios
-    .get(`http://localhost:5000/api/users/get/user/pfp/${pfpID}`)
-    .then((resp) =>
+  getPfp(pfpID)
+    .then((pfp) => {
       dispatch({
         type: "FETCHED_PFP",
-        payload: resp.data,
-      })
-    )
+        payload: pfp,
+      });
+    })
     .catch((err) => console.log(err));
 };
 

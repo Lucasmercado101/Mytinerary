@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { getUser, getPfp } from "../api";
 import axios from "axios";
 import MyLink from "./MyLink";
 import LoadingRing from "./LoadingRing";
-import useUserPfp from "./hooks/useUserPfp";
 import styles from "../Styles/itinerary.module.css";
 import clockIcon from "../Images/clock-icon.svg";
 import likeIcon from "../Images/like-icon.svg";
@@ -22,7 +22,7 @@ function Itinerary({
   onDelete,
 }) {
   const userData = useSelector((state) => state.user.userData);
-  const userPfp = useUserPfp();
+  const userPfp = useSelector((state) => state.user.userPfp);
   const [isFetchingData, setIsFetchingData] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [itineraryUserData, setItineraryUserData] = useState({});
@@ -35,30 +35,27 @@ function Itinerary({
     if (isLoggedInUserItinerary) {
       setIsFetchingData(false);
     } else {
-      axios
-        .get("http://localhost:5000/api/itineraries/userPfp/" + creator, {})
-        .then((resp) => {
-          const { user, pfp } = resp.data;
-          let userData = {
-            username: user.username,
-            userPage: user._id,
-          };
-          if (pfp) {
-            const type = pfp.type.split(".")[1];
-            const base64Image = Buffer.from(pfp.data).toString("base64");
-            const imageData = `data:image/${type};base64,${base64Image}`;
-
-            userData = {
-              ...userData,
-              pfp: imageData,
+      let fetchedUserData = {};
+      getUser(creator)
+        .then((user) => {
+          fetchedUserData = { username: user.username, userPage: user._id };
+          if (isMounted && user.pfp) return getPfp(user.pfp);
+        })
+        .then((pfp) => {
+          if (isMounted) {
+            fetchedUserData = {
+              ...fetchedUserData,
+              pfp,
             };
           }
+        })
+        .catch((err) => console.log(err))
+        .finally(() => {
           if (isMounted) {
             setIsFetchingData(false);
-            setItineraryUserData(userData);
+            setItineraryUserData(fetchedUserData);
           }
-        })
-        .catch((err) => console.log(err));
+        });
     }
     return () => {
       isMounted = false;

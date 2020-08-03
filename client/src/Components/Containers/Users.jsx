@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import User from "../UserCard";
+import { getUsers } from "../../api";
 import SearchBar from "../SearchBar";
 import LoadingRing from "../LoadingRing";
 
@@ -10,16 +11,22 @@ function Users() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    (async function () {
-      setIsLoading(true);
-      axios
-        .get("http://localhost:5000/api/users")
-        .then((resp) => {
-          setUsers(resp.data);
+    let isMounted = true;
+    let source = axios.CancelToken.source();
+    setIsLoading(true);
+    getUsers({ cancelToken: source.token })
+      .then((users) => {
+        if (isMounted) {
+          setUsers(users);
           setIsLoading(false);
-        })
-        .catch((err) => console.log(err));
-    })();
+        }
+      })
+      .catch((err) => console.log(err));
+
+    return () => {
+      isMounted = false;
+      source.cancel();
+    };
   }, []);
 
   useEffect(() => {
@@ -50,7 +57,7 @@ function Users() {
       {isLoading ? (
         <LoadingRing centered />
       ) : (
-        filteredUsers.map((user, i) => <User key={i} user={user} />)
+        filteredUsers.map((user, i) => <User key={i} userData={user} />)
       )}
     </>
   );

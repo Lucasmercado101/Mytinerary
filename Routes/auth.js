@@ -39,6 +39,8 @@ router.get("/login", async (req, res) => {
         if (passwordData.passwordHash === userData.password.passwordHash) {
           const accessToken = generateAccessToken(userData.username);
           const refreshToken = jwt.sign(
+            //* add an "admin", that's what's needed to
+            //* delete any city and itinerary, and user
             { username: userData.username },
             process.env.REFRESH_TOKEN_SECRET
           );

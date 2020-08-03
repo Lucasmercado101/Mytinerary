@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { getPfp } from "./Redux/Actions/userActions";
+import { getUserPfp } from "./Redux/Actions/userActions";
 import "./Styles/app.css";
 
 // Containers / Pages
@@ -22,7 +22,7 @@ function App() {
 
   useEffect(() => {
     if (Object.keys(userData).length > 0) {
-      if (userData.hasOwnProperty("pfp")) dispatch(getPfp(userData.pfp));
+      if (userData.hasOwnProperty("pfp")) dispatch(getUserPfp(userData.pfp));
     }
   }, [userData, dispatch]);
 

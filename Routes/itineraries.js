@@ -7,35 +7,12 @@ const Itinerary = require("../models/itinerary");
 const User = require("../models/user");
 const Pfp = require("../models/pfp");
 
-router.get("/", async (req, res) => {
-  await Itineraries.find()
-    .then((data) => res.send(data))
-    .catch((err) => {
-      res.json({ message: err });
-    });
-});
-
-router.get("/:cityName", async (req, res) => {
+router.get("/cityItineraries/:cityName", async (req, res) => {
   await Itineraries.findOne({ city: req.params.cityName })
-    .then((data) => res.send(data))
+    .then((data) => res.send(data.itineraries))
     .catch((err) => {
       res.json({ message: err });
     });
-});
-
-router.get("/userPfp/:userID", (req, res) => {
-  User.findById(req.params.userID)
-    .then((user) => {
-      if (user.pfp) {
-        Pfp.findById(user.pfp).then((pfp) => {
-          user.password = undefined;
-          res.json({ user, pfp });
-        });
-      } else {
-        res.status(404).end();
-      }
-    })
-    .catch((err) => console.log(err));
 });
 
 router.use(authenticateToken);

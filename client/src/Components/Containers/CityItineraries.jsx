@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
-import axios from "axios";
+import { getCity, getCityItineraries } from "../../api";
 import styles from "../../Styles/cityItineraries.module.css";
 
 import LoadingRing from "../LoadingRing";
@@ -27,18 +27,17 @@ function CityItineraries(props) {
 
   useEffect(() => {
     document.title = `${currentCity} Itineraries`;
-
-    axios
-      .get(`http://localhost:5000/api/cities/${currentCity}`)
-      .then((resp) => {
-        setCity(resp.data);
-        setFetchingCity(false);
+    let mounted = true;
+    getCity(currentCity)
+      .then((city) => {
+        if (mounted) {
+          setCity(city);
+          setFetchingCity(false);
+        }
       })
-      .catch(() => setCityExists(false));
+      .catch((err) => console.log(err));
 
-    return () => {
-      setCity({});
-    };
+    return () => (mounted = false);
   }, [currentCity]);
 
   useEffect(() => {
@@ -84,29 +83,38 @@ const Itineraries = withRouter((props) => {
 
   useEffect(() => {
     const currentCity = props.match.params.city;
-    axios
-      .get("http://localhost:5000/api/itineraries/" + currentCity)
-      .then((resp) => {
-        setFetchingItineraries(false);
-        setItineraries(resp.data.itineraries);
+    let isMounted = true;
+
+    getCityItineraries(currentCity)
+      .then((itineraries) => {
+        if (isMounted) {
+          setFetchingItineraries(false);
+          setItineraries(itineraries);
+        }
       })
       .catch((err) => console.log(err));
+
+    return () => (isMounted = false);
   }, [props.match.params.city]);
 
   useEffect(() => {
+    let isMounted = true;
     if (deletedAnItinerary) {
       setItineraries({});
       setFetchingItineraries(true);
       setDeletedAnItinerary(false);
       const currentCity = props.match.params.city;
-      axios
-        .get("http://localhost:5000/api/itineraries/" + currentCity)
-        .then((resp) => {
-          setFetchingItineraries(false);
-          setItineraries(resp.data.itineraries);
+
+      getCityItineraries(currentCity)
+        .then((itineraries) => {
+          if (isMounted) {
+            setFetchingItineraries(false);
+            setItineraries(itineraries);
+          }
         })
         .catch((err) => console.log(err));
     }
+    return () => (isMounted = false);
   }, [deletedAnItinerary, props.match.params.city]);
 
   return (
