@@ -3,59 +3,41 @@ import axios from "axios";
 export const getCities = (config = {}) => {
   return axios
     .get("http://localhost:5000/api/cities", config)
-    .then((resp) => resp.data)
-    .catch((err) => {
-      throw Error(err);
-    });
+    .then((resp) => resp.data);
 };
 
 export const getCity = (cityID) => {
   if (!cityID) throw Error("Pass an ID to 'getCity'");
   return axios
     .get(`http://localhost:5000/api/cities/${cityID}`)
-    .then((resp) => resp.data)
-    .catch((err) => {
-      throw Error(err);
-    });
+    .then((resp) => resp.data);
 };
 
 export const getPfp = (pfpID, config = {}) => {
   if (!pfpID) throw Error("Pass an ID to 'getPfp'");
   return axios
     .get(`http://localhost:5000/api/users/user/pfp/${pfpID}`, config)
-    .then((resp) => resp.data.image)
-    .catch((err) => {
-      throw Error(err);
-    });
+    .then((resp) => resp.data.image);
 };
 
 export const getCityItineraries = (cityName) => {
   if (!cityName) throw Error("Pass a city name to 'getCityItineraries'");
   return axios
     .get(`http://localhost:5000/api/itineraries/cityItineraries/${cityName}`)
-    .then((resp) => resp.data)
-    .catch((err) => {
-      throw Error(err);
-    });
+    .then((resp) => resp.data);
 };
 
 export const getUser = (userID, config = {}) => {
   if (!userID) throw Error("Pass a userID name to 'getUser'");
   return axios
     .get(`http://localhost:5000/api/users/user/${userID}`, config)
-    .then((resp) => resp.data)
-    .catch((err) => {
-      throw Error(err);
-    });
+    .then((resp) => resp.data);
 };
 
 export const getUsers = (config = {}) => {
   return axios
     .get("http://localhost:5000/api/users", config)
-    .then((resp) => resp.data)
-    .catch((err) => {
-      throw Error(err);
-    });
+    .then((resp) => resp.data);
 };
 
 export const deletePfp = (userID) => {
@@ -67,10 +49,7 @@ export const deletePfp = (userID) => {
   };
   return axios
     .delete(`http://localhost:5000/api/users/user/pfp/${userID}`, config)
-    .then((resp) => resp.data)
-    .catch((err) => {
-      throw Error(err);
-    });
+    .then((resp) => resp.data);
 };
 
 export const changePfp = (pfpID, data) => {
@@ -83,11 +62,11 @@ export const changePfp = (pfpID, data) => {
     },
   };
 
-  return axios
-    .put(`http://localhost:5000/api/users/user/pfp/${pfpID}`, data, config)
-    .catch((err) => {
-      throw Error(err);
-    });
+  return axios.put(
+    `http://localhost:5000/api/users/user/pfp/${pfpID}`,
+    data,
+    config
+  );
 };
 
 export const addPfp = (userID, data) => {
@@ -100,11 +79,11 @@ export const addPfp = (userID, data) => {
     },
   };
 
-  return axios
-    .post(`http://localhost:5000/api/users/user/pfp/${userID}`, data, config)
-    .catch((err) => {
-      throw Error(err);
-    });
+  return axios.post(
+    `http://localhost:5000/api/users/user/pfp/${userID}`,
+    data,
+    config
+  );
 };
 
 export const postCity = (data) => {
@@ -115,9 +94,5 @@ export const postCity = (data) => {
     },
   };
 
-  return axios
-    .post("http://localhost:5000/api/cities/", data, config)
-    .catch((err) => {
-      throw Error(err);
-    });
+  return axios.post("http://localhost:5000/api/cities/", data, config);
 };

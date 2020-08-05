@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { getCity, getCityItineraries } from "../../api";
+import { useFetch } from "../hooks/useFetch";
 import styles from "../../Styles/cityItineraries.module.css";
 
 import LoadingRing from "../LoadingRing";
@@ -16,63 +16,52 @@ import MyModal from "../MyModal";
 //If it does then render <Itineraries />
 
 function CityItineraries(props) {
-  const isPostingItinerary = useSelector(
-    (state) => state.itineraries.isPostingItinerary
-  );
-  const [city, setCity] = useState({});
-  const [fetchingCity, setFetchingCity] = useState(true);
-  const [cityExists, setCityExists] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const currentCity = props.match.params.city;
+  const [city, error, isFetchingCity, fetchCities] = useFetch(
+    getCity,
+    {},
+    true,
+    currentCity
+  );
+
+  useEffect(fetchCities, []);
 
   useEffect(() => {
     document.title = `${currentCity} Itineraries`;
-    let mounted = true;
-    getCity(currentCity)
-      .then((city) => {
-        if (mounted) {
-          setCity(city);
-          setFetchingCity(false);
-        }
-      })
-      .catch((err) => console.log(err));
-
-    return () => (mounted = false);
-  }, [currentCity]);
-
-  useEffect(() => {
-    if (isPostingItinerary) setIsModalOpen(false);
-  }, [isPostingItinerary]);
+    error && console.log(error.response);
+  }, [error]);
 
   return (
     <>
-      {cityExists ? (
-        fetchingCity ? (
-          <LoadingRing absoluteCentered />
-        ) : (
-          <>
-            <CityCard city={city.name} url={city.url} country={city.country} />
-            {isPostingItinerary ? <LoadingRing centered /> : <Itineraries />}
-            <Button
-              text="New Itinerary"
-              onClick={() => setIsModalOpen(true)}
-              centered
-              big
-              disabled={isPostingItinerary}
-            />
-            <MyModal
-              onRequestClose={() => setIsModalOpen(false)}
-              isOpen={isModalOpen}
-            >
-              <NewItineraryTemplate city={currentCity} />
-            </MyModal>
-          </>
-        )
+      {isFetchingCity ? (
+        <LoadingRing absoluteCentered />
       ) : (
-        <NotFound thing={`"${props.match.params.city}"`} />
+        <CityCard city={city.name} url={city.url} country={city.country} />
       )}
     </>
   );
+
+  {
+    // return (
+    //   <>
+    //       <CityCard city={city.name} url={city.url} country={city.country} />
+    //       {isPostingItinerary ? <LoadingRing centered /> : <Itineraries />}
+    //       {/* <Button
+    //             text="New Itinerary"
+    //             onClick={() => setIsModalOpen(true)}
+    //             centered
+    //             big
+    //             disabled={isPostingItinerary}
+    //           />
+    //           <MyModal
+    //             onRequestClose={() => setIsModalOpen(false)}
+    //             isOpen={isModalOpen}
+    //           >
+    //             <NewItineraryTemplate city={currentCity} />
+    //           </MyModal> */}
+    //   </>
+    // );
+  }
 }
 
 const Itineraries = withRouter((props) => {

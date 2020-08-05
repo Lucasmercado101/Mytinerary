@@ -28,8 +28,23 @@ function reducer(state, action) {
       throw new Error();
   }
 }
+/**
+ * Fetches using Axios, cancels on unmount
+ *
+ * @param {Promise} axiosFunction - Function that returns an Axios Promise
+ * @param {String} defaultValue - Default value that returns
+ * @param {Boolean} fetchOnMount - Fetch on component mount?
+ * @param {Boolean} functionArgs - Args for passed function
+ *
+ * @returns [data, error, isFetching, fetchFunction]
+ */
 
-export function useFetch(axiosFunction, defaultValue, fetchOnMount = false) {
+export function useFetch(
+  axiosFunction,
+  defaultValue,
+  fetchOnMount = false,
+  ...functionArgs
+) {
   const [state, dispatch] = useReducer(reducer, {
     data: defaultValue,
     error: null,
@@ -47,7 +62,9 @@ export function useFetch(axiosFunction, defaultValue, fetchOnMount = false) {
     let isMounted = true;
 
     if (state.fetch) {
-      axiosFunction(...state.fetchParams, { cancelToken: source.token })
+      axiosFunction([...state.fetchParams, ...functionArgs], {
+        cancelToken: source.token,
+      })
         .then(
           (data) => isMounted && dispatch({ type: "FETCHED", payload: data })
         )
