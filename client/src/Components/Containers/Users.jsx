@@ -7,12 +7,11 @@ import SearchBar from "../SearchBar";
 import LoadingRing from "../LoadingRing";
 
 function Users() {
-  const [users, , isFetching, fetchUsers] = useFetch(getUsers, []);
+  const [users, , isFetching, fetchUsers] = useFetch(getUsers, [], true);
   const [filteredUsers, setFilteredUsers] = useState(users);
 
   useEffect(() => {
     document.title = "Users";
-    fetchUsers();
   }, []);
 
   useEffect(() => {

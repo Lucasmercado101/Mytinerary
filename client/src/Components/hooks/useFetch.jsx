@@ -49,7 +49,7 @@ export function useFetch(
     data: defaultValue,
     error: null,
     isFetching: fetchOnMount,
-    fetch: false,
+    fetch: fetchOnMount,
     fetchParams: [],
   });
 
@@ -78,7 +78,7 @@ export function useFetch(
       source.cancel();
       isMounted = false;
     };
-  }, [axiosFunction, state.fetch, state.fetchParams]);
+  }, [axiosFunction, state.fetch, state.fetchParams, functionArgs]);
 
   const { data, error, isFetching } = state;
   return [data, error, isFetching, fetch];

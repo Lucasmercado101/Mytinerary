@@ -19,8 +19,6 @@ function Cities() {
   const isLoggedIn = Object.keys(userData).length > 0;
   const thereAreCities = cities.length > 0;
 
-  useEffect(fetchCities, []);
-
   useEffect(() => {
     document.title = "Cities";
   }, []);

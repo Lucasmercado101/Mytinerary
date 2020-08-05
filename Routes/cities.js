@@ -27,7 +27,6 @@ router.get("/:cityName", (req, res) => {
     .then((city) => {
       if (city) return res.send(city);
       else {
-        res.statusMessage = "City does not exist";
         res.sendStatus(404);
       }
     })
@@ -54,7 +53,9 @@ router.post("/", async (req, res) => {
     itineraries: [],
   });
 
-  const cityData = await City.findOne({ name: trimmedCity });
+  const cityData = await City.findOne({ name: trimmedCity }).catch((err) => {
+    res.json({ message: err });
+  });
 
   if (cityData) {
     res.statusMessage = "Error: city already exists";

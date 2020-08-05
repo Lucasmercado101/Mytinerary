@@ -12,40 +12,46 @@ import NewItineraryTemplate from "../NewItineraryTemplate";
 import Button from "../Button";
 import MyModal from "../MyModal";
 
-//Checks if city exists
-//If it does then render <Itineraries />
-
 function CityItineraries(props) {
   const currentCity = props.match.params.city;
+  const [notFound, setNotFound] = useState(false);
   const [city, error, isFetchingCity, fetchCities] = useFetch(
     getCity,
     {},
     true,
     currentCity
   );
+  const cityData = Object.keys(city).length > 0;
 
-  useEffect(fetchCities, []);
+  // useEffect(fetchCities, []);
 
   useEffect(() => {
     document.title = `${currentCity} Itineraries`;
-    error && console.log(error.response);
+  }, []);
+
+  useEffect(() => {
+    if (error) {
+      error.response.status !== 404 && alert(error);
+      error.response.status === 404 && setNotFound(true);
+    }
   }, [error]);
 
   return (
     <>
-      {isFetchingCity ? (
-        <LoadingRing absoluteCentered />
-      ) : (
-        <CityCard city={city.name} url={city.url} country={city.country} />
+      {isFetchingCity && <LoadingRing absoluteCentered />}
+      {cityData && (
+        <>
+          <CityCard city={city.name} url={city.url} country={city.country} />
+          <Itineraries />
+        </>
       )}
+      {notFound && <NotFound thing={"city"} />}
     </>
   );
 
   {
     // return (
     //   <>
-    //       <CityCard city={city.name} url={city.url} country={city.country} />
-    //       {isPostingItinerary ? <LoadingRing centered /> : <Itineraries />}
     //       {/* <Button
     //             text="New Itinerary"
     //             onClick={() => setIsModalOpen(true)}
@@ -65,50 +71,59 @@ function CityItineraries(props) {
 }
 
 const Itineraries = withRouter((props) => {
-  const [itineraries, setItineraries] = useState({});
-  const [fetchingItineraries, setFetchingItineraries] = useState(true);
-  const [deletedAnItinerary, setDeletedAnItinerary] = useState(false);
+  const currentCity = props.match.params.city;
+  const [itineraries, , isFetchingItineraries, fetchItineraries] = useFetch(
+    getCityItineraries,
+    {},
+    true,
+    currentCity
+  );
   const thereAreNoItineraries = Object.keys(itineraries).length === 0;
 
   useEffect(() => {
-    const currentCity = props.match.params.city;
-    let isMounted = true;
+    console.log(isFetchingItineraries);
+  }, [isFetchingItineraries]);
 
-    getCityItineraries(currentCity)
-      .then((itineraries) => {
-        if (isMounted) {
-          setFetchingItineraries(false);
-          setItineraries(itineraries);
-        }
-      })
-      .catch((err) => console.log(err));
-
-    return () => (isMounted = false);
-  }, [props.match.params.city]);
-
-  useEffect(() => {
-    let isMounted = true;
-    if (deletedAnItinerary) {
-      setItineraries({});
-      setFetchingItineraries(true);
-      setDeletedAnItinerary(false);
-      const currentCity = props.match.params.city;
-
-      getCityItineraries(currentCity)
-        .then((itineraries) => {
-          if (isMounted) {
-            setFetchingItineraries(false);
-            setItineraries(itineraries);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
-    return () => (isMounted = false);
-  }, [deletedAnItinerary, props.match.params.city]);
+  {
+    // const [itineraries, setItineraries] = useState({});
+    // const [fetchingItineraries, setFetchingItineraries] = useState(true);
+    // const [deletedAnItinerary, setDeletedAnItinerary] = useState(false);
+    // useEffect(() => {
+    //   const currentCity = props.match.params.city;
+    //   let isMounted = true;
+    //   getCityItineraries(currentCity)
+    //     .then((itineraries) => {
+    //       if (isMounted) {
+    //         setFetchingItineraries(false);
+    //         setItineraries(itineraries);
+    //       }
+    //     })
+    //     .catch((err) => console.log(err));
+    //   return () => (isMounted = false);
+    // }, [props.match.params.city]);
+    // useEffect(() => {
+    //   let isMounted = true;
+    //   if (deletedAnItinerary) {
+    //     setItineraries({});
+    //     setFetchingItineraries(true);
+    //     setDeletedAnItinerary(false);
+    //     const currentCity = props.match.params.city;
+    //     getCityItineraries(currentCity)
+    //       .then((itineraries) => {
+    //         if (isMounted) {
+    //           setFetchingItineraries(false);
+    //           setItineraries(itineraries);
+    //         }
+    //       })
+    //       .catch((err) => console.log(err));
+    //   }
+    //   return () => (isMounted = false);
+    // }, [deletedAnItinerary, props.match.params.city]);
+  }
 
   return (
     <>
-      {fetchingItineraries ? (
+      {isFetchingItineraries ? (
         <LoadingRing centered />
       ) : thereAreNoItineraries ? (
         <h2 style={{ textAlign: "center" }}>There are no Itineraries</h2>
@@ -137,7 +152,7 @@ const Itineraries = withRouter((props) => {
                   rating={rating}
                   price={price}
                   activities={activities}
-                  onDelete={() => setDeletedAnItinerary(true)}
+                  // onDelete={() => setDeletedAnItinerary(true)}
                 />
               )
             )}
