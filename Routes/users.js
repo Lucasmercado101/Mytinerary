@@ -65,7 +65,16 @@ router.get("/", async (req, res) => {
           pfp: user.pfp,
         })
       );
-      res.json(users);
+      const sortedUsers = users.sort(function (user, user2) {
+        if (user.username.toLowerCase() < user2.username.toLowerCase()) {
+          return -1;
+        }
+        if (user.username.toLowerCase() > user2.username.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      });
+      res.json(sortedUsers);
     })
     .catch((err) => {
       res.json({ message: err });

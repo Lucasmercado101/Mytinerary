@@ -3,18 +3,7 @@ import axios from "axios";
 export const getCities = (config = {}) => {
   return axios
     .get("http://localhost:5000/api/cities", config)
-    .then((resp) => {
-      const sortedCities = resp.data.sort(function (city, city2) {
-        if (city.name < city2.name) {
-          return -1;
-        }
-        if (city.name > city2.name) {
-          return 1;
-        }
-        return 0;
-      });
-      return sortedCities;
-    })
+    .then((resp) => resp.data)
     .catch((err) => {
       throw Error(err);
     });
@@ -113,6 +102,21 @@ export const addPfp = (userID, data) => {
 
   return axios
     .post(`http://localhost:5000/api/users/user/pfp/${userID}`, data, config)
+    .catch((err) => {
+      throw Error(err);
+    });
+};
+
+export const postCity = (data) => {
+  if (!data) throw Error("Pass data to 'postCity'");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  };
+
+  return axios
+    .post("http://localhost:5000/api/cities/", data, config)
     .catch((err) => {
       throw Error(err);
     });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFetch } from "../hooks/useFetch";
-import { getUsers, getPfp } from "../../api";
+// import { getUsers, getPfp } from "../../api";
+import { getUsers } from "../../api";
 import User from "../UserCard";
 import SearchBar from "../SearchBar";
 import LoadingRing from "../LoadingRing";
@@ -15,16 +16,13 @@ function Users() {
   }, []);
 
   useEffect(() => {
-    if (users.length > 0) {
-      //TODO do a filter and only geta new array of ones with pfp
-      //* then get the pfp and set filtered users to a ...users + newusers pfp
-      setFilteredUsers(users);
-    }
+    users.length > 0 && setFilteredUsers(users);
   }, [users]);
 
-  // useEffect(() => {
-  //   setFilteredUsers(users);
-  // }, [users]);
+  //TODO Usercard, re renders every time onChange of searchbar
+  //! which causes it to re-fetch userPfp ,
+  //TODO make it a Presentational component, fetch all
+  //TODO pfps here, only once, when all data is fetched
 
   return (
     <>
@@ -47,11 +45,8 @@ function Users() {
         setFilteredResults={setFilteredUsers}
       />
 
-      {isFetching ? (
-        <LoadingRing centered />
-      ) : (
-        filteredUsers.map((user, i) => <User key={i} userData={user} />)
-      )}
+      {(isFetching && <LoadingRing centered />) ||
+        filteredUsers.map((user, i) => <User key={i} userData={user} />)}
     </>
   );
 }

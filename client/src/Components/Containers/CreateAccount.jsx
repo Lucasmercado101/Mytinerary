@@ -57,12 +57,13 @@ function CreateAccount(props) {
     axios
       .post("http://localhost:5000/api/users/create", data, config)
       .then((resp) => {
-        isCreatingUser(false);
-        alert("Account created succesfuly!");
-        props.history.push("/");
+        console.log(resp);
         dispatch(
           logIn({ username: formInfo.username, password: formInfo.password })
         );
+        isCreatingUser(false);
+        alert("Account created succesfuly!");
+        props.history.push("/");
       })
       .catch((error) => {
         alert(error.response.statusText);

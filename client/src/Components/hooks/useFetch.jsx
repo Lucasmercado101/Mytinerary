@@ -4,19 +4,24 @@ import axios from "axios";
 function reducer(state, action) {
   switch (action.type) {
     case "FETCHING":
-      return { ...state, isFetching: true, fetch: true };
+      return {
+        ...state,
+        isFetching: true,
+        fetch: true,
+        fetchParams: [...action.payload],
+      };
     case "FETCHED":
       return {
         ...state,
-        isFetching: false,
         data: action.payload,
+        isFetching: false,
         fetch: false,
       };
     case "FETCHING_ERROR":
       return {
         ...state,
-        isFetching: false,
         error: action.payload,
+        isFetching: false,
         fetch: false,
       };
     default:
@@ -24,16 +29,17 @@ function reducer(state, action) {
   }
 }
 
-export function useFetch(axiosFunction, defaultValue) {
+export function useFetch(axiosFunction, defaultValue, fetchOnMount = false) {
   const [state, dispatch] = useReducer(reducer, {
     data: defaultValue,
     error: null,
-    isFetching: false,
+    isFetching: fetchOnMount,
     fetch: false,
+    fetchParams: [],
   });
 
-  const fetch = () => {
-    dispatch({ type: "FETCHING" });
+  const fetch = (...args) => {
+    dispatch({ type: "FETCHING", payload: [...args] });
   };
 
   useEffect(() => {
@@ -41,7 +47,7 @@ export function useFetch(axiosFunction, defaultValue) {
     let isMounted = true;
 
     if (state.fetch) {
-      axiosFunction({ cancelToken: source.token })
+      axiosFunction(...state.fetchParams, { cancelToken: source.token })
         .then(
           (data) => isMounted && dispatch({ type: "FETCHED", payload: data })
         )
@@ -55,7 +61,7 @@ export function useFetch(axiosFunction, defaultValue) {
       source.cancel();
       isMounted = false;
     };
-  }, [axiosFunction, state.fetch]);
+  }, [axiosFunction, state.fetch, state.fetchParams]);
 
   const { data, error, isFetching } = state;
   return [data, error, isFetching, fetch];

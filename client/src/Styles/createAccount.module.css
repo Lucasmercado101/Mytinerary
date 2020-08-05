@@ -51,8 +51,4 @@
   overflow: hidden;
   background-position: center;
   background-size: cover;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
 }

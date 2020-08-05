@@ -4,17 +4,19 @@ import styles from "../Styles/searchBar.module.css";
 function SearchBar({ label, setFilteredResults, data, filter }) {
   const filterData = (e) => {
     const searchInput = e.target.value.toLowerCase();
-    let filteredResults = data.filter((object) =>
-      object[filter].toLowerCase().includes(searchInput)
-    );
-    const sortedFilteredResults = filteredResults.sort(function (
-      object1,
-      object2
-    ) {
-      if (object1[filter] < object2[filter]) {
+    let filteredResults = searchInput
+      ? data.filter((object) =>
+          object[filter].toLowerCase().includes(searchInput)
+        )
+      : data;
+
+    const sortedFilteredResults = filteredResults.sort((object1, object2) => {
+      const string1 = object1[filter].toLowerCase();
+      const string2 = object2[filter].toLowerCase();
+
+      if (string1 < string2) {
         return -1;
-      }
-      if (object1[filter] > object2[filter]) {
+      } else if (string1 > string2) {
         return 1;
       }
       return 0;

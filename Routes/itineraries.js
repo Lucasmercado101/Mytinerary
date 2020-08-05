@@ -88,18 +88,4 @@ router.post("/:cityName", async (req, res) => {
     });
 });
 
-router.post("/", async (req, res) => {
-  const itinerary = new Itineraries({
-    city: req.body.city,
-    itineraries: [],
-  });
-
-  await itinerary
-    .save()
-    .then(() => res.sendStatus(200))
-    .catch((err) => {
-      res.json({ message: err });
-    });
-});
-
 module.exports = router;
