@@ -1,73 +1,59 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getCities } from "../../api";
 import axios from "axios";
+import CityCard from "../CityCard";
+import LoadingRing from "../LoadingRing";
+import SearchBar from "../SearchBar";
+import { useFetch } from "../hooks/useFetch";
 // import usePrevious from "../hooks/usePrevious";
 // import MyModal from "../MyModal";
 // import Button from "../Button";
-import CityCard from "../CityCard";
 // import NewCityTemplate from "../NewCityTemplate";
-import LoadingRing from "../LoadingRing";
-import SearchBar from "../SearchBar";
 
 function Cities() {
-  // const isPostingCity = useSelector((state) => state.cities.isPostingCity);
-  // const postingCityError = useSelector(
-  //   (state) => state.cities.postingCityError
-  // );
-  // const userData = useSelector((state) => state.user.userData);
-  // const prevIsPostingCity = usePrevious(isPostingCity);
-  const [isFetching, setIsFetching] = useState(true);
-  const [cities, setCities] = useState([]);
+  const [cities, , isFetching, fetchCities] = useFetch(getCities, []);
   const [filteredCities, setFilteredCities] = useState(cities);
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  const dispatch = useDispatch();
+  {
+    // const isPostingCity = useSelector((state) => state.cities.isPostingCity);
+    // const postingCityError = useSelector(
+    //   (state) => state.cities.postingCityError
+    // );
+    // const userData = useSelector((state) => state.user.userData);
+    // const prevIsPostingCity = usePrevious(isPostingCity);
+    // const [isModalOpen, setIsModalOpen] = useState(false);
+    // const dispatch = useDispatch();
+  }
 
   useEffect(() => {
     document.title = "Cities";
-    let source = axios.CancelToken.source();
-    let isMounted = true;
-
-    getCities({ cancelToken: source.token })
-      .then((sortedCities) => {
-        if (isMounted) {
-          setIsFetching(false);
-          setCities(sortedCities);
-        }
-      })
-      .catch((err) => console.log(err));
-
-    return () => {
-      source.cancel();
-      isMounted = false;
-    };
-  }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (postingCityError) {
-  //     alert(postingCityError);
-  //     dispatch({ type: "CLEAR_POSTING_CITY_ERROR" });
-  //   }
-  // }, [postingCityError, dispatch]);
-
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   const justPostedACity =
-  //     isPostingCity === false && prevIsPostingCity === true;
-  //   //TODO: fix this, since removed previous dispatch
-  //   //! may not work
-  //   if (justPostedACity && !postingCityError) {
-  //     getCities().then((sortedCities) => {
-  //       if (isMounted) {
-  //         setIsFetching(false);
-  //         setCities(sortedCities);
-  //         setIsModalOpen(false);
-  //       }
-  //     });
-  //   }
-  //   return () => (isMounted = false);
-  // }, [dispatch, isPostingCity, prevIsPostingCity, postingCityError]);
-
+    fetchCities();
+  }, []);
+  {
+    // useEffect(() => {
+    //   if (postingCityError) {
+    //     alert(postingCityError);
+    //     dispatch({ type: "CLEAR_POSTING_CITY_ERROR" });
+    //   }
+    // }, [postingCityError, dispatch]);
+    // useEffect(() => {
+    //   let isMounted = true;
+    //   const justPostedACity =
+    //     isPostingCity === false && prevIsPostingCity === true;
+    //   //TODO: fix this, since removed previous dispatch
+    //   //! may not work
+    //   if (justPostedACity && !postingCityError) {
+    //     getCities().then((sortedCities) => {
+    //       if (isMounted) {
+    //         setIsFetching(false);
+    //         setCities(sortedCities);
+    //         setIsModalOpen(false);
+    //       }
+    //     });
+    //   }
+    //   return () => (isMounted = false);
+    // }, [dispatch, isPostingCity, prevIsPostingCity, postingCityError]);
+  }
   useEffect(() => {
     setFilteredCities(cities);
   }, [cities]);
@@ -115,6 +101,7 @@ function Cities() {
         </ul>
       )}
       {/* //TODO Re-add this */}
+
       {/* {Object.keys(userData).length > 0 ? (
         <>
           <Button

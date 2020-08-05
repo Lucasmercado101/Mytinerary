@@ -6,12 +6,8 @@ const authenticateToken = require("../authenticateToken");
 
 router.get("/", (req, res) => {
   City.find()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.json({ message: err });
-    });
+    .then((data) => res.json(data))
+    .catch((err) => res.json({ message: err }));
 });
 
 router.get("/:cityName", (req, res) => {

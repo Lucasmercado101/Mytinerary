@@ -9,19 +9,20 @@ function UserCard({ userData }) {
   const [pfp, setPfp] = useState();
 
   useEffect(() => {
-    let isMounted = true;
-    let source = axios.CancelToken.source();
-    if (userData.pfp) {
-      getPfp(userData.pfp, { cancelToken: source.token })
-        .then((data) => {
-          if (isMounted) setPfp(data);
-        })
-        .catch(() => {});
-    }
-    return () => {
-      isMounted = false;
-      source.cancel();
-    };
+    console.log(userData);
+    //   let isMounted = true;
+    //   let source = axios.CancelToken.source();
+    //   if (userData.pfp) {
+    //     getPfp(userData.pfp, { cancelToken: source.token })
+    //       .then((data) => {
+    //         if (isMounted) setPfp(data);
+    //       })
+    //       .catch(() => {});
+    //   }
+    //   return () => {
+    //     isMounted = false;
+    //     source.cancel();
+    //   };
   }, [userData]);
 
   return (
@@ -30,14 +31,10 @@ function UserCard({ userData }) {
         <img
           className={styles.pfp__image}
           alt={userData.username}
-          src={pfp || genericPfp}
+          src={userData.pfpData || genericPfp}
         ></img>
         <h2 className={styles.pfp__text}>{userData.username}</h2>
       </div>
-      <ul className={styles.detailsList}>
-        <p className={styles.detailsList__item}>{userData.firstName}</p>
-        <p className={styles.detailsList__item}>{userData.lastName}</p>
-      </ul>
     </MyLink>
   );
 }
