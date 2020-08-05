@@ -23,8 +23,6 @@ function CityItineraries(props) {
   );
   const cityData = Object.keys(city).length > 0;
 
-  // useEffect(fetchCities, []);
-
   useEffect(() => {
     document.title = `${currentCity} Itineraries`;
   }, []);
@@ -48,26 +46,6 @@ function CityItineraries(props) {
       {notFound && <NotFound thing={"city"} />}
     </>
   );
-
-  {
-    // return (
-    //   <>
-    //       {/* <Button
-    //             text="New Itinerary"
-    //             onClick={() => setIsModalOpen(true)}
-    //             centered
-    //             big
-    //             disabled={isPostingItinerary}
-    //           />
-    //           <MyModal
-    //             onRequestClose={() => setIsModalOpen(false)}
-    //             isOpen={isModalOpen}
-    //           >
-    //             <NewItineraryTemplate city={currentCity} />
-    //           </MyModal> */}
-    //   </>
-    // );
-  }
 }
 
 const Itineraries = withRouter((props) => {
@@ -161,6 +139,26 @@ const Itineraries = withRouter((props) => {
       )}
     </>
   );
+
+  {
+    // return (
+    //   <>
+    //       {/* <Button
+    //             text="New Itinerary"
+    //             onClick={() => setIsModalOpen(true)}
+    //             centered
+    //             big
+    //             disabled={isPostingItinerary}
+    //           />
+    //           <MyModal
+    //             onRequestClose={() => setIsModalOpen(false)}
+    //             isOpen={isModalOpen}
+    //           >
+    //             <NewItineraryTemplate city={currentCity} />
+    //           </MyModal> */}
+    //   </>
+    // );
+  }
 });
 
 export default CityItineraries;

@@ -7,7 +7,7 @@ import SearchBar from "../SearchBar";
 import LoadingRing from "../LoadingRing";
 
 function Users() {
-  const [users, , isFetching, fetchUsers] = useFetch(getUsers, [], true);
+  const [users, , isFetching] = useFetch(getUsers, [], true);
   const [filteredUsers, setFilteredUsers] = useState(users);
 
   useEffect(() => {
