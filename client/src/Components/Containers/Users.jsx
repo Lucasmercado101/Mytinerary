@@ -18,10 +18,10 @@ function Users() {
     users.length > 0 && setFilteredUsers(users);
   }, [users]);
 
-  //TODO Usercard, re renders every time onChange of searchbar
-  //! which causes it to re-fetch userPfp ,
-  //TODO make it a Presentational component, fetch all
-  //TODO pfps here, only once, when all data is fetched
+  //FIXME: Usercard, re renders every time onChange of searchbar
+  //which causes it to re-fetch userPfp ,
+  //make it a Presentational component, fetch all
+  //pfps here, only once, when all data is fetched
 
   return (
     <>

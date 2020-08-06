@@ -10,14 +10,14 @@ import NewCityTemplate from "../NewCityTemplate";
 
 function Cities() {
   const userData = useSelector((state) => state.user.userData);
+  const isLoggedIn = Object.keys(userData).length > 0;
   const [cities, , isFetchingCities, fetchCities] = useFetch(
     getCities,
     [],
     true
   );
-  const [filteredCities, setFilteredCities] = useState([]);
-  const isLoggedIn = Object.keys(userData).length > 0;
   const thereAreCities = cities.length > 0;
+  const [filteredCities, setFilteredCities] = useState([]);
 
   useEffect(() => {
     document.title = "Cities";

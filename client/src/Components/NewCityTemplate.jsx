@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { postCity } from "../api";
 import styles from "../Styles/newCityTemplate.module.css";
 import Button from "./Button";
@@ -7,7 +7,6 @@ import MyModal from "./MyModal";
 
 function NewCityTemplate({ onPost }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
-  const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");

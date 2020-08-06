@@ -6,7 +6,6 @@ import MyLink from "./MyLink";
 import LoadingRing from "./LoadingRing";
 import styles from "../Styles/itinerary.module.css";
 import clockIcon from "../Images/clock-icon.svg";
-import likeIcon from "../Images/like-icon.svg";
 import genericPfp from "../Images/generic-user.svg";
 import deleteIcon from "../Images/delete.svg";
 
@@ -29,6 +28,7 @@ function Itinerary({
   const [showActivities, setShowActivities] = useState(false);
   const isLoggedInUserItinerary = creator === userData._id;
 
+  //TODO: fetch pfpData on parent component, not here
   useEffect(() => {
     let isMounted = true;
 
@@ -124,15 +124,6 @@ function Itinerary({
             )}
           </header>
           <section className={styles.description}>
-            <p className={styles.description__item}>
-              <object
-                style={{ height: "1.2em", marginRight: "5px" }}
-                aria-label={"Heart icon"}
-                data={likeIcon}
-                type="image/svg+xml"
-              />
-              {rating}
-            </p>
             <p className={styles.description__item}>
               <object
                 style={{ height: "1.5em", marginRight: "5px" }}

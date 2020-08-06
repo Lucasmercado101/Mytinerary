@@ -96,3 +96,18 @@ export const postCity = (data) => {
 
   return axios.post("http://localhost:5000/api/cities/", data, config);
 };
+
+export const postItinerary = (data) => {
+  if (!data) throw Error("Pass data to 'postCity'");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  };
+
+  return axios.post(
+    `http://localhost:5000/api/itineraries/${data.city}`,
+    data,
+    config
+  );
+};

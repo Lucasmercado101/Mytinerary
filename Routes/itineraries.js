@@ -43,24 +43,29 @@ router.delete("/", async (req, res) => {
 });
 
 router.post("/:cityName", async (req, res) => {
+  const activitiesArray = req.body.activities.map((activity) =>
+    activity.trim()
+  );
+  const hashtagsArray = req.body.hashtags.map((hashtag) => hashtag.trim());
+
   const activities = new Activities({
-    activities: [...req.body.activities],
+    activities: activitiesArray,
+  });
+
+  const itinerary = new Itinerary({
+    title: req.body.title.trim(),
+    rating: "0",
+    creator: req.body.creator,
+    time: req.body.time.trim(),
+    price: req.body.price.trim(),
+    activities: activities._id,
+    hashtags: hashtagsArray,
   });
 
   await activities
     .save()
-    .then(async (resp) => {
-      const itinerary = new Itinerary({
-        title: req.body.title,
-        rating: "0",
-        creator: req.body.creator,
-        time: req.body.time,
-        price: req.body.price,
-        activities: resp._id,
-        hashtags: [...req.body.hashtags],
-      });
-
-      await Itineraries.updateOne(
+    .then(() =>
+      Itineraries.updateOne(
         { city: req.params.cityName },
         {
           $push: {
@@ -68,24 +73,20 @@ router.post("/:cityName", async (req, res) => {
           },
         }
       )
-        .then(async () => {
-          await User.findByIdAndUpdate(
-            req.body.creator,
-            {
-              $push: {
-                itineraries: { itinerary: itinerary._id, activities: resp._id },
-              },
-            },
-            { useFindAndModify: false }
-          )
-            .then(() => res.status(200).end())
-            .catch((err) => res.json({ message: err }));
-        })
-        .catch((err) => res.json({ message: err }));
-    })
-    .catch((err) => {
-      res.json({ message: err });
-    });
+    )
+    .then(() =>
+      User.findByIdAndUpdate(
+        req.body.creator,
+        {
+          $push: {
+            itineraries: { itinerary: itinerary._id, activities: resp._id },
+          },
+        },
+        { useFindAndModify: false }
+      )
+    )
+    .then(() => res.sendStatus(200))
+    .catch((err) => res.json({ message: err }));
 });
 
 module.exports = router;

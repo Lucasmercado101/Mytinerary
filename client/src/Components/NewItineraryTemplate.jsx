@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { postItinerary } from "../Redux/Actions/itinerariesActions";
+import { useSelector } from "react-redux";
+import { postItinerary } from "../api";
 import styles from "../Styles/itinerary.module.css";
+
 import clockIcon from "../Images/clock-icon.svg";
 import genericPfp from "../Images/generic-user.svg";
+
+import Button from "./Button";
+import MyModal from "./MyModal";
 
 const styleButton = {
   width: "50%",
@@ -13,21 +17,35 @@ const styleButton = {
   fontSize: "2rem",
 };
 
-function Itinerary({ city }) {
+function Itinerary({ city, onPost }) {
+  const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [hours, setHours] = useState("");
   const [price, setPrice] = useState("");
   const [title, setTitle] = useState("");
   const [hashtag1, setHashtag1] = useState("");
   const [hashtag2, setHashtag2] = useState("");
   const [hashtag3, setHashtag3] = useState("");
+  // TODO: Try to implement activities into a reducer?
   const [activities, setactivities] = useState([""]);
-  const dispatch = useDispatch();
   const userData = useSelector((state) => state.user.userData);
-  const isPostingItinerary = useSelector(
-    (state) => state.itineraries.isPostingItinerary
-  );
-
   const userPfp = useSelector((state) => state.user.userPfp);
+
+  // TODO: change some useStates into this singular state & function
+
+  // const [formInfo, setFormInfo] = useState({
+  //   username: "",
+  //   password: "",
+  //   email: "",
+  //   firstName: "",
+  //   lastName: "",
+  //   country: "England",
+  // });
+
+  // function handleFormInput(e) {
+  //   const { name, value } = e.target;
+  //   setFormInfo({ ...formInfo, [name]: value });
+  // }
 
   function handlePriceInput(e) {
     const price = e.target.value;
@@ -92,7 +110,6 @@ function Itinerary({ city }) {
 
     const itinerary = {
       title: title,
-      rating: 0,
       creator: userData._id,
       time: hours,
       price: price,
@@ -100,7 +117,12 @@ function Itinerary({ city }) {
       city,
       activities: [...activities],
     };
-    dispatch(postItinerary(itinerary));
+    postItinerary(itinerary)
+      .then(() => {
+        if (onPost) onPost();
+      })
+      .catch((err) => alert(err));
+
     setHours("");
     setPrice("");
     setTitle("");
@@ -111,136 +133,153 @@ function Itinerary({ city }) {
   }
 
   return (
-    <form onSubmit={submitItinerary}>
-      <article className={styles.itinerary}>
-        <header className={styles.header}>
-          <img
-            className={styles.header__photo}
-            alt={userData.username}
-            src={userPfp || genericPfp}
-          />
-          <h3 className={styles.header__title}>
-            <input
-              size="18"
-              type="text"
-              onChange={(e) => setTitle(e.target.value)}
-              name={title}
-              value={title}
-              required
-            ></input>
-          </h3>
-        </header>
-        <section className={styles.description}>
-          <p className={styles.description__item}>
-            <object
-              style={{ height: "1.5em", marginRight: "5px" }}
-              data={clockIcon}
-              aria-label={"Clock icon"}
-              type="image/svg+xml"
-            />
-            <input
-              size="1"
-              onChange={handleHoursInput}
-              value={hours}
-              className={styles.activities__templateInput}
-              required
-            ></input>
-            HS
-          </p>
-          <p className={styles.description__item}>
-            $
-            <input
-              size="2"
-              onChange={handlePriceInput}
-              value={price}
-              className={styles.activities__templateInput}
-              required
-            ></input>
-          </p>
-        </section>
-        <section className={styles.hashtags}>
-          <p>
-            #
-            <input
-              size="7"
-              type="text"
-              name="hashtag1"
-              onChange={handleHashtagsInput}
-              value={hashtag1}
-              className={styles.activities__templateInput}
-            ></input>
-          </p>
-          <p>
-            #
-            <input
-              size="7"
-              type="text"
-              name="hashtag2"
-              onChange={handleHashtagsInput}
-              value={hashtag2}
-              className={styles.activities__templateInput}
-            ></input>
-          </p>
-          <p>
-            #
-            <input
-              size="7"
-              type="text"
-              name="hashtag3"
-              onChange={handleHashtagsInput}
-              value={hashtag3}
-              className={styles.activities__templateInput}
-            ></input>
-          </p>
-        </section>
-        <section>
-          <section className={styles.activities}>
-            <h4 className={styles.activities__title}>Activities</h4>
-            <ul style={{ listStyle: "none" }}>
-              {activities.map((value, i) => (
-                <li key={i}>
-                  <input
-                    size="30"
-                    type="text"
-                    value={value}
-                    className={styles.activities__input}
-                    onChange={(e) => handleActivitiesChange(i, e)}
-                    required
-                  ></input>
-                </li>
-              ))}
-              <li>
-                <button style={styleButton} onClick={(e) => addActivity(e)}>
-                  +
-                </button>
-                <button style={styleButton} onClick={(e) => removeActivity(e)}>
-                  -
-                </button>
-              </li>
-              <li
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  backgroundColor: "rgb(49, 49, 49)",
-                }}
-              >
+    <>
+      <Button
+        text="New Itinerary"
+        onClick={() => setIsModalOpen(true)}
+        centered
+        big
+        disabled={isDeletingUser}
+      />
+      <MyModal
+        onRequestClose={() => setIsModalOpen(false)}
+        isOpen={isModalOpen}
+      >
+        <form onSubmit={submitItinerary}>
+          <article className={styles.itinerary}>
+            <header className={styles.header}>
+              <img
+                className={styles.header__photo}
+                alt={userData.username}
+                src={userPfp || genericPfp}
+              />
+              <h3 className={styles.header__title}>
                 <input
-                  style={{
-                    color: "white",
-                    background: "transparent",
-                    fontSize: "1.5rem",
-                    border: "none",
-                  }}
-                  type="submit"
-                  value="Submit"
-                  disabled={isPostingItinerary}
+                  size="18"
+                  type="text"
+                  onChange={(e) => setTitle(e.target.value)}
+                  name={title}
+                  value={title}
+                  required
+                ></input>
+              </h3>
+            </header>
+            <section className={styles.description}>
+              <p className={styles.description__item}>
+                <object
+                  style={{ height: "1.5em", marginRight: "5px" }}
+                  data={clockIcon}
+                  aria-label={"Clock icon"}
+                  type="image/svg+xml"
                 />
-              </li>
-            </ul>
-          </section>
-        </section>
-      </article>
-    </form>
+                <input
+                  size="1"
+                  onChange={handleHoursInput}
+                  value={hours}
+                  className={styles.activities__templateInput}
+                  required
+                ></input>
+                HS
+              </p>
+              <p className={styles.description__item}>
+                $
+                <input
+                  size="2"
+                  onChange={handlePriceInput}
+                  value={price}
+                  className={styles.activities__templateInput}
+                  required
+                ></input>
+              </p>
+            </section>
+            <section className={styles.hashtags}>
+              <p>
+                #
+                <input
+                  size="7"
+                  type="text"
+                  name="hashtag1"
+                  onChange={handleHashtagsInput}
+                  value={hashtag1}
+                  className={styles.activities__templateInput}
+                ></input>
+              </p>
+              <p>
+                #
+                <input
+                  size="7"
+                  type="text"
+                  name="hashtag2"
+                  onChange={handleHashtagsInput}
+                  value={hashtag2}
+                  className={styles.activities__templateInput}
+                ></input>
+              </p>
+              <p>
+                #
+                <input
+                  size="7"
+                  type="text"
+                  name="hashtag3"
+                  onChange={handleHashtagsInput}
+                  value={hashtag3}
+                  className={styles.activities__templateInput}
+                ></input>
+              </p>
+            </section>
+            <section>
+              <section className={styles.activities}>
+                <h4 className={styles.activities__title}>Activities</h4>
+                <ul style={{ listStyle: "none" }}>
+                  {activities.map((value, i) => (
+                    <li key={i}>
+                      <input
+                        size="30"
+                        type="text"
+                        value={value}
+                        className={styles.activities__input}
+                        onChange={(e) => handleActivitiesChange(i, e)}
+                        required
+                      ></input>
+                    </li>
+                  ))}
+                  <li>
+                    <button style={styleButton} onClick={(e) => addActivity(e)}>
+                      +
+                    </button>
+                    <button
+                      style={styleButton}
+                      onClick={(e) => removeActivity(e)}
+                    >
+                      -
+                    </button>
+                  </li>
+                  <li
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      backgroundColor: "rgb(49, 49, 49)",
+                    }}
+                  >
+                    <input
+                      style={{
+                        color: "white",
+                        background: "transparent",
+                        fontSize: "1.5rem",
+                        border: "none",
+                      }}
+                      type="submit"
+                      value="Submit"
+                      disabled={isDeletingUser}
+                    />
+                  </li>
+                </ul>
+              </section>
+            </section>
+          </article>
+        </form>
+      </MyModal>
+    </>
   );
 }
 

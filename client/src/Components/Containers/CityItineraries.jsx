@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { getCity, getCityItineraries } from "../../api";
 import { useFetch } from "../hooks/useFetch";
@@ -9,13 +10,11 @@ import CityCard from "../CityCard";
 import NotFound from "./NotFound";
 import Itinerary from "../Itinerary";
 import NewItineraryTemplate from "../NewItineraryTemplate";
-import Button from "../Button";
-import MyModal from "../MyModal";
 
 function CityItineraries(props) {
   const currentCity = props.match.params.city;
   const [notFound, setNotFound] = useState(false);
-  const [city, error, isFetchingCity, fetchCities] = useFetch(
+  const [city, error, isFetchingCity] = useFetch(
     getCity,
     {},
     true,
@@ -25,7 +24,7 @@ function CityItineraries(props) {
 
   useEffect(() => {
     document.title = `${currentCity} Itineraries`;
-  }, []);
+  }, [currentCity]);
 
   useEffect(() => {
     if (error) {
@@ -49,6 +48,8 @@ function CityItineraries(props) {
 }
 
 const Itineraries = withRouter((props) => {
+  const userData = useSelector((state) => state.user.userData);
+  const isLoggedIn = Object.keys(userData).length > 0;
   const currentCity = props.match.params.city;
   const [itineraries, , isFetchingItineraries, fetchItineraries] = useFetch(
     getCityItineraries,
@@ -57,47 +58,6 @@ const Itineraries = withRouter((props) => {
     currentCity
   );
   const thereAreNoItineraries = Object.keys(itineraries).length === 0;
-
-  useEffect(() => {
-    console.log(isFetchingItineraries);
-  }, [isFetchingItineraries]);
-
-  {
-    // const [itineraries, setItineraries] = useState({});
-    // const [fetchingItineraries, setFetchingItineraries] = useState(true);
-    // const [deletedAnItinerary, setDeletedAnItinerary] = useState(false);
-    // useEffect(() => {
-    //   const currentCity = props.match.params.city;
-    //   let isMounted = true;
-    //   getCityItineraries(currentCity)
-    //     .then((itineraries) => {
-    //       if (isMounted) {
-    //         setFetchingItineraries(false);
-    //         setItineraries(itineraries);
-    //       }
-    //     })
-    //     .catch((err) => console.log(err));
-    //   return () => (isMounted = false);
-    // }, [props.match.params.city]);
-    // useEffect(() => {
-    //   let isMounted = true;
-    //   if (deletedAnItinerary) {
-    //     setItineraries({});
-    //     setFetchingItineraries(true);
-    //     setDeletedAnItinerary(false);
-    //     const currentCity = props.match.params.city;
-    //     getCityItineraries(currentCity)
-    //       .then((itineraries) => {
-    //         if (isMounted) {
-    //           setFetchingItineraries(false);
-    //           setItineraries(itineraries);
-    //         }
-    //       })
-    //       .catch((err) => console.log(err));
-    //   }
-    //   return () => (isMounted = false);
-    // }, [deletedAnItinerary, props.match.params.city]);
-  }
 
   return (
     <>
@@ -108,7 +68,7 @@ const Itineraries = withRouter((props) => {
       ) : (
         <>
           <h2 className={styles.title}>Available Itineraries</h2>
-          <div className={styles.itineraries}>
+          <ul className={styles.itineraries}>
             {itineraries.map(
               ({
                 _id,
@@ -120,45 +80,29 @@ const Itineraries = withRouter((props) => {
                 price,
                 activities,
               }) => (
-                <Itinerary
-                  key={_id}
-                  id={_id}
-                  title={title}
-                  time={time}
-                  creator={creator}
-                  hashtags={hashtags}
-                  rating={rating}
-                  price={price}
-                  activities={activities}
-                  // onDelete={() => setDeletedAnItinerary(true)}
-                />
+                <li key={_id}>
+                  <Itinerary
+                    id={_id}
+                    title={title}
+                    time={time}
+                    creator={creator}
+                    hashtags={hashtags}
+                    rating={rating}
+                    price={price}
+                    activities={activities}
+                    // onDelete={() => setDeletedAnItinerary(true)}
+                  />
+                </li>
               )
             )}
-          </div>
+          </ul>
         </>
+      )}
+      {isLoggedIn && (
+        <NewItineraryTemplate city={currentCity} onPost={fetchItineraries} />
       )}
     </>
   );
-
-  {
-    // return (
-    //   <>
-    //       {/* <Button
-    //             text="New Itinerary"
-    //             onClick={() => setIsModalOpen(true)}
-    //             centered
-    //             big
-    //             disabled={isPostingItinerary}
-    //           />
-    //           <MyModal
-    //             onRequestClose={() => setIsModalOpen(false)}
-    //             isOpen={isModalOpen}
-    //           >
-    //             <NewItineraryTemplate city={currentCity} />
-    //           </MyModal> */}
-    //   </>
-    // );
-  }
 });
 
 export default CityItineraries;
