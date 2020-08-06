@@ -5,6 +5,7 @@ const Itineraries = require("../models/itineraries");
 const Activities = require("../models/activities");
 const Itinerary = require("../models/itinerary");
 const User = require("../models/user");
+const itinerary = require("../models/itinerary");
 
 router.get("/cityItineraries/:cityName", async (req, res) => {
   await Itineraries.findOne({ city: req.params.cityName })
@@ -16,33 +17,42 @@ router.get("/cityItineraries/:cityName", async (req, res) => {
 
 router.use(authenticateToken);
 
-router.delete("/", async (req, res) => {
-  const { itineraryId, activitiesId } = req.query;
+router.delete("/:ID", async (req, res) => {
+  const itineraryID = req.params.ID;
 
-  await Activities.findByIdAndDelete(activitiesId, { useFindAndModify: false })
-    .then(
-      async () =>
-        await Itineraries.updateOne(
-          {},
-          {
-            $pull: {
-              itineraries: {
-                _id: {
-                  $in: itineraryId,
-                },
-              },
-            },
-          }
-        )
-          .then(() => {
-            res.status(200).end();
-          })
-          .catch((err) => console.log(err))
+  const itinerary = await Itineraries.findOne(
+    {
+      "itineraries._id": itineraryID,
+    },
+    { "itineraries.$": 1 }
+  );
+
+  const activitiesID = itinerary.itineraries[0].activities;
+
+  res.sendStatus(200);
+
+  await Itineraries.updateOne(
+    {},
+    {
+      $pull: {
+        itineraries: {
+          _id: {
+            $in: itineraryID,
+          },
+        },
+      },
+    }
+  )
+    .then(() =>
+      Activities.findByIdAndDelete(activitiesID, { useFindAndModify: false })
     )
-    .catch((err) => console.log(err));
+    .then(() => res.sendStatus(200))
+    .catch((err) => err);
 });
 
 router.post("/:cityName", async (req, res) => {
+  //TODO: CHeck if itinerary exists, compare both same name AND userID
+
   const activitiesArray = req.body.activities.map((activity) =>
     activity.trim()
   );

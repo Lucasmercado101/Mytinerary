@@ -120,6 +120,7 @@ function Itinerary({ city, onPost }) {
     postItinerary(itinerary)
       .then(() => {
         if (onPost) onPost();
+        setIsModalOpen(false);
       })
       .catch((err) => alert(err));
 

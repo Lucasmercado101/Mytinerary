@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getUser, getPfp } from "../api";
-import axios from "axios";
-import MyLink from "./MyLink";
-import LoadingRing from "./LoadingRing";
+import {
+  getUser,
+  getPfp,
+  getActivities,
+  deleteItinerary as delItinerary,
+} from "../api";
+import { useFetch } from "./hooks/useFetch";
 import styles from "../Styles/itinerary.module.css";
+
 import clockIcon from "../Images/clock-icon.svg";
 import genericPfp from "../Images/generic-user.svg";
 import deleteIcon from "../Images/delete.svg";
 
+import MyLink from "./MyLink";
+import LoadingRing from "./LoadingRing";
+
 function Itinerary({
   title,
   time,
-  rating,
   price,
   creator,
   hashtags,
@@ -20,79 +26,61 @@ function Itinerary({
   id,
   onDelete,
 }) {
+  const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
+  const [data, , isFetchingData, fetchData] = useFetch(
+    getUser,
+    {},
+    false,
+    creator
+  );
+  const [pfpData, , , fetchPfp] = useFetch(getPfp, "", false);
   const userData = useSelector((state) => state.user.userData);
   const userPfp = useSelector((state) => state.user.userPfp);
-  const [isFetchingData, setIsFetchingData] = useState(true);
-  const [deleting, setDeleting] = useState(false);
   const [itineraryUserData, setItineraryUserData] = useState({});
   const [showActivities, setShowActivities] = useState(false);
+  const [isDeletingItinerary, setIsDeletingItinerary] = useState(false);
   const isLoggedInUserItinerary = creator === userData._id;
 
-  //TODO: fetch pfpData on parent component, not here
   useEffect(() => {
-    let isMounted = true;
-
-    if (isLoggedInUserItinerary) {
-      setIsFetchingData(false);
-    } else {
-      let fetchedUserData = {};
-      getUser(creator)
-        .then((user) => {
-          fetchedUserData = { username: user.username, userPage: user._id };
-          if (isMounted && user.pfp) return getPfp(user.pfp);
-        })
-        .then((pfp) => {
-          if (isMounted) {
-            fetchedUserData = {
-              ...fetchedUserData,
-              pfp,
-            };
-          }
-        })
-        .catch((err) => console.log(err))
-        .finally(() => {
-          if (isMounted) {
-            setIsFetchingData(false);
-            setItineraryUserData(fetchedUserData);
-          }
-        });
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [isLoggedInUserItinerary, creator]);
-
-  useEffect(() => {
-    if (isLoggedInUserItinerary) {
+    isLoggedInUserItinerary &&
       setItineraryUserData({
         username: userData.username,
         pfp: userPfp,
         userPage: userData._id,
       });
-    }
   }, [userData, userPfp, isLoggedInUserItinerary]);
 
-  const deleteItinerary = async () => {
-    if (!deleting) {
-      setDeleting(true);
-      await axios
-        .delete("http://localhost:5000/api/itineraries/", {
-          params: {
-            itineraryId: id,
-            activitiesId: activities,
-          },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        })
-        .then(() => {
-          if (onDelete) onDelete();
-        })
-        .catch((err) => {
-          setDeleting(false);
-          console.log(err);
-        });
+  useEffect(() => {
+    !isLoggedInUserItinerary && fetchData();
+  }, [isLoggedInUserItinerary, fetchData]);
+
+  //TODO: fetch pfpData on parent component, not here
+  useEffect(() => {
+    const thereIsData = Object.keys(data).length > 0;
+    if (thereIsData) {
+      setItineraryUserData({
+        username: data.username,
+        userPage: data._id,
+      });
+      data.pfp && fetchPfp(data.pfp);
     }
+  }, [data, fetchPfp, setItineraryUserData]);
+
+  useEffect(() => {
+    pfpData &&
+      setItineraryUserData((i) => {
+        return { ...i, pfp: pfpData };
+      });
+  }, [pfpData, data]);
+
+  const deleteItinerary = async () => {
+    setIsDeletingItinerary(true);
+    delItinerary(id)
+      .then(() => {
+        if (onDelete) onDelete();
+      })
+      .catch((err) => alert(err))
+      .finally(() => setIsDeletingItinerary(false));
   };
 
   return (
@@ -111,13 +99,14 @@ function Itinerary({
               />
             </MyLink>
             <h3 className={styles.header__title}>{title}</h3>
-            {isLoggedInUserItinerary && !deleting ? (
+            {isLoggedInUserItinerary && !isDeletingUser ? (
               <img
                 className={styles.header__configure}
                 src={deleteIcon}
                 onClick={() => deleteItinerary()}
                 title={`Delete '${title}'`}
                 alt={`Delete '${title}'`}
+                disabled={isDeletingItinerary}
               />
             ) : (
               ""
@@ -162,21 +151,19 @@ function Itinerary({
 }
 
 function Activities({ activities }) {
-  const [allActivities, setAllActivities] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/activities/` + activities)
-      .then((resp) => setAllActivities(resp.data.activities))
-      .catch((err) => console.log(err));
-  }, [activities]);
+  const [data, , isFetchingData] = useFetch(
+    getActivities,
+    {},
+    true,
+    activities
+  );
 
   return (
     <section className={styles.activities}>
       <h4 className={styles.activities__title}>Activities</h4>
-      {allActivities.length > 0 ? (
+      {!isFetchingData ? (
         <ul>
-          {allActivities.map((activity, i) => (
+          {data.activities.map((activity, i) => (
             <li key={i} className={styles.activities__activity}>
               {activity}
             </li>

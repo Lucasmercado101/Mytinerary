@@ -218,6 +218,8 @@ router.delete("/user/:userID", async (req, res) => {
   res.status(200).end();
 });
 
+//TODO: make the mongoose user.update() so if there is no pfp, create one, instead of two separate routes
+
 router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {
   const ID = req.params.ID;
   const fileLocation = path.join(

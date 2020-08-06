@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useCallback } from "react";
 import axios from "axios";
 
 function reducer(state, action) {
@@ -28,6 +28,7 @@ function reducer(state, action) {
       throw new Error();
   }
 }
+
 /**
  * Fetches using Axios, cancels on unmount
  *
@@ -38,7 +39,6 @@ function reducer(state, action) {
  *
  * @returns [data, error, isFetching, fetchFunction]
  */
-
 export function useFetch(
   axiosFunction,
   defaultValue,
@@ -53,16 +53,16 @@ export function useFetch(
     fetchParams: [],
   });
 
-  const fetch = (...args) => {
+  const fetch = useCallback((...args) => {
     dispatch({ type: "FETCHING", payload: [...args] });
-  };
+  }, []);
 
   useEffect(() => {
     let source = axios.CancelToken.source();
     let isMounted = true;
 
     if (state.fetch) {
-      axiosFunction([...state.fetchParams, ...functionArgs], {
+      axiosFunction(...state.fetchParams, ...functionArgs, {
         cancelToken: source.token,
       })
         .then(

@@ -9,7 +9,7 @@ import styles from "../Styles/userCard.module.css";
 function UserCard({ userData }) {
   const [pfp, , , fetchPfp] = useFetch(getPfp, "");
 
-  useEffect(() => userData.pfp && fetchPfp(userData.pfp), [userData]);
+  useEffect(() => userData.pfp && fetchPfp(userData.pfp), [userData, fetchPfp]);
 
   return (
     <MyLink className={styles.userCard} to={"/users/user/" + userData._id}>

@@ -6,10 +6,10 @@ export const getCities = (config = {}) => {
     .then((resp) => resp.data);
 };
 
-export const getCity = (cityID) => {
+export const getCity = (cityID, config = {}) => {
   if (!cityID) throw Error("Pass an ID to 'getCity'");
   return axios
-    .get(`http://localhost:5000/api/cities/${cityID}`)
+    .get(`http://localhost:5000/api/cities/${cityID}`, config)
     .then((resp) => resp.data);
 };
 
@@ -20,10 +20,13 @@ export const getPfp = (pfpID, config = {}) => {
     .then((resp) => resp.data.image);
 };
 
-export const getCityItineraries = (cityName) => {
+export const getCityItineraries = (cityName, config = {}) => {
   if (!cityName) throw Error("Pass a city name to 'getCityItineraries'");
   return axios
-    .get(`http://localhost:5000/api/itineraries/cityItineraries/${cityName}`)
+    .get(
+      `http://localhost:5000/api/itineraries/cityItineraries/${cityName}`,
+      config
+    )
     .then((resp) => resp.data);
 };
 
@@ -40,6 +43,13 @@ export const getUsers = (config = {}) => {
     .then((resp) => resp.data);
 };
 
+export const getActivities = (activitiesID, config = {}) => {
+  if (!activitiesID) throw Error("Pass ID to 'activitiesID'");
+  return axios
+    .get(`http://localhost:5000/api/activities/${activitiesID}`, config)
+    .then((resp) => resp.data);
+};
+
 export const deletePfp = (userID) => {
   if (!userID) throw Error("Pass a userID name to 'getUser'");
   const config = {
@@ -47,9 +57,10 @@ export const deletePfp = (userID) => {
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
   };
-  return axios
-    .delete(`http://localhost:5000/api/users/user/pfp/${userID}`, config)
-    .then((resp) => resp.data);
+  return axios.delete(
+    `http://localhost:5000/api/users/user/pfp/${userID}`,
+    config
+  );
 };
 
 export const changePfp = (pfpID, data) => {
@@ -110,4 +121,17 @@ export const postItinerary = (data) => {
     data,
     config
   );
+};
+
+export const deleteItinerary = (itineraryID) => {
+  if (!itineraryID) throw Error("Pass a userID name to 'getUser'");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  };
+
+  return axios
+    .delete(`http://localhost:5000/api/itineraries/${itineraryID}`, config)
+    .catch((err) => err);
 };

@@ -28,8 +28,9 @@ function CityItineraries(props) {
 
   useEffect(() => {
     if (error) {
-      error.response.status !== 404 && alert(error);
-      error.response.status === 404 && setNotFound(true);
+      if (error.hasOwnProperty("response")) {
+        error.response.status === 404 && setNotFound(true);
+      } else alert(error);
     }
   }, [error]);
 
@@ -70,16 +71,7 @@ const Itineraries = withRouter((props) => {
           <h2 className={styles.title}>Available Itineraries</h2>
           <ul className={styles.itineraries}>
             {itineraries.map(
-              ({
-                _id,
-                title,
-                time,
-                hashtags,
-                creator,
-                rating,
-                price,
-                activities,
-              }) => (
+              ({ _id, title, time, hashtags, creator, price, activities }) => (
                 <li key={_id}>
                   <Itinerary
                     id={_id}
@@ -87,10 +79,9 @@ const Itineraries = withRouter((props) => {
                     time={time}
                     creator={creator}
                     hashtags={hashtags}
-                    rating={rating}
                     price={price}
                     activities={activities}
-                    // onDelete={() => setDeletedAnItinerary(true)}
+                    onDelete={() => fetchItineraries()}
                   />
                 </li>
               )
@@ -99,7 +90,10 @@ const Itineraries = withRouter((props) => {
         </>
       )}
       {isLoggedIn && (
-        <NewItineraryTemplate city={currentCity} onPost={fetchItineraries} />
+        <NewItineraryTemplate
+          city={currentCity}
+          onPost={() => fetchItineraries()}
+        />
       )}
     </>
   );

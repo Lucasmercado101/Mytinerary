@@ -11,6 +11,7 @@ import NewCityTemplate from "../NewCityTemplate";
 function Cities() {
   const userData = useSelector((state) => state.user.userData);
   const isLoggedIn = Object.keys(userData).length > 0;
+  //TODO: handle fetching cities error
   const [cities, , isFetchingCities, fetchCities] = useFetch(
     getCities,
     [],
