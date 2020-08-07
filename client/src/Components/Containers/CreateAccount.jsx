@@ -1,12 +1,29 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "../../Styles/createAccount.module.css";
 import { button, button__white } from "../../Styles/button.module.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logIn } from "../../Redux/Actions/userActions";
+import { createUser } from "../../Redux/Actions/userActions";
 import addUser from "../../Images/add-user.svg";
-import axios from "axios";
-import { logIn } from "../../Redux/Actions/authActions";
+
+const options = [
+  "England",
+  "France",
+  "Germany",
+  "Holland",
+  "Ireland",
+  "Spain",
+  "United States",
+];
 
 function CreateAccount(props) {
+  const isCreatingAccount = useSelector(
+    (state) => state.user.isCreatingAccount
+  );
+  const creatingAccountError = useSelector(
+    (state) => state.user.creatingAccountError
+  );
+  const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
   const [formInfo, setFormInfo] = useState({
     username: "",
     password: "",
@@ -16,23 +33,36 @@ function CreateAccount(props) {
     country: "England",
   });
   const [uploadedUserImage, setUploadedUserImage] = useState();
-  const [creatingUser, isCreatingUser] = useState(false);
+  const [createUserData, setCreateUserData] = useState();
   const dispatch = useDispatch();
-  const options = [
-    "England",
-    "France",
-    "Germany",
-    "Holland",
-    "Ireland",
-    "Spain",
-    "United States",
-  ];
 
   const imageUpload = useRef();
 
   useEffect(() => {
     document.title = "Create Account";
   }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (createUserData) {
+      dispatch(createUser(...createUserData)).then(() => {
+        isMounted && props.history.push("/");
+        dispatch(
+          logIn({ username: formInfo.username, password: formInfo.password })
+        );
+      });
+    }
+
+    return () => (isMounted = false);
+  }, [createUserData, props.history]);
+
+  useEffect(() => {
+    if (creatingAccountError) {
+      alert(creatingAccountError);
+      setCreateUserData(null);
+    }
+  }, [creatingAccountError]);
 
   function handleFormInput(e) {
     const { name, value } = e.target;
@@ -50,24 +80,25 @@ function CreateAccount(props) {
     for (const [key, value] of Object.entries(formInfo)) {
       data.append(key, value);
     }
+
     if (uploadedUserImage)
       data.append("file", uploadedUserImage, uploadedUserImage.name);
 
-    isCreatingUser(true);
-    axios
-      .post("http://localhost:5000/api/users/create", data, config)
-      .then((resp) => {
-        console.log(resp);
-        dispatch(
-          logIn({ username: formInfo.username, password: formInfo.password })
-        );
-        isCreatingUser(false);
-        alert("Account created succesfuly!");
-        props.history.push("/");
-      })
-      .catch((error) => {
-        alert(error.response.statusText);
-      });
+    setCreateUserData([data, config]);
+    //TODO: dispatch clearJustCreatedUser() in a .then here
+    // postUser(data, config)
+    //   .then(() => {
+    //     dispatch(createdUser());
+    //     dispatch(
+    //       logIn({ username: formInfo.username, password: formInfo.password })
+    //     );
+    //     dispatch({ type: "CLEAR_CONFIRMATION" });
+    //     alert("Created user");
+    //   })
+    //   .catch((err) => {
+    //     dispatch(creatingUserError());
+    //     alert(err);
+    //   });
   }
 
   function imageHandler(e) {
@@ -174,7 +205,7 @@ function CreateAccount(props) {
       <input
         type="submit"
         className={`${button} ${button__white}`}
-        disabled={creatingUser}
+        disabled={isCreatingAccount || isDeletingUser}
         value="Create"
       />
     </form>

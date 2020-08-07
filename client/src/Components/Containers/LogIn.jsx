@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styles from "../../Styles/logIn.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn, clearLogInFailure } from "../../Redux/Actions/authActions";
+import { logIn } from "../../Redux/Actions/userActions";
 import { button, button__white } from "../../Styles/button.module.css";
 
 function LogIn(props) {
-  const userData = useSelector((state) => state.user.userData);
-  const isFetchingLogIn = useSelector((state) => state.user.isFetchingLogIn);
-  const failedLogIn = useSelector((state) => state.user.failedLogIn);
+  const loggingInError = useSelector((state) => state.user.loggingInError);
+  const isLoggingIn = useSelector((state) => state.user.isLoggingIn);
+  const [clickedLogIn, setClickedLogIn] = useState(false);
+  const [logInData, setLogInData] = useState();
   const [formInfo, setFormInfo] = useState({
     username: "",
     password: "",
@@ -15,25 +16,35 @@ function LogIn(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (Object.keys(userData).length !== 0) {
-      props.history.push("/");
+    let isMounted = true;
+
+    if (clickedLogIn && logInData) {
+      dispatch(logIn(logInData)).then(() => {
+        if (isMounted) {
+          props.history.push("/");
+        }
+      });
     }
-  }, [userData, props]);
+
+    return () => (isMounted = false);
+  }, [clickedLogIn, logInData, props.history, dispatch]);
+
+  useEffect(() => {
+    if (loggingInError) {
+      alert(loggingInError);
+      setClickedLogIn(false);
+      setLogInData(null);
+    }
+  }, [loggingInError]);
 
   useEffect(() => {
     document.title = "Log in";
   }, []);
 
-  useEffect(() => {
-    if (failedLogIn) {
-      alert(failedLogIn);
-      dispatch(clearLogInFailure());
-    }
-  }, [failedLogIn, dispatch]);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(logIn(formInfo));
+    setClickedLogIn(true);
+    setLogInData(formInfo);
   };
 
   const handleInput = (e) => {
@@ -64,8 +75,8 @@ function LogIn(props) {
       <input
         type="submit"
         className={`${button} ${button__white}`}
-        value="Log In"
-        disabled={isFetchingLogIn}
+        value={isLoggingIn ? "Logging in..." : "Log In"}
+        disabled={isLoggingIn}
       />
     </form>
   );

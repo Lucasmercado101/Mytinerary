@@ -1,35 +1,79 @@
+const logInState = { isLoggingIn: false, loggingInError: null };
+
 const initialState = {
   userData: JSON.parse(localStorage.getItem("userData")) || {},
   userPfp: null,
-  isFetchingLogIn: false,
-  isFetchingUserLoggedIn: false,
-  failedLogIn: null,
   isFetchingPfp: false,
   isDeletingUser: false,
+  //
+  isCreatingAccount: false,
+  creatingAccountError: null,
+  ...logInState,
 };
-
-export default (state = initialState, action) => {
+//TODO: add "clear_error_message" here, to less complicate
+// hooks stuff
+const logIn = (state, action) => {
   switch (action.type) {
-    case "FETCHING_LOG_IN_DATA":
+    case "LOGGING_IN":
       return {
         ...state,
-        isFetchingLogIn: true,
+        isLoggingIn: true,
+        loggingInError: "",
       };
-    case "FETCHED_LOG_IN_DATA":
+    case "LOGGED_IN":
       localStorage.setItem("userData", JSON.stringify(action.payload.userData));
       localStorage.setItem("accessToken", action.payload.accessToken);
       localStorage.setItem("refreshToken", action.payload.refreshToken);
       return {
         ...state,
-        isFetchingLogIn: false,
+        isLoggingIn: false,
         userData: action.payload.userData,
       };
-    case "FETCHED_LOG_IN_DATA_FAILED":
+    case "LOGGING_IN_ERROR":
       return {
         ...state,
-        isFetchingLogIn: false,
-        failedLogIn: action.payload,
+        isLoggingIn: false,
+        loggingInError: action.payload,
       };
+    case "CLEAR_LOG_IN_FAILURE":
+      return {
+        ...state,
+        failedLogIn: null,
+      };
+  }
+};
+
+const createAccount = (state, action) => {
+  switch (action.type) {
+    case "CREATING_USER":
+      return {
+        ...state,
+        isCreatingAccount: true,
+        creatingAccountError: false,
+      };
+    case "CREATED_USER":
+      return {
+        ...state,
+        isCreatingAccount: false,
+        creatingAccountError: false,
+      };
+    case "CREATING_USER_ERROR":
+      return {
+        ...state,
+        isCreatingAccount: false,
+        creatingAccountError: action.payload,
+      };
+  }
+};
+
+export default (state = initialState, action) => {
+  const logginIn = logIn(state, action);
+  if (logginIn) return { ...state, ...logginIn };
+
+  const creatingAccount = createAccount(state, action);
+  if (creatingAccount) return { ...state, ...creatingAccount };
+
+  switch (action.type) {
     case "FETCHING_PFP":
       return {
         ...state,
@@ -41,11 +85,6 @@ export default (state = initialState, action) => {
         ...state,
         userPfp: action.payload,
         isFetchingPfp: false,
-      };
-    case "CLEAR_LOG_IN_FAILURE":
-      return {
-        ...state,
-        failedLogIn: null,
       };
     case "DELETING_USER":
       return {
@@ -68,6 +107,7 @@ export default (state = initialState, action) => {
         ...state,
         userPfp: null,
       };
+    //TODO: Pfp still fetches if i log out in the middle of fetching, cancel the fetching
     case "LOG_OUT":
       localStorage.removeItem("userData");
       localStorage.removeItem("accessToken");

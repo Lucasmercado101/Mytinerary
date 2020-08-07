@@ -31,6 +31,13 @@ function generateAccessToken(user) {
 
 // make fetch itineraries & cities & users, "public", not requiring json token
 router.get("/login", async (req, res) => {
+  await new Promise((resolv) =>
+    setTimeout(() => {
+      resolv();
+      console.log("done");
+    }, 1500)
+  );
+  return res.sendStatus(404);
   const { username, password } = req.query;
   await User.findOne({ username })
     .then((userData) => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { logOut } from "../../Redux/Actions/authActions";
+import { logOut } from "../../Redux/Actions/userActions";
 import MyLink from "../MyLink";
 import DropDownMenu, { MenuItem } from "../DropDownMenu";
 import styles from "../../Styles/navbar.module.css";

@@ -5,6 +5,7 @@ const path = require("path");
 const crypto = require("crypto");
 const authenticateToken = require("../authenticateToken");
 const multer = require("multer");
+const rootDir = require("../path");
 require("dotenv/config");
 const User = require("../models/user");
 const Itineraries = require("../models/itineraries");
@@ -45,6 +46,24 @@ function saltHashPassword(userpassword) {
   return passwordData;
 }
 
+async function imageAsBase64(filename) {
+  const fileLocation = path.join(rootDir, "temp", "images", filename);
+
+  let data = await fs.readFileSync(fileLocation);
+
+  // Delete after reading
+  await fs.unlink(fileLocation, (err) => {
+    if (err) throw err;
+  });
+
+  // Convert to Base64
+  let base64 = data.toString("base64");
+
+  // Feed out string to a buffer and then put it in the database
+  let pfpData = new Buffer.from(base64, "base64");
+  return pfpData;
+}
+
 const upload = multer({
   dest: "./temp/images",
   fileSize: "15000000",
@@ -82,6 +101,13 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/create", upload.single("file"), async (req, res) => {
+  await new Promise((resolv) =>
+    setTimeout(() => {
+      resolv();
+      console.log("done");
+    }, 1500)
+  );
+  return res.sendStatus(404);
   const { username, password, email, firstName, lastName, country } = req.body;
   const saltHashedPassword = saltHashPassword(password);
   let userObject = {
@@ -91,33 +117,11 @@ router.post("/create", upload.single("file"), async (req, res) => {
     firstName,
     lastName,
     country,
-    favorites: [],
     itineraries: [],
   };
-  let pfpID;
 
   if (req.file) {
-    const fileLocation = path.join(
-      __dirname,
-      "..",
-      "temp",
-      "images",
-      req.file.filename
-    );
-
-    let data = await fs.readFileSync(fileLocation);
-
-    // Delete after reading
-    await fs.unlink(fileLocation, (err) => {
-      if (err) throw err;
-    });
-
-    // Convert to Base64
-    let base64 = data.toString("base64");
-
-    // Feed out string to a buffer and then put it in the database
-    let pfpData = new Buffer.from(base64, "base64");
-
+    let pfpData = await imageAsBase64(req.file.filename);
     await new Pfp({
       type: path.extname(req.file.originalname),
       data: pfpData,
@@ -130,24 +134,20 @@ router.post("/create", upload.single("file"), async (req, res) => {
   }
 
   const user = new User(userObject);
-  await User.findOne({ username })
-    .then(async (data) => {
-      const accountDoesNotExist = data === null;
-      if (accountDoesNotExist) {
-        await user
-          .save()
-          .then((data) => {
-            res.json(data);
-          })
-          .catch((err) => {
-            res.json({ message: err });
-          });
-      } else {
-        res.statusMessage = `Account "${username}" already exists`;
-        res.status(409).end();
-      }
-    })
-    .catch((err) => res.json({ message: err }));
+
+  const userDataFound = await User.findOne({ username }).catch((err) =>
+    res.json({ message: err })
+  );
+
+  if (!userDataFound) {
+    await user.save().catch((err) => {
+      res.json({ message: err });
+    });
+    return res.sendStatus(200);
+  } else {
+    res.statusMessage = `Account "${username}" already exists`;
+    res.sendStatus(409);
+  }
 });
 
 router.get("/user/pfp/:ID", (req, res) => {
@@ -223,6 +223,7 @@ router.delete("/user/:userID", async (req, res) => {
 router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {
   const ID = req.params.ID;
   const fileLocation = path.join(
+    //TODO: replace this with imageAsBase64() function
     __dirname,
     "..",
     "temp",

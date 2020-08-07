@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const getAccessToken = () => localStorage.getItem("accessToken");
+
 export const getCities = (config = {}) => {
   return axios
     .get("http://localhost:5000/api/cities", config)
@@ -44,17 +46,27 @@ export const getUsers = (config = {}) => {
 };
 
 export const getActivities = (activitiesID, config = {}) => {
-  if (!activitiesID) throw Error("Pass ID to 'activitiesID'");
+  if (!activitiesID) throw Error("Pass ID to 'getActivities'");
   return axios
     .get(`http://localhost:5000/api/activities/${activitiesID}`, config)
     .then((resp) => resp.data);
 };
 
+export const logIn = (data) => {
+  if (!data) throw Error("Pass data to 'logIn'");
+
+  return axios
+    .get("http://localhost:5000/api/auth/login/", { params: data })
+    .then((resp) => resp.data);
+};
+
+// Need access token
+
 export const deletePfp = (userID) => {
-  if (!userID) throw Error("Pass a userID name to 'getUser'");
+  if (!userID) throw Error("Pass a userID name to 'deletePfp'");
   const config = {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      Authorization: `Bearer ${getAccessToken()}`,
     },
   };
   return axios.delete(
@@ -69,7 +81,7 @@ export const changePfp = (pfpID, data) => {
   const config = {
     headers: {
       "content-type": "multipart/form-data",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      Authorization: `Bearer ${getAccessToken()}`,
     },
   };
 
@@ -86,7 +98,7 @@ export const addPfp = (userID, data) => {
   const config = {
     headers: {
       "content-type": "multipart/form-data",
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      Authorization: `Bearer ${getAccessToken()}`,
     },
   };
 
@@ -101,7 +113,7 @@ export const postCity = (data) => {
   if (!data) throw Error("Pass data to 'postCity'");
   const config = {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      Authorization: `Bearer ${getAccessToken()}`,
     },
   };
 
@@ -109,10 +121,10 @@ export const postCity = (data) => {
 };
 
 export const postItinerary = (data) => {
-  if (!data) throw Error("Pass data to 'postCity'");
+  if (!data) throw Error("Pass data to 'postItinerary'");
   const config = {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      Authorization: `Bearer ${getAccessToken()}`,
     },
   };
 
@@ -124,14 +136,22 @@ export const postItinerary = (data) => {
 };
 
 export const deleteItinerary = (itineraryID) => {
-  if (!itineraryID) throw Error("Pass a userID name to 'getUser'");
+  if (!itineraryID)
+    throw Error("Pass an itineraryID name to 'deleteItinerary'");
   const config = {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      Authorization: `Bearer ${getAccessToken()}`,
     },
   };
 
   return axios
     .delete(`http://localhost:5000/api/itineraries/${itineraryID}`, config)
     .catch((err) => err);
+};
+
+export const postUser = (data, config = {}) => {
+  if (!data) throw Error("Pass data to 'postUser'");
+  return axios.post("http://localhost:5000/api/users/create", data, {
+    ...config,
+  });
 };
