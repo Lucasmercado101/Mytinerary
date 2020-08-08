@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useReducer } from "react";
 import styles from "../../Styles/createAccount.module.css";
 import { button, button__white } from "../../Styles/button.module.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,12 +16,25 @@ const options = [
   "United States",
 ];
 
+const initialState = {
+  createAccountClicked: false,
+  createData: null,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "CLICKED_CREATE_ACCOUNT":
+      return { ...state, createAccountClicked: true, createData: action.data };
+    case "CREATE_ACCOUNT_ERROR":
+      return { ...state, createAccountClicked: false, createData: null };
+    default:
+      throw new Error();
+  }
+}
+
 function CreateAccount(props) {
   const isCreatingAccount = useSelector(
     (state) => state.user.isCreatingAccount
-  );
-  const creatingAccountError = useSelector(
-    (state) => state.user.creatingAccountError
   );
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
   const [formInfo, setFormInfo] = useState({
@@ -33,9 +46,8 @@ function CreateAccount(props) {
     country: "England",
   });
   const [uploadedUserImage, setUploadedUserImage] = useState();
-  const [createUserData, setCreateUserData] = useState();
+  const [state, localDispatch] = useReducer(reducer, initialState);
   const dispatch = useDispatch();
-
   const imageUpload = useRef();
 
   useEffect(() => {
@@ -45,24 +57,30 @@ function CreateAccount(props) {
   useEffect(() => {
     let isMounted = true;
 
-    if (createUserData) {
-      dispatch(createUser(...createUserData)).then(() => {
-        isMounted && props.history.push("/");
-        dispatch(
-          logIn({ username: formInfo.username, password: formInfo.password })
-        );
-      });
+    if (state.createAccountClicked) {
+      dispatch(createUser(...state.createData))
+        .then(() => {
+          dispatch(
+            logIn({ username: formInfo.username, password: formInfo.password })
+          );
+          isMounted && props.history.push("/");
+          alert("Created account successfuly.");
+        })
+        .catch((err) => {
+          isMounted && localDispatch({ type: "CREATE_ACCOUNT_ERROR" });
+          if (err.response) {
+            if (err.response.status === 409 && err.response.statusText) {
+              return alert(
+                `Account creation failed: ${err.response.statusText}`
+              );
+            }
+          }
+          alert(`Account creation failed: ${err}`);
+        });
     }
 
     return () => (isMounted = false);
-  }, [createUserData, props.history]);
-
-  useEffect(() => {
-    if (creatingAccountError) {
-      alert(creatingAccountError);
-      setCreateUserData(null);
-    }
-  }, [creatingAccountError]);
+  }, [state, props.history]);
 
   function handleFormInput(e) {
     const { name, value } = e.target;
@@ -84,21 +102,7 @@ function CreateAccount(props) {
     if (uploadedUserImage)
       data.append("file", uploadedUserImage, uploadedUserImage.name);
 
-    setCreateUserData([data, config]);
-    //TODO: dispatch clearJustCreatedUser() in a .then here
-    // postUser(data, config)
-    //   .then(() => {
-    //     dispatch(createdUser());
-    //     dispatch(
-    //       logIn({ username: formInfo.username, password: formInfo.password })
-    //     );
-    //     dispatch({ type: "CLEAR_CONFIRMATION" });
-    //     alert("Created user");
-    //   })
-    //   .catch((err) => {
-    //     dispatch(creatingUserError());
-    //     alert(err);
-    //   });
+    localDispatch({ type: "CLICKED_CREATE_ACCOUNT", data: [data, config] });
   }
 
   function imageHandler(e) {
@@ -205,7 +209,7 @@ function CreateAccount(props) {
       <input
         type="submit"
         className={`${button} ${button__white}`}
-        disabled={isCreatingAccount || isDeletingUser}
+        disabled={isDeletingUser || isCreatingAccount}
         value="Create"
       />
     </form>

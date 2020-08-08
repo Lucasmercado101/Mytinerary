@@ -35,11 +35,6 @@ const logIn = (state, action) => {
         isLoggingIn: false,
         loggingInError: action.payload,
       };
-    case "CLEAR_LOG_IN_FAILURE":
-      return {
-        ...state,
-        failedLogIn: null,
-      };
   }
 };
 

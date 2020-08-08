@@ -39,11 +39,14 @@ export const createUser = (data, config = {}) => (dispatch) => {
   dispatch({ type: "CREATING_USER" });
   return new Promise((res, rej) =>
     postUser(data, config)
-      .then(() => {
+      .then((resp) => {
         dispatch({ type: "CREATED_USER" });
-        res();
+        res(resp);
       })
-      .catch((err) => dispatch({ type: "CREATING_USER_ERROR", payload: err }))
+      .catch((err) => {
+        dispatch({ type: "CREATING_USER_ERROR", payload: err });
+        rej(err);
+      })
   );
 };
 
@@ -55,14 +58,15 @@ export const logIn = (data) => (dispatch) => {
     logInUser(data)
       .then((userData) => {
         dispatch({ type: "LOGGED_IN", payload: userData });
-        res();
+        res(userData);
       })
-      .catch((err) =>
+      .catch((err) => {
         dispatch({
           type: "LOGGING_IN_ERROR",
           payload: err,
-        })
-      )
+        });
+        rej(err);
+      })
   );
 };
 

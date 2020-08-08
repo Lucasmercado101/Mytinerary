@@ -101,14 +101,26 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/create", upload.single("file"), async (req, res) => {
-  await new Promise((resolv) =>
-    setTimeout(() => {
-      resolv();
-      console.log("done");
-    }, 1500)
-  );
-  return res.sendStatus(404);
   const { username, password, email, firstName, lastName, country } = req.body;
+
+  const usernameExists = await User.findOne({ username })
+    .then((data) => (data ? true : false))
+    .catch(() => {});
+
+  if (usernameExists) {
+    res.statusMessage = `"${username}" already exists`;
+    return res.sendStatus(409);
+  }
+
+  const emailExists = await User.findOne({ email })
+    .then((data) => (data ? true : false))
+    .catch(() => {});
+
+  if (emailExists) {
+    res.statusMessage = `Account with email "${email}" already exists`;
+    return res.sendStatus(409);
+  }
+
   const saltHashedPassword = saltHashPassword(password);
   let userObject = {
     username,
@@ -135,19 +147,10 @@ router.post("/create", upload.single("file"), async (req, res) => {
 
   const user = new User(userObject);
 
-  const userDataFound = await User.findOne({ username }).catch((err) =>
-    res.json({ message: err })
-  );
-
-  if (!userDataFound) {
-    await user.save().catch((err) => {
-      res.json({ message: err });
-    });
-    return res.sendStatus(200);
-  } else {
-    res.statusMessage = `Account "${username}" already exists`;
-    res.sendStatus(409);
-  }
+  await user.save().catch((err) => {
+    res.json({ message: err });
+  });
+  res.sendStatus(200);
 });
 
 router.get("/user/pfp/:ID", (req, res) => {
