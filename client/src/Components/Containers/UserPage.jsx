@@ -1,127 +1,122 @@
-import React, { useState, useEffect, useRef } from "react";
-import { getUser, getPfp, addPfp, deletePfp, changePfp } from "../../api";
+import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useFetch } from "../hooks/useFetch";
+import { getUser, getPfp } from "../../api";
 import { useSelector, useDispatch } from "react-redux";
-import { getUserPfp } from "../../Redux/Actions/userActions";
-import genericPfp from "../../Images/generic-user.svg";
-import axios from "axios";
-import NotFound from "./NotFound";
+import {
+  changePfp,
+  getUserPfp,
+  deletePfp,
+  addPfp,
+  justChangedPfp,
+} from "../../Redux/Actions/userActions";
 import styles from "../../Styles/user.module.css";
-import LoadingRing from "../LoadingRing";
+import genericPfp from "../../Images/generic-user.svg";
 import Button from "../Button";
+
+import NotFound from "./NotFound";
+import LoadingRing from "../LoadingRing";
 
 function UserPage(props) {
   const userData = useSelector((state) => state.user.userData);
   const userPfp = useSelector((state) => state.user.userPfp);
-
-  const [isRemovingPfp, setIsRemovingPfp] = useState(false);
-  const [isChangingPfp, setIsChangingPfp] = useState(false);
-  const [isFetchingUserData, setIsFetchingUserData] = useState(true);
-  const [userFound, setUserFound] = useState(false);
-  const [fetchedUserData, setfetchedUserData] = useState({});
   const userPageID = props.match.params.user;
   const sameUser = userPageID === userData._id;
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    let isMounted = true;
-    let source = axios.CancelToken.source();
+  const [userPageData, setUserPageData] = useState({});
+  const [fetchedUserData, error, isFetching, fetchUserData] = useFetch(
+    getUser,
+    {},
+    false
+  );
+  const [fetchedPfpData, , isFetchingPfp, fetchPfp] = useFetch(getPfp, "");
 
-    if (!sameUser) {
-      getUser(userPageID, { cancelToken: source.token })
-        .then((fetchedUser) => {
-          if (isMounted) {
-            document.title = `${fetchedUser.username}'s Profile`;
-            setfetchedUserData(fetchedUser);
-            setUserFound(true);
-          }
-        })
-        .catch(() => {})
-        .finally(() => {
-          if (isMounted) {
-            setIsFetchingUserData(false);
-          }
-        });
-    }
-
-    return () => {
-      isMounted = false;
-      source.cancel();
-      setUserFound(true);
-      setIsFetchingUserData(true);
-      setfetchedUserData({});
-    };
-  }, [userPageID, sameUser]);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (sameUser) {
-      document.title = `${userData.username}'s Profile`;
-      setIsFetchingUserData(false);
-      setfetchedUserData(userData);
-      setUserFound(true);
+      const newUserData = { ...userData };
+      delete newUserData.pfp;
+      setUserPageData({
+        ...newUserData,
+        pfpData: userPfp,
+        hasPfp: userData.pfp ? true : false,
+        pfpID: userData.pfp,
+      });
+    } else {
+      fetchUserData(userPageID);
     }
-  }, [sameUser, userPfp, userData]);
+    return () => setUserPageData({});
+  }, [fetchUserData, userPageID, userData, sameUser, userPfp]);
+
+  useEffect(() => {
+    if (Object.keys(fetchedUserData).length > 0) {
+      setUserPageData(fetchedUserData);
+    }
+  }, [fetchedUserData]);
+
+  useEffect(() => {
+    if (userPageData.pfp) {
+      fetchPfp(userPageData.pfp);
+    }
+  }, [userPageData.pfp, fetchPfp]);
+
+  useEffect(() => {
+    if (fetchedPfpData && !isFetching) {
+      setUserPageData((i) => {
+        return { ...i, pfpData: fetchedPfpData };
+      });
+    }
+  }, [fetchedPfpData, isFetching]);
+
+  useEffect(() => {
+    document.title = `${userPageData.username}'s profile`;
+  }, [userPageData]);
 
   useEffect(() => {
     let isMounted = true;
-
-    if (isRemovingPfp) {
-      deletePfp(userData.pfp)
-        .then(() => {
-          dispatch({ type: "CLEAR_PFP" });
-          delete userData.pfp;
-          dispatch({ type: "SET_USER_DATA", payload: { ...userData } });
-          setIsRemovingPfp(false);
-        })
-        .catch(() => {});
+    if (error) {
+      if (isMounted) {
+        alert(error.response.statusText);
+      }
     }
-
     return () => (isMounted = false);
-  }, [isRemovingPfp]); // Remove pfp
+  }, [error]);
 
   return (
     <>
-      {!isFetchingUserData ? (
-        userFound ? (
+      {!isFetching ? (
+        Object.keys(userPageData).length > 0 ? (
           <>
-            <UserProfilePic userData={fetchedUserData} />
-            {sameUser ? (
+            {!isFetchingPfp ? (
               <>
-                <ChangePfpButton
-                  isRemovingPfp={isRemovingPfp}
-                  setIsChangingPfp={setIsChangingPfp}
-                />
-                <small style={{ textAlign: "center", display: "block" }}>
-                  Image must be smaller than 10MB
-                </small>
-                {userData.pfp ? (
-                  <Button
-                    text={"Remove profile picture"}
-                    onClick={() => setIsRemovingPfp(true)}
-                    warning
-                    centered
-                    disabled={isRemovingPfp || isChangingPfp}
-                  />
-                ) : (
-                  ""
-                )}
+                <img
+                  alt={userPageData.username}
+                  className={styles.userPfp}
+                  src={userPageData.pfpData || genericPfp}
+                ></img>
               </>
             ) : (
-              ""
+              <LoadingRing centered />
             )}
-            <h1 className={styles.userName}>{fetchedUserData.userName}</h1>
+            {sameUser && (
+              <>
+                <ChangeProfilePictureButton userData={userPageData} />
+                {userData.pfp && (
+                  <DeleteProfilePictureButton userData={userPageData} />
+                )}
+              </>
+            )}
+            <h1 className={styles.userName}>{userPageData.userName}</h1>
 
             <ul className={styles.userInfoList}>
               <li className={styles.userInfoList__item}>
-                First name: {fetchedUserData.firstName}
+                First name: {userPageData.firstName}
               </li>
               <li className={styles.userInfoList__item}>
-                Last name: {fetchedUserData.lastName}
+                Last name: {userPageData.lastName}
               </li>
               <li className={styles.userInfoList__item}>
-                country: {fetchedUserData.country}
+                country: {userPageData.country}
               </li>
             </ul>
-            {/* {sameUser ? <DeletePfp /> : ""} */}
           </>
         ) : (
           <NotFound thing={"User"} />
@@ -133,119 +128,13 @@ function UserPage(props) {
   );
 }
 
-function UserProfilePic({ userData: user }) {
-  const userData = useSelector((state) => state.user.userData);
-  const userPfp = useSelector((state) => state.user.userPfp);
-  const isFetchingPfp = useSelector((state) => state.user.isFetchingPfp);
-  const [pfpData, setPfpData] = useState("");
-  const [isFetchingPfpData, setIsFetchingPfpData] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-    let source = axios.CancelToken.source();
-    if (!userData.pfp && !userPfp) {
-      if (user.pfp) {
-        getPfp(user.pfp, { cancelToken: source.token })
-          .then((pfpData) => {
-            if (isMounted) {
-              setPfpData(pfpData);
-            }
-          })
-          .catch(() => {})
-          .finally(() => {
-            if (isMounted) {
-              setIsFetchingPfpData(false);
-            }
-          });
-      } else {
-        if (isMounted) {
-          setPfpData(genericPfp);
-          setIsFetchingPfpData(false);
-        }
-      }
-    } else if (userData.pfp && !userPfp) {
-      setIsFetchingPfpData(true);
-      setPfpData(genericPfp);
-    } else {
-      if (userPfp) {
-        setPfpData(userPfp);
-        setIsFetchingPfpData(false);
-      }
-    }
-
-    return () => {
-      isMounted = false;
-      source.cancel();
-    };
-  }, [user, userData.pfp, userPfp]);
-
-  return (
-    <>
-      {!isFetchingPfpData && !isFetchingPfp ? (
-        <>
-          <img
-            alt={user.username}
-            className={styles.userPfp}
-            src={pfpData}
-          ></img>
-        </>
-      ) : (
-        <LoadingRing centered />
-      )}
-    </>
-  );
-}
-
-function ChangePfpButton({
-  isRemovingPfp,
-  setIsChangingPfp: changingProfilePic,
-}) {
-  const userData = useSelector((state) => state.user.userData);
+function ChangeProfilePictureButton({ userData }) {
+  const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
+  const isChangingPfp = useSelector((state) => state.user.isChangingPfp);
+  const isAddingPfp = useSelector((state) => state.user.isAddingPfp);
+  const isDeletingPfp = useSelector((state) => state.user.isDeletingPfp);
   const imageUpload = useRef();
   const dispatch = useDispatch();
-  const [imageUploaded, setImageUploaded] = useState();
-  const [isChangingPfp, setIsChangingPfp] = useState(false);
-  const [gonnaChangePfp, setGonnaChangePfp] = useState(false);
-
-  useEffect(() => {
-    let isMounted = true;
-    if (gonnaChangePfp) {
-      changingProfilePic(true);
-      dispatch({ type: "CLEAR_PFP" });
-      if (userData.pfp) {
-        console.log(imageUploaded);
-        changePfp(userData.pfp, imageUploaded)
-          .then(() => {
-            if (isMounted) {
-              dispatch(getUserPfp(userData.pfp));
-              setIsChangingPfp(false);
-              setGonnaChangePfp(false);
-              changingProfilePic(false);
-            }
-          })
-          .catch(() => {});
-      } else {
-        addPfp(userData._id, imageUploaded)
-          .then(() => getUser(userData._id))
-          .then((resp) => {
-            dispatch({
-              type: "SET_USER_DATA",
-              payload: { ...userData, pfp: resp.pfp },
-            });
-            dispatch(getUserPfp(userData.pfp));
-            if (isMounted) {
-              setIsChangingPfp(false);
-              setGonnaChangePfp(false);
-              changingProfilePic(false);
-            }
-          })
-          .catch(() => {});
-      }
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [gonnaChangePfp, imageUploaded, dispatch, userData]);
 
   const changeUserPfp = async (e) => {
     const image = e.target.files[0];
@@ -253,9 +142,14 @@ function ChangePfpButton({
     if (image.size < tenMB) {
       const data = new FormData();
       data.append("file", image, image.name);
-      setImageUploaded(data);
-      setIsChangingPfp(true);
-      setGonnaChangePfp(true);
+      userData.hasPfp
+        ? dispatch(changePfp(userData.pfpID, data))
+            .then(() => dispatch(getUserPfp(userData.pfpID)))
+            .catch((err) => alert(`Changing profile picture error: ${err}`))
+        : //TODO: new justCHangedPfp data isn't being set to replace old data
+          dispatch(addPfp(userData._id, data))
+            .then(() => dispatch(justChangedPfp(userData._id)))
+            .catch((err) => alert(`Adding profile picture error: ${err}`));
     } else {
       alert("File is too big");
     }
@@ -274,58 +168,43 @@ function ChangePfpButton({
       />
       <Button
         onClick={() => imageUpload.current.click()}
-        text={userData.pfp ? "Change profile picture" : "Add profile picture"}
+        text={
+          userData.hasPfp ? "Change profile picture" : "Add profile picture"
+        }
         centered
-        disabled={isChangingPfp || isRemovingPfp}
+        disabled={
+          isDeletingUser || isChangingPfp || isDeletingPfp || isAddingPfp
+        }
       />
+      <small style={{ textAlign: "center", display: "block" }}>
+        Image must be smaller than 10MB
+      </small>
     </>
   );
 }
 
-// function RemovePfp({
-//   setIsRemovingPfp: setIsRemovingProfilePic,
-//   isChangingPfp,
-// }) {
-//   const userData = useSelector((state) => state.user.userData);
-//   const [isRemoving, setIsRemoving] = useState();
-//   const dispatch = useDispatch();
+function DeleteProfilePictureButton({ userData }) {
+  const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
+  const isChangingPfp = useSelector((state) => state.user.isChangingPfp);
+  const isDeletingPfp = useSelector((state) => state.user.isDeletingPfp);
 
-//   useEffect(() => {
-//     let isMounted = true;
-//     if (isRemoving) {
-//       setIsRemoving(true);
-//       deletePfp(userData.pfp)
-//         .then(() => {
-//           dispatch({ type: "CLEAR_PFP" });
-//           delete userData.pfp;
-//           dispatch({ type: "SET_USER_DATA", payload: { ...userData } });
-//           if (isMounted) {
-//             setIsRemovingProfilePic(false);
-//             setIsRemoving(false);
-//           }
-//         })
-//         .catch(() => {});
-//     }
+  const dispatch = useDispatch();
 
-//     return () => {
-//       isMounted = false;
-//     };
-//   }, [isRemoving, userData]);
+  function removePfp() {
+    dispatch(deletePfp(userData.pfpID))
+      .then(() => dispatch({ type: "JUST_DELETED_PFP" }))
+      .catch((err) => alert(`Deleting profile picture error: ${err}`));
+  }
 
-//   function removeProfilePic() {
-//     setIsRemovingProfilePic(true);
-//     setIsRemoving(true);
-//   }
-
-//   return (
-//     <Button
-//       text={"Remove profile picture"}
-//       onClick={removeProfilePic}
-//       warning
-//       centered
-//       disabled={isRemoving || isChangingPfp}
-//     />
-//   );
-// }
+  return (
+    <Button
+      text={"Remove profile picture"}
+      onClick={removePfp}
+      warning
+      centered
+      disabled={isDeletingUser || isChangingPfp || isDeletingPfp}
+    />
+  );
+}
 
 export default UserPage;

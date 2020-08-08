@@ -20,7 +20,6 @@ function UserPage(props) {
   const [fetchedUserData, setfetchedUserData] = useState({});
   const userPageID = props.match.params.user;
   const sameUser = userPageID === userData._id;
-  const dispatch = useDispatch();
 
   useEffect(() => {
     let isMounted = true;
@@ -61,23 +60,6 @@ function UserPage(props) {
     }
   }, [sameUser, userPfp, userData]);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    if (isRemovingPfp) {
-      deletePfp(userData.pfp)
-        .then(() => {
-          dispatch({ type: "CLEAR_PFP" });
-          delete userData.pfp;
-          dispatch({ type: "SET_USER_DATA", payload: { ...userData } });
-          setIsRemovingPfp(false);
-        })
-        .catch(() => {});
-    }
-
-    return () => (isMounted = false);
-  }, [isRemovingPfp]); // Remove pfp
-
   return (
     <>
       {!isFetchingUserData ? (
@@ -93,13 +75,10 @@ function UserPage(props) {
                 <small style={{ textAlign: "center", display: "block" }}>
                   Image must be smaller than 10MB
                 </small>
-                {userData.pfp ? (
-                  <Button
-                    text={"Remove profile picture"}
-                    onClick={() => setIsRemovingPfp(true)}
-                    warning
-                    centered
-                    disabled={isRemovingPfp || isChangingPfp}
+                {userPfp ? (
+                  <RemovePfp
+                    setIsRemovingPfp={setIsRemovingPfp}
+                    isChangingPfp={isChangingPfp}
                   />
                 ) : (
                   ""
@@ -282,50 +261,50 @@ function ChangePfpButton({
   );
 }
 
-// function RemovePfp({
-//   setIsRemovingPfp: setIsRemovingProfilePic,
-//   isChangingPfp,
-// }) {
-//   const userData = useSelector((state) => state.user.userData);
-//   const [isRemoving, setIsRemoving] = useState();
-//   const dispatch = useDispatch();
+function RemovePfp({
+  setIsRemovingPfp: setIsRemovingProfilePic,
+  isChangingPfp,
+}) {
+  const userData = useSelector((state) => state.user.userData);
+  const [isRemoving, setIsRemoving] = useState();
+  const dispatch = useDispatch();
 
-//   useEffect(() => {
-//     let isMounted = true;
-//     if (isRemoving) {
-//       setIsRemoving(true);
-//       deletePfp(userData.pfp)
-//         .then(() => {
-//           dispatch({ type: "CLEAR_PFP" });
-//           delete userData.pfp;
-//           dispatch({ type: "SET_USER_DATA", payload: { ...userData } });
-//           if (isMounted) {
-//             setIsRemovingProfilePic(false);
-//             setIsRemoving(false);
-//           }
-//         })
-//         .catch(() => {});
-//     }
+  useEffect(() => {
+    let isMounted = true;
+    if (isRemoving) {
+      setIsRemoving(true);
+      deletePfp(userData.pfp)
+        .then(() => {
+          dispatch({ type: "CLEAR_PFP" });
+          delete userData.pfp;
+          dispatch({ type: "SET_USER_DATA", payload: { ...userData } });
+          if (isMounted) {
+            setIsRemovingProfilePic(false);
+            setIsRemoving(false);
+          }
+        })
+        .catch(() => {});
+    }
 
-//     return () => {
-//       isMounted = false;
-//     };
-//   }, [isRemoving, userData]);
+    return () => {
+      isMounted = false;
+    };
+  }, [isRemoving, userData]);
 
-//   function removeProfilePic() {
-//     setIsRemovingProfilePic(true);
-//     setIsRemoving(true);
-//   }
+  function removeProfilePic() {
+    setIsRemovingProfilePic(true);
+    setIsRemoving(true);
+  }
 
-//   return (
-//     <Button
-//       text={"Remove profile picture"}
-//       onClick={removeProfilePic}
-//       warning
-//       centered
-//       disabled={isRemoving || isChangingPfp}
-//     />
-//   );
-// }
+  return (
+    <Button
+      text={"Remove profile picture"}
+      onClick={removeProfilePic}
+      warning
+      centered
+      disabled={isRemoving || isChangingPfp}
+    />
+  );
+}
 
 export default UserPage;

@@ -165,12 +165,33 @@ router.get("/user/pfp/:ID", (req, res) => {
     .catch((err) => res.json(err));
 });
 
-router.get("/user/:ID", (req, res) => {
+router.get("/user/:ID", async (req, res) => {
+  // await new Promise((res) =>
+  //   setTimeout(() => {
+  //     res();
+  //   }, 500)
+  // );
+  // const dummyData = {
+  //   itineraries: [],
+  //   _id: "5f28321802535f21282ec695",
+  //   username: "ae",
+  //   firstName: "ae",
+  //   lastName: "ae",
+  //   country: "England",
+  //   pfp: "5f28321202535f21282ec694",
+  //   __v: 0,
+  // };
+
+  // return res.json(dummyData);
+  // res.json(dummyData);
+
   const { ID } = req.params;
   User.findById(ID)
     .then((user) => {
-      if (!user)
-        return res.status(404).json({ message: "User does not exist" });
+      if (!user) {
+        res.statusMessage = "User does not exist";
+        return res.sendStatus(404);
+      }
       user.password = undefined;
       user.email = undefined;
       res.json(user);
@@ -221,31 +242,9 @@ router.delete("/user/:userID", async (req, res) => {
   res.status(200).end();
 });
 
-//TODO: make the mongoose user.update() so if there is no pfp, create one, instead of two separate routes
-
 router.put("/user/pfp/:ID", upload.single("file"), async (req, res) => {
   const ID = req.params.ID;
-  const fileLocation = path.join(
-    //TODO: replace this with imageAsBase64() function
-    __dirname,
-    "..",
-    "temp",
-    "images",
-    req.file.filename
-  );
-
-  let data = await fs.readFileSync(fileLocation);
-
-  // Delete after reading
-  await fs.unlink(fileLocation, (err) => {
-    if (err) throw err;
-  });
-
-  // Convert to Base64
-  let base64 = data.toString("base64");
-
-  // Feed out string to a buffer and then put it in the database
-  let pfpData = new Buffer.from(base64, "base64");
+  let pfpData = await imageAsBase64(req.file.filename);
 
   await Pfp.findByIdAndUpdate(
     ID,
@@ -268,30 +267,12 @@ router.delete("/user/pfp/:ID", async (req, res) => {
       user.pfp = undefined;
       return user.save();
     })
-    .then(res.sendStatus(200));
+    .then(() => res.sendStatus(200));
 });
 
 router.post("/user/pfp/:ID", upload.single("file"), async (req, res) => {
-  const fileLocation = path.join(
-    __dirname,
-    "..",
-    "temp",
-    "images",
-    req.file.filename
-  );
+  let pfpData = await imageAsBase64(req.file.filename);
 
-  let data = await fs.readFileSync(fileLocation);
-
-  // Delete after reading
-  await fs.unlink(fileLocation, (err) => {
-    if (err) throw err;
-  });
-
-  // Convert to Base64
-  let base64 = data.toString("base64");
-
-  // Feed out string to a buffer and then put it in the database
-  let pfpData = new Buffer.from(base64, "base64");
   await new Pfp({
     type: path.extname(req.file.originalname),
     data: pfpData,
@@ -304,7 +285,9 @@ router.post("/user/pfp/:ID", upload.single("file"), async (req, res) => {
         { useFindAndModify: false }
       );
     })
-    .then(() => res.sendStatus(200))
+    .then((data) => {
+      res.sendStatus(200);
+    })
     .catch((err) => res.json(err));
 });
 

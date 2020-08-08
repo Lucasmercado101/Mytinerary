@@ -37,13 +37,13 @@ function LogIn(props) {
     if (state.logInClicked) {
       dispatch(logIn(state.logInData))
         .then(() => {
-          alert("Logged in.");
           isMounted && props.history.push("/");
+          alert("Logged in.");
         })
         .catch((err) => {
           isMounted && localDispatch({ type: "LOG_IN_ERROR" });
           if (err.response) {
-            if (err.response.status === 404 && err.response.statusText) {
+            if (err.response.status === 404) {
               return alert(`Login failed: ${err.response.statusText}`);
             }
           }

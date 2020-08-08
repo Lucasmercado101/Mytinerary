@@ -19,14 +19,22 @@ const options = [
 const initialState = {
   createAccountClicked: false,
   createData: null,
+  logInData: {},
 };
 
 function reducer(state, action) {
   switch (action.type) {
     case "CLICKED_CREATE_ACCOUNT":
       return { ...state, createAccountClicked: true, createData: action.data };
+    case "SET_LOGIN_DATA":
+      return { ...state, logInData: action.data };
     case "CREATE_ACCOUNT_ERROR":
-      return { ...state, createAccountClicked: false, createData: null };
+      return {
+        ...state,
+        createAccountClicked: false,
+        createData: null,
+        logInData: {},
+      };
     default:
       throw new Error();
   }
@@ -61,7 +69,10 @@ function CreateAccount(props) {
       dispatch(createUser(...state.createData))
         .then(() => {
           dispatch(
-            logIn({ username: formInfo.username, password: formInfo.password })
+            logIn({
+              username: state.logInData.username,
+              password: state.logInData.password,
+            })
           );
           isMounted && props.history.push("/");
           alert("Created account successfuly.");
@@ -69,7 +80,7 @@ function CreateAccount(props) {
         .catch((err) => {
           isMounted && localDispatch({ type: "CREATE_ACCOUNT_ERROR" });
           if (err.response) {
-            if (err.response.status === 409 && err.response.statusText) {
+            if (err.response.status === 409) {
               return alert(
                 `Account creation failed: ${err.response.statusText}`
               );
@@ -80,7 +91,7 @@ function CreateAccount(props) {
     }
 
     return () => (isMounted = false);
-  }, [state, props.history]);
+  }, [state, props.history, dispatch]);
 
   function handleFormInput(e) {
     const { name, value } = e.target;
@@ -102,6 +113,7 @@ function CreateAccount(props) {
     if (uploadedUserImage)
       data.append("file", uploadedUserImage, uploadedUserImage.name);
 
+    localDispatch({ type: "SET_LOGIN_DATA", data: formInfo });
     localDispatch({ type: "CLICKED_CREATE_ACCOUNT", data: [data, config] });
   }
 
