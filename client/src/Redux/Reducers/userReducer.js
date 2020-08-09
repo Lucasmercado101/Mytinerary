@@ -2,6 +2,10 @@ const logInState = { isLoggingIn: false, loggingInError: null };
 const changingPfpState = { isChangingPfp: false, changingPfpError: null };
 const deletingPfpState = { isDeletingPfp: false, deletingPfpError: null };
 const addingPfpState = { isAddingPfp: false, addingPfpError: null };
+const deletingAccountState = {
+  isDeletingUser: false,
+  deletingUserError: null,
+};
 const creatingAccountState = {
   isCreatingAccount: false,
   creatingAccountError: null,
@@ -10,9 +14,9 @@ const creatingAccountState = {
 const initialState = {
   userData: JSON.parse(localStorage.getItem("userData")) || {},
   userPfp: null,
+  isAdmin: JSON.parse(localStorage.getItem("isAdmin")) || false,
   isFetchingPfp: false,
-  isDeletingUser: false,
-  //.
+  ...deletingAccountState,
   ...addingPfpState,
   ...deletingPfpState,
   ...changingPfpState,
@@ -30,12 +34,20 @@ const logIn = (state, action) => {
       };
     case "LOGGED_IN":
       localStorage.setItem("userData", JSON.stringify(action.payload.userData));
+      action.payload.userData.isAdmin &&
+        localStorage.setItem(
+          "isAdmin",
+          JSON.stringify(action.payload.userData.isAdmin)
+        );
       localStorage.setItem("accessToken", action.payload.accessToken);
       localStorage.setItem("refreshToken", action.payload.refreshToken);
       return {
         ...state,
         isLoggingIn: false,
         userData: action.payload.userData,
+        isAdmin: action.payload.userData.isAdmin
+          ? action.payload.userData.isAdmin
+          : false,
       };
     case "LOGGING_IN_ERROR":
       return {
@@ -52,13 +64,13 @@ const createAccount = (state, action) => {
       return {
         ...state,
         isCreatingAccount: true,
-        creatingAccountError: false,
+        creatingAccountError: null,
       };
     case "CREATED_USER":
       return {
         ...state,
         isCreatingAccount: false,
-        creatingAccountError: false,
+        creatingAccountError: null,
       };
     case "CREATING_USER_ERROR":
       return {
@@ -75,13 +87,13 @@ const changeProfilePic = (state, action) => {
       return {
         ...state,
         isChangingPfp: true,
-        changingPfpError: false,
+        changingPfpError: null,
       };
     case "CHANGED_PFP":
       return {
         ...state,
         isChangingPfp: false,
-        changingPfpError: false,
+        changingPfpError: null,
       };
     case "CHANGING_PFP_ERROR":
       return {
@@ -98,13 +110,13 @@ const addingProfilePic = (state, action) => {
       return {
         ...state,
         isAddingPfp: true,
-        addingPfpError: false,
+        addingPfpError: null,
       };
     case "ADDED_PFP":
       return {
         ...state,
         isAddingPfp: false,
-        addingPfpError: false,
+        addingPfpError: null,
       };
     case "ADDING_PFP_ERROR":
       return {
@@ -121,13 +133,17 @@ const deleteProfilePic = (state, action) => {
       return {
         ...state,
         isDeletingPfp: true,
-        deletingPfpError: false,
+        deletingPfpError: null,
       };
     case "DELETED_PFP":
+      const newUserData = state.userData;
+      delete newUserData.pfp;
       return {
         ...state,
         isDeletingPfp: false,
-        deletingPfpError: false,
+        deletingPfpError: null,
+        userPfp: null,
+        userData: newUserData,
       };
     case "DELETING_PFP_ERROR":
       return {
@@ -138,9 +154,42 @@ const deleteProfilePic = (state, action) => {
   }
 };
 
+const deletingUser = (state, action) => {
+  switch (action.type) {
+    case "DELETING_USER":
+      return {
+        ...state,
+        isDeletingUser: true,
+        deletingUserError: null,
+      };
+    case "DELETED_USER":
+      localStorage.removeItem("userData");
+      localStorage.removeItem("isAdmin");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      return {
+        ...state,
+        isDeletingUser: false,
+        deletingUserError: null,
+        userPfp: null,
+        isAdmin: false,
+        userData: {},
+      };
+    case "DELETING_USER_ERROR":
+      return {
+        ...state,
+        isDeletingUser: null,
+        deletingUserError: action.payload,
+      };
+  }
+};
+
 export default (state = initialState, action) => {
   const logginIn = logIn(state, action);
   if (logginIn) return { ...state, ...logginIn };
+
+  const deletingUserAccount = deletingUser(state, action);
+  if (deletingUserAccount) return { ...state, ...deletingUserAccount };
 
   const addingPfp = addingProfilePic(state, action);
   if (addingPfp) return { ...state, ...addingPfp };
@@ -167,49 +216,36 @@ export default (state = initialState, action) => {
         userPfp: action.payload,
         isFetchingPfp: false,
       };
-    case "DELETING_USER":
-      return {
-        ...state,
-        isDeletingUser: true,
-      };
-    case "DELETED_USER":
-      return {
-        ...state,
-        isDeletingUser: false,
-      };
     case "SET_USER_DATA":
       localStorage.setItem("userData", JSON.stringify(action.payload));
       return {
         ...state,
         userData: action.payload,
       };
-    case "JUST_DELETED_PFP":
-      const data = state.userData;
-      delete data.pfp;
-      return {
-        ...state,
-        userPfp: null,
-        userData: data,
-      };
     case "SET_NEW_USER_PFP":
-      let userDataWithPfp = state.userData;
-      userDataWithPfp = { ...state.userData, pfp: action.pfpId };
-      console.log(userDataWithPfp, action.pfpId);
-      localStorage.setItem("userData", JSON.stringify(userDataWithPfp));
+      if (Object.keys(state.userData).length > 0) {
+        let userDataWithPfp = { ...state.userData, pfp: action.payload.id };
+        localStorage.setItem("userData", JSON.stringify(userDataWithPfp));
 
-      return {
-        ...state,
-        userPfp: action.pfpData,
-        userData: userDataWithPfp,
-      };
-    //TODO: Pfp still fetches if i log out in the middle of fetching, cancel the fetching
+        return {
+          ...state,
+          userPfp: action.payload.data,
+          userData: userDataWithPfp,
+        };
+      } else {
+        return {
+          ...state,
+        };
+      }
     case "LOG_OUT":
       localStorage.removeItem("userData");
+      localStorage.removeItem("isAdmin");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       return {
         ...state,
         userData: {},
+        isAdmin: false,
         userPfp: null,
       };
     default:

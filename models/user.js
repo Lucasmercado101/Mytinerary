@@ -9,7 +9,8 @@ var userSchema = new Schema({
   lastName: String,
   country: String,
   pfp: String,
-  itineraries: Array, // Array of IDs of Itineraries posted
+  isAdmin: Boolean,
+  itineraries: Array,
 });
 
 module.exports = mongoose.model("user", userSchema);

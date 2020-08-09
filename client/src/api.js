@@ -75,6 +75,16 @@ export const deletePfp = (userID) => {
   );
 };
 
+export const deleteUser = (userID) => {
+  if (!userID) throw Error("Pass a userID name to 'deleteUser'");
+  const config = {
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
+    },
+  };
+  return axios.delete(`http://localhost:5000/api/users/user/${userID}`, config);
+};
+
 export const changePfp = (pfpID, data) => {
   if (!pfpID) throw Error("Pass a pfpID name to 'changePfp'");
   if (!data) throw Error("Pass data to 'changePfp'");

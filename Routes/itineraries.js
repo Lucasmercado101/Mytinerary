@@ -5,7 +5,6 @@ const Itineraries = require("../models/itineraries");
 const Activities = require("../models/activities");
 const Itinerary = require("../models/itinerary");
 const User = require("../models/user");
-const itinerary = require("../models/itinerary");
 
 router.get("/cityItineraries/:cityName", async (req, res) => {
   await Itineraries.findOne({ city: req.params.cityName })
@@ -29,8 +28,6 @@ router.delete("/:ID", async (req, res) => {
 
   const activitiesID = itinerary.itineraries[0].activities;
 
-  res.sendStatus(200);
-
   await Itineraries.updateOne(
     {},
     {
@@ -46,24 +43,46 @@ router.delete("/:ID", async (req, res) => {
     .then(() =>
       Activities.findByIdAndDelete(activitiesID, { useFindAndModify: false })
     )
+    .then(() =>
+      User.updateOne(
+        { "itineraries.itinerary": itineraryID },
+        {
+          $pull: {
+            itineraries: { itinerary: itineraryID, activities: activitiesID },
+          },
+        }
+      )
+    )
     .then(() => res.sendStatus(200))
     .catch((err) => err);
 });
 
 router.post("/:cityName", async (req, res) => {
-  //TODO: CHeck if itinerary exists, compare both same name AND userID
-
   const activitiesArray = req.body.activities.map((activity) =>
     activity.trim()
   );
   const hashtagsArray = req.body.hashtags.map((hashtag) => hashtag.trim());
+  const itineraryTitle = req.body.title.trim();
+
+  const itineraryExists = await Itineraries.findOne(
+    {
+      city: req.params.cityName,
+      "itineraries.title": itineraryTitle,
+    },
+    { "itineraries.$": 1 }
+  );
+
+  if (itineraryExists) {
+    res.statusMessage = "An itinerary with that name already exists";
+    return res.sendStatus(409);
+  }
 
   const activities = new Activities({
     activities: activitiesArray,
   });
 
   const itinerary = new Itinerary({
-    title: req.body.title.trim(),
+    title: itineraryTitle,
     rating: "0",
     creator: req.body.creator,
     time: req.body.time.trim(),
@@ -89,7 +108,10 @@ router.post("/:cityName", async (req, res) => {
         req.body.creator,
         {
           $push: {
-            itineraries: { itinerary: itinerary._id, activities: resp._id },
+            itineraries: {
+              itinerary: String(itinerary._id),
+              activities: String(activities._id),
+            },
           },
         },
         { useFindAndModify: false }

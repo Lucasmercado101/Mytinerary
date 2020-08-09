@@ -4,7 +4,6 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { getUserPfp } from "./Redux/Actions/userActions";
 import "./Styles/app.css";
 
-// Containers / Pages
 import Landing from "./Components/Containers/Landing";
 import Nav from "./Components/Containers/Nav";
 import Footer from "./Components/Containers/Footer";

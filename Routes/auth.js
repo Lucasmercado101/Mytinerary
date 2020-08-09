@@ -24,9 +24,9 @@ let sha512 = function (password, salt) {
 //TODO: add an "admin", that's what's needed to
 // delete any city and itinerary, and user
 
-function generateAccessToken(user) {
+function generateAccessToken(userData) {
   return jwt.sign(
-    { username: user.username },
+    { isAdmin: userData.isAdmin, username: userData.username },
     process.env.ACCESS_TOKEN_SECRET
     // ,{ expiresIn: "30m",}
   );
@@ -34,6 +34,7 @@ function generateAccessToken(user) {
 
 router.get("/login", async (req, res) => {
   const { username, password } = req.query;
+
   const userData = await User.findOne({ username }).catch(() => {});
   if (!userData) {
     res.statusMessage = "Error incorrect password or username";

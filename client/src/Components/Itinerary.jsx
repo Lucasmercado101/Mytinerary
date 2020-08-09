@@ -27,6 +27,7 @@ function Itinerary({
   onDelete,
 }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
+  const isAdmin = useSelector((state) => state.user.isAdmin);
   const [data, , isFetchingData, fetchData] = useFetch(
     getUser,
     {},
@@ -73,15 +74,20 @@ function Itinerary({
       });
   }, [pfpData, data]);
 
-  const deleteItinerary = async () => {
-    setIsDeletingItinerary(true);
-    delItinerary(id)
-      .then(() => {
-        if (onDelete) onDelete();
-      })
-      .catch((err) => alert(err))
-      .finally(() => setIsDeletingItinerary(false));
-  };
+  useEffect(() => {
+    let isMounted = true;
+    if (isDeletingItinerary) {
+      delItinerary(id)
+        .then(() => {
+          if (isMounted) {
+            if (onDelete) onDelete();
+          }
+        })
+        .catch((err) => alert(err))
+        .finally(() => isMounted && setIsDeletingItinerary(false));
+    }
+    return () => (isMounted = false);
+  }, [isDeletingItinerary]);
 
   return (
     <article className={styles.itinerary}>
@@ -99,11 +105,14 @@ function Itinerary({
               />
             </MyLink>
             <h3 className={styles.header__title}>{title}</h3>
-            {isLoggedInUserItinerary && !isDeletingUser ? (
+            {(isLoggedInUserItinerary &&
+              !isDeletingUser &&
+              !isDeletingItinerary) ||
+            (isAdmin && !isDeletingItinerary) ? (
               <img
                 className={styles.header__configure}
                 src={deleteIcon}
-                onClick={() => deleteItinerary()}
+                onClick={() => setIsDeletingItinerary(true)}
                 title={`Delete '${title}'`}
                 alt={`Delete '${title}'`}
                 disabled={isDeletingItinerary}

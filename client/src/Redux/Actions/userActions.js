@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   getPfp,
   logIn as logInUser,
@@ -7,6 +6,7 @@ import {
   deletePfp as deleteProfilePic,
   addPfp as addProfilePic,
   getUser,
+  deleteUser as deleteAccount,
 } from "../../api";
 
 export const getUserPfp = (pfpID) => (dispatch) => {
@@ -26,31 +26,30 @@ export const getUserPfp = (pfpID) => (dispatch) => {
 export const justChangedPfp = (userID) => async (dispatch) => {
   const userData = await getUser(userID).catch((err) => console.log(err));
   const pfpData = await getPfp(userData.pfp).catch((err) => console.log(err));
+  console.log(userData);
+  console.log(pfpData);
   dispatch({
     type: "SET_NEW_USER_PFP",
-    pfpData: pfpData,
-    pfpID: userData.pfp,
+    payload: { data: pfpData, id: userData.pfp },
   });
 };
 
 export const deleteUser = (ID) => (dispatch) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-  };
-
   dispatch({
     type: "DELETING_USER",
   });
-  axios
-    .delete("http://localhost:5000/api/users/user/" + ID, config)
+  deleteAccount(ID)
     .then(() =>
       dispatch({
         type: "DELETED_USER",
       })
     )
-    .catch((err) => console.log(err));
+    .catch((err) =>
+      dispatch({
+        type: "DELETED_USER_ERROR",
+        payload: err,
+      })
+    );
 };
 
 export const createUser = (data, config = {}) => (dispatch) => {
@@ -133,20 +132,8 @@ export const logIn = (data) => (dispatch) => {
   );
 };
 
-export const clearLogInFailure = () => {
-  return {
-    type: "CLEAR_LOG_IN_FAILURE",
-  };
-};
-
 export const logOut = () => {
   return {
     type: "LOG_OUT",
-  };
-};
-
-export const clearLoggedIn = () => {
-  return {
-    type: "CLEAR_LOGGED_IN",
   };
 };

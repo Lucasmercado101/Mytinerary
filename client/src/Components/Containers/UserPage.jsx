@@ -8,6 +8,7 @@ import {
   deletePfp,
   addPfp,
   justChangedPfp,
+  deleteUser,
 } from "../../Redux/Actions/userActions";
 import styles from "../../Styles/user.module.css";
 import genericPfp from "../../Images/generic-user.svg";
@@ -104,6 +105,7 @@ function UserPage(props) {
                 )}
               </>
             )}
+
             <h1 className={styles.userName}>{userPageData.userName}</h1>
 
             <ul className={styles.userInfoList}>
@@ -116,7 +118,14 @@ function UserPage(props) {
               <li className={styles.userInfoList__item}>
                 country: {userPageData.country}
               </li>
+              {userPageData.email && (
+                <li className={styles.userInfoList__item}>
+                  email: {userPageData.email}
+                </li>
+              )}
             </ul>
+
+            {sameUser && <DeleteAccountButton ID={userPageData._id} />}
           </>
         ) : (
           <NotFound thing={"User"} />
@@ -146,8 +155,7 @@ function ChangeProfilePictureButton({ userData }) {
         ? dispatch(changePfp(userData.pfpID, data))
             .then(() => dispatch(getUserPfp(userData.pfpID)))
             .catch((err) => alert(`Changing profile picture error: ${err}`))
-        : //TODO: new justCHangedPfp data isn't being set to replace old data
-          dispatch(addPfp(userData._id, data))
+        : dispatch(addPfp(userData._id, data))
             .then(() => dispatch(justChangedPfp(userData._id)))
             .catch((err) => alert(`Adding profile picture error: ${err}`));
     } else {
@@ -187,13 +195,12 @@ function DeleteProfilePictureButton({ userData }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
   const isChangingPfp = useSelector((state) => state.user.isChangingPfp);
   const isDeletingPfp = useSelector((state) => state.user.isDeletingPfp);
-
   const dispatch = useDispatch();
 
   function removePfp() {
-    dispatch(deletePfp(userData.pfpID))
-      .then(() => dispatch({ type: "JUST_DELETED_PFP" }))
-      .catch((err) => alert(`Deleting profile picture error: ${err}`));
+    dispatch(deletePfp(userData.pfpID)).catch((err) =>
+      alert(`Deleting profile picture error: ${err}`)
+    );
   }
 
   return (
@@ -203,6 +210,24 @@ function DeleteProfilePictureButton({ userData }) {
       warning
       centered
       disabled={isDeletingUser || isChangingPfp || isDeletingPfp}
+    />
+  );
+}
+
+function DeleteAccountButton({ ID }) {
+  const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
+  const isChangingPfp = useSelector((state) => state.user.isChangingPfp);
+  const isDeletingPfp = useSelector((state) => state.user.isDeletingPfp);
+  const isAddingPfp = useSelector((state) => state.user.isAddingPfp);
+  const dispatch = useDispatch();
+
+  return (
+    <Button
+      text={"Delete Account"}
+      onClick={() => dispatch(deleteUser(ID))}
+      danger
+      centered
+      disabled={isDeletingUser || isChangingPfp || isDeletingPfp || isAddingPfp}
     />
   );
 }
