@@ -29,7 +29,7 @@ router.delete("/:ID", async (req, res) => {
   const activitiesID = itinerary.itineraries[0].activities;
 
   await Itineraries.updateOne(
-    {},
+    { _id: itinerary._id },
     {
       $pull: {
         itineraries: {

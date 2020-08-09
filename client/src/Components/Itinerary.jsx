@@ -87,7 +87,7 @@ function Itinerary({
         .finally(() => isMounted && setIsDeletingItinerary(false));
     }
     return () => (isMounted = false);
-  }, [isDeletingItinerary]);
+  }, [isDeletingItinerary, onDelete, id]);
 
   return (
     <article className={styles.itinerary}>
