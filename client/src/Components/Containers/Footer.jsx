@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styles from "../../Styles/footer.module.css";
 import { Link } from "react-router-dom";
-import { removeLastPageVisited } from "../../Redux/Actions/removeLastPageVisited";
+import { removeLastPageVisited } from "../../Redux/Actions/lastPage";
 
 function Footer() {
   const goBack = useSelector((state) => state.goBack["from"]);

@@ -27,7 +27,6 @@ function Itinerary({
   onDelete,
 }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
-  const isAdmin = useSelector((state) => state.user.isAdmin);
   const [data, , isFetchingData, fetchData] = useFetch(
     getUser,
     {},
@@ -105,10 +104,9 @@ function Itinerary({
               />
             </MyLink>
             <h3 className={styles.header__title}>{title}</h3>
-            {(isLoggedInUserItinerary &&
-              !isDeletingUser &&
-              !isDeletingItinerary) ||
-            (isAdmin && !isDeletingItinerary) ? (
+            {isLoggedInUserItinerary &&
+            !isDeletingUser &&
+            !isDeletingItinerary ? (
               <img
                 className={styles.header__configure}
                 src={deleteIcon}

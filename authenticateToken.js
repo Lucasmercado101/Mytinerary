@@ -7,7 +7,7 @@ function authenticateToken(req, res, next) {
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, userData) => {
     if (err) return res.sendStatus(403);
-    req.isAdmin = userData.isAdmin;
+    req.user = userData.username;
     next();
   });
 }

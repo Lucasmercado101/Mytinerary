@@ -9,7 +9,6 @@ var userSchema = new Schema({
   lastName: String,
   country: String,
   pfp: String,
-  isAdmin: Boolean,
   itineraries: Array,
 });
 

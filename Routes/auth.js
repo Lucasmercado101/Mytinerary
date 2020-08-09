@@ -26,7 +26,7 @@ let sha512 = function (password, salt) {
 
 function generateAccessToken(userData) {
   return jwt.sign(
-    { isAdmin: userData.isAdmin, username: userData.username },
+    { username: userData.username },
     process.env.ACCESS_TOKEN_SECRET
     // ,{ expiresIn: "30m",}
   );

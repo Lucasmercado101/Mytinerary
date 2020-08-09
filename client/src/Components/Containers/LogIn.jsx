@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 import styles from "../../Styles/logIn.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../../Redux/Actions/userActions";
+import { logIn } from "../../Redux/Actions/user";
 import { button, button__white } from "../../Styles/button.module.css";
 
 const initialState = {

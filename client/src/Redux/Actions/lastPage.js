@@ -4,3 +4,9 @@ export const getLastPageVisited = (data) => {
     payload: data,
   };
 };
+
+export const removeLastPageVisited = () => {
+  return {
+    type: "REMOVE_LAST_FROM",
+  };
+};

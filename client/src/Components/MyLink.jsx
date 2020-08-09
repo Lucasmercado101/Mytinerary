@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { getLastPageVisited } from "../Redux/Actions/getLastPageVisited";
+import { getLastPageVisited } from "../Redux/Actions/lastPage";
 
 function MyLink(props) {
   const dispatch = useDispatch();

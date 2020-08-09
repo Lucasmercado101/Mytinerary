@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { getUserPfp } from "./Redux/Actions/userActions";
+import { getUserPfp } from "./Redux/Actions/user";
 import "./Styles/app.css";
 
 import Landing from "./Components/Containers/Landing";

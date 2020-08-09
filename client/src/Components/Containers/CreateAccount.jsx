@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect, useReducer } from "react";
 import styles from "../../Styles/createAccount.module.css";
 import { button, button__white } from "../../Styles/button.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../../Redux/Actions/userActions";
-import { createUser } from "../../Redux/Actions/userActions";
+import { logIn, createUser } from "../../Redux/Actions/user";
 import addUser from "../../Images/add-user.svg";
 
 const options = [
@@ -42,7 +41,7 @@ function reducer(state, action) {
 
 function CreateAccount(props) {
   const isCreatingAccount = useSelector(
-    (state) => state.user.isCreatingAccount
+    (state) => state.creatingAccount.isCreatingAccount
   );
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
   const [formInfo, setFormInfo] = useState({

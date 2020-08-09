@@ -9,7 +9,7 @@ import {
   addPfp,
   justChangedPfp,
   deleteUser,
-} from "../../Redux/Actions/userActions";
+} from "../../Redux/Actions/user";
 import styles from "../../Styles/user.module.css";
 import genericPfp from "../../Images/generic-user.svg";
 import Button from "../Button";
@@ -139,8 +139,8 @@ function UserPage(props) {
 
 function ChangeProfilePictureButton({ userData }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
-  const isChangingPfp = useSelector((state) => state.user.isChangingPfp);
-  const isAddingPfp = useSelector((state) => state.user.isAddingPfp);
+  const isChangingPfp = useSelector((state) => state.changingPfp.isChangingPfp);
+  const isAddingPfp = useSelector((state) => state.addingPfp.isAddingPfp);
   const isDeletingPfp = useSelector((state) => state.user.isDeletingPfp);
   const imageUpload = useRef();
   const dispatch = useDispatch();
@@ -193,7 +193,7 @@ function ChangeProfilePictureButton({ userData }) {
 
 function DeleteProfilePictureButton({ userData }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
-  const isChangingPfp = useSelector((state) => state.user.isChangingPfp);
+  const isChangingPfp = useSelector((state) => state.changingPfp.isChangingPfp);
   const isDeletingPfp = useSelector((state) => state.user.isDeletingPfp);
   const dispatch = useDispatch();
 
@@ -216,9 +216,9 @@ function DeleteProfilePictureButton({ userData }) {
 
 function DeleteAccountButton({ ID }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
-  const isChangingPfp = useSelector((state) => state.user.isChangingPfp);
+  const isChangingPfp = useSelector((state) => state.changingPfp.isChangingPfp);
   const isDeletingPfp = useSelector((state) => state.user.isDeletingPfp);
-  const isAddingPfp = useSelector((state) => state.user.isAddingPfp);
+  const isAddingPfp = useSelector((state) => state.addingPfp.isAddingPfp);
   const dispatch = useDispatch();
 
   return (
