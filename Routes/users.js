@@ -6,6 +6,7 @@ const crypto = require("crypto");
 const authenticateToken = require("../authenticateToken");
 const multer = require("multer");
 const rootDir = require("../path");
+const mongoose = require("mongoose");
 require("dotenv/config");
 const User = require("../models/user");
 const Itineraries = require("../models/itineraries");
@@ -166,25 +167,6 @@ router.get("/user/pfp/:ID", (req, res) => {
 });
 
 router.get("/user/:ID", async (req, res) => {
-  // await new Promise((res) =>
-  //   setTimeout(() => {
-  //     res();
-  //   }, 500)
-  // );
-  // const dummyData = {
-  //   itineraries: [],
-  //   _id: "5f28321802535f21282ec695",
-  //   username: "ae",
-  //   firstName: "ae",
-  //   lastName: "ae",
-  //   country: "England",
-  //   pfp: "5f28321202535f21282ec694",
-  //   __v: 0,
-  // };
-
-  // return res.json(dummyData);
-  // res.json(dummyData);
-
   const { ID } = req.params;
   User.findById(ID)
     .then((user) => {
@@ -211,9 +193,10 @@ router.delete("/user/:userID", async (req, res) => {
   }
 
   const postedItineraries = user.itineraries;
+
   if (postedItineraries) {
     postedItineraries.forEach(async (i) => {
-      await Activities.findByIdAndDelete(i["activities"], {
+      await Activities.findByIdAndDelete(i.activities, {
         useFindAndModify: false,
       }).catch((err) => res.json({ message: err }));
 
@@ -223,18 +206,15 @@ router.delete("/user/:userID", async (req, res) => {
           $pull: {
             itineraries: {
               _id: {
-                $in: i["itinerary"],
+                $in: mongoose.Types.ObjectId(i.itinerary),
               },
             },
           },
         }
-      )
-        .then(() => {
-          res.status(200).end();
-        })
-        .catch((err) => res.json({ message: err }));
+      ).catch((err) => res.json({ message: err }));
     });
   }
+
   await User.findByIdAndDelete(ID, { useFindAndModify: false }).catch((err) =>
     res.json({ message: err })
   );
@@ -292,11 +272,3 @@ router.post("/user/pfp/:ID", upload.single("file"), async (req, res) => {
 });
 
 module.exports = router;
-
-// await User.findOne({ username })
-// .then((user) => {
-//   fs.writeFileSync(
-//     "./temp/images/Image_" + user.pfp._id + user.pfp.type,
-//     user.pfp.data
-//   );
-// })

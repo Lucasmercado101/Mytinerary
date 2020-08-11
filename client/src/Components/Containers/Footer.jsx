@@ -29,5 +29,4 @@ function Footer() {
   );
 }
 
-// add <p>Copyright &copy; 2020 by Mytinerary. All rights reserved.</p>
 export default Footer;

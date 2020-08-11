@@ -85,7 +85,7 @@ router.post("/:cityName", async (req, res) => {
     title: itineraryTitle,
     rating: "0",
     creator: req.body.creator,
-    time: req.body.time.trim(),
+    time: req.body.time,
     price: req.body.price.trim(),
     activities: activities._id,
     hashtags: hashtagsArray,

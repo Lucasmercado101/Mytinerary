@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useFetch } from "../hooks/useFetch";
-// import { getUsers, getPfp } from "../../api";
 import { getUsers } from "../../api";
 import User from "../UserCard";
 import SearchBar from "../SearchBar";
@@ -9,6 +8,7 @@ import LoadingRing from "../LoadingRing";
 function Users() {
   const [users, , isFetching] = useFetch(getUsers, [], true);
   const [filteredUsers, setFilteredUsers] = useState(users);
+  const [thereAreUsers, setThereAreUsers] = useState(true);
 
   useEffect(() => {
     document.title = "Users";
@@ -18,10 +18,11 @@ function Users() {
     users.length > 0 && setFilteredUsers(users);
   }, [users]);
 
-  //FIXME: Usercard, re renders every time onChange of searchbar
-  //which causes it to re-fetch userPfp ,
-  //make it a Presentational component, fetch all
-  //pfps here, only once, when all data is fetched
+  useEffect(() => {
+    if (!isFetching && users.length === 0) {
+      setThereAreUsers(false);
+    }
+  }, [isFetching, users]);
 
   return (
     <>
@@ -37,15 +38,22 @@ function Users() {
       >
         USERS
       </h1>
-      <SearchBar
-        label={"Search users:"}
-        data={users}
-        filter={"username"}
-        setFilteredResults={setFilteredUsers}
-      />
 
-      {(isFetching && <LoadingRing centered />) ||
-        filteredUsers.map((user, i) => <User key={i} userData={user} />)}
+      {thereAreUsers ? (
+        <>
+          <SearchBar
+            label={"Search users:"}
+            data={users}
+            filter={"username"}
+            setFilteredResults={setFilteredUsers}
+          />
+
+          {(isFetching && <LoadingRing centered />) ||
+            filteredUsers.map((user, i) => <User key={i} userData={user} />)}
+        </>
+      ) : (
+        <h2 style={{ textAlign: "center" }}>There are no users</h2>
+      )}
     </>
   );
 }

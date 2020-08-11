@@ -27,6 +27,7 @@ function Itinerary({
   onDelete,
 }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
+  const isAdmin = useSelector((state) => state.user.isAdmin);
   const [data, , isFetchingData, fetchData] = useFetch(
     getUser,
     {},
@@ -54,7 +55,6 @@ function Itinerary({
     !isLoggedInUserItinerary && fetchData();
   }, [isLoggedInUserItinerary, fetchData]);
 
-  //TODO: fetch pfpData on parent component, not here
   useEffect(() => {
     const thereIsData = Object.keys(data).length > 0;
     if (thereIsData) {
@@ -104,9 +104,10 @@ function Itinerary({
               />
             </MyLink>
             <h3 className={styles.header__title}>{title}</h3>
-            {isLoggedInUserItinerary &&
-            !isDeletingUser &&
-            !isDeletingItinerary ? (
+            {(isLoggedInUserItinerary &&
+              !isDeletingUser &&
+              !isDeletingItinerary) ||
+            (isAdmin && !isDeletingItinerary) ? (
               <img
                 className={styles.header__configure}
                 src={deleteIcon}

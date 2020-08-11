@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import mytineraryLogo from "../../Images/mytinerary logo.svg";
+import mytineraryLogo from "../../Images/mytinerary_logo.svg";
 import circleright from "../../Images/arrowRight.svg";
 import styles from "../../Styles/landing.module.css";
 import MyLink from "../MyLink";

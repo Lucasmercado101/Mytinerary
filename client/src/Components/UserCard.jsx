@@ -5,7 +5,6 @@ import genericPfp from "../Images/generic-user.svg";
 import MyLink from "./MyLink";
 import styles from "../Styles/userCard.module.css";
 
-//TODO: Make this a PRESENTATIONAL component, no state or logic
 function UserCard({ userData }) {
   const [pfp, , , fetchPfp] = useFetch(getPfp, "");
 

@@ -4,6 +4,7 @@ import { button, button__white } from "../../Styles/button.module.css";
 import { useDispatch, useSelector } from "react-redux";
 import { logIn, createUser } from "../../Redux/Actions/user";
 import addUser from "../../Images/add-user.svg";
+import Button from "../Button";
 
 const options = [
   "England",
@@ -148,9 +149,17 @@ function CreateAccount(props) {
       >
         {uploadedUserImage ? "" : <img src={addUser} alt="profile pic" />}
       </div>
-      <small style={{ textAlign: "center" }}>
-        Image must be smaller than 10MB
-      </small>
+      {uploadedUserImage ? (
+        <Button
+          warning
+          onClick={() => setUploadedUserImage(null)}
+          text="Remove image"
+        />
+      ) : (
+        <small style={{ textAlign: "center" }}>
+          Image must be smaller than 10MB
+        </small>
+      )}
       <label htmlFor="username">Username</label>
       <input
         className={styles.form__input}
@@ -221,7 +230,7 @@ function CreateAccount(props) {
         type="submit"
         className={`${button} ${button__white}`}
         disabled={isDeletingUser || isCreatingAccount}
-        value="Create"
+        value={isCreatingAccount ? "Creating account..." : "Create"}
       />
     </form>
   );

@@ -21,9 +21,6 @@ let sha512 = function (password, salt) {
   };
 };
 
-//TODO: add an "admin", that's what's needed to
-// delete any city and itinerary, and user
-
 function generateAccessToken(userData) {
   return jwt.sign(
     { username: userData.username },

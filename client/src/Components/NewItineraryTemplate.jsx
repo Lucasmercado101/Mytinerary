@@ -23,29 +23,14 @@ function Itinerary({ city, onPost }) {
   const [hours, setHours] = useState("");
   const [price, setPrice] = useState("");
   const [title, setTitle] = useState("");
-  const [hashtag1, setHashtag1] = useState("");
-  const [hashtag2, setHashtag2] = useState("");
-  const [hashtag3, setHashtag3] = useState("");
-  // TODO: Try to implement activities into a reducer?
+  const [hashtags, setHashtags] = useState({
+    hashtag1: "",
+    hashtag2: "",
+    hashtag3: "",
+  });
   const [activities, setactivities] = useState([""]);
   const userData = useSelector((state) => state.user.userData);
   const userPfp = useSelector((state) => state.user.userPfp);
-
-  // TODO: change some useStates into this singular state & function
-
-  // const [formInfo, setFormInfo] = useState({
-  //   username: "",
-  //   password: "",
-  //   email: "",
-  //   firstName: "",
-  //   lastName: "",
-  //   country: "England",
-  // });
-
-  // function handleFormInput(e) {
-  //   const { name, value } = e.target;
-  //   setFormInfo({ ...formInfo, [name]: value });
-  // }
 
   function handlePriceInput(e) {
     const price = e.target.value;
@@ -72,15 +57,8 @@ function Itinerary({ city, onPost }) {
   }
 
   function handleHashtagsInput(e) {
-    if (e.target.name === "hashtag1") {
-      setHashtag1(e.target.value);
-    }
-    if (e.target.name === "hashtag2") {
-      setHashtag2(e.target.value);
-    }
-    if (e.target.name === "hashtag3") {
-      setHashtag3(e.target.value);
-    }
+    const { name, value } = e.target;
+    setHashtags({ ...hashtags, [name]: value });
   }
 
   function addActivity(e) {
@@ -108,12 +86,17 @@ function Itinerary({ city, onPost }) {
   function submitItinerary(e) {
     e.preventDefault();
 
+    let filteredHashtags = [];
+    for (const val in hashtags) {
+      if (hashtags[val]) filteredHashtags.push(hashtags[val]);
+    }
+
     const itinerary = {
       title: title,
       creator: userData._id,
       time: hours,
       price: price,
-      hashtags: [hashtag1, hashtag2, hashtag3].filter((i) => i),
+      hashtags: filteredHashtags,
       city,
       activities: [...activities],
     };
@@ -127,9 +110,11 @@ function Itinerary({ city, onPost }) {
     setHours("");
     setPrice("");
     setTitle("");
-    setHashtag1("");
-    setHashtag2("");
-    setHashtag3("");
+    setHashtags({
+      hashtag1: "",
+      hashtag2: "",
+      hashtag3: "",
+    });
     setactivities([""]);
   }
 
@@ -201,7 +186,7 @@ function Itinerary({ city, onPost }) {
                   type="text"
                   name="hashtag1"
                   onChange={handleHashtagsInput}
-                  value={hashtag1}
+                  value={hashtags.hashtag1}
                   className={styles.activities__templateInput}
                 ></input>
               </p>
@@ -212,7 +197,7 @@ function Itinerary({ city, onPost }) {
                   type="text"
                   name="hashtag2"
                   onChange={handleHashtagsInput}
-                  value={hashtag2}
+                  value={hashtags.hashtag2}
                   className={styles.activities__templateInput}
                 ></input>
               </p>
@@ -223,7 +208,7 @@ function Itinerary({ city, onPost }) {
                   type="text"
                   name="hashtag3"
                   onChange={handleHashtagsInput}
-                  value={hashtag3}
+                  value={hashtags.hashtag3}
                   className={styles.activities__templateInput}
                 ></input>
               </p>

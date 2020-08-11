@@ -60,12 +60,12 @@ function UserPage(props) {
   }, [userPageData.pfp, fetchPfp]);
 
   useEffect(() => {
-    if (fetchedPfpData && !isFetching) {
+    if (fetchedPfpData && !isFetching && !sameUser) {
       setUserPageData((i) => {
         return { ...i, pfpData: fetchedPfpData };
       });
     }
-  }, [fetchedPfpData, isFetching]);
+  }, [fetchedPfpData, isFetching, sameUser]);
 
   useEffect(() => {
     document.title = `${userPageData.username}'s profile`;
