@@ -6,17 +6,16 @@
     "axios": "^0.19.2",
     "cra-template": "1.0.3",
     "dotenv": "^8.2.0",
-    "npm-check": "^5.9.2",
     "react": "^16.13.1",
     "react-animated-slider": "^2.0.0",
     "react-dom": "^16.13.1",
     "react-modal": "^3.11.2",
-    "react-redux": "^7.2.0",
+    "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^3.4.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.7"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,6 +39,6 @@
     ]
   },
   "devDependencies": {
-    "redux-devtools": "^3.5.0"
+    "redux-devtools": "^3.6.0"
   }
 }
