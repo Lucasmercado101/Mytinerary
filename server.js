@@ -16,16 +16,10 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-mongoose
-  .connect(process.env.MG_PASS, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("Connected to MongoDB..."))
-  .catch((err) => {
-    if ((err.message = "connection timed out"))
-      console.log("Error: Mongoose Timed out!");
-  });
+mongoose.connect(process.env.MG_PASS, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // Routes
 
