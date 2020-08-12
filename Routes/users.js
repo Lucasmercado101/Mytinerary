@@ -205,9 +205,7 @@ router.delete("/user/:userID", async (req, res) => {
         {
           $pull: {
             itineraries: {
-              _id: {
-                $in: mongoose.Types.ObjectId(i.itinerary),
-              },
+              _id: i.itinerary,
             },
           },
         }
