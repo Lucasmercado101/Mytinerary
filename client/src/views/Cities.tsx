@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Typography, makeStyles, TextField, Grid } from "@material-ui/core";
-import Skeleton from "@material-ui/lab/Skeleton";
 import { useQuery } from "react-query";
 
 import { getCities } from "../api";
 import City from "../Components/City/City";
-// import { useSelector } from "react-redux";
-// import { getCities } from "./../api";
-// import { useFetch } from "../Components/hooks/useFetch";
-
-// import CityCard from "../Components/CityCard";
-// import LoadingRing from "../Components/LoadingRing";
-// import SearchBar from "../Components/SearchBar";
+// TODO:
 // import NewCityTemplate from "../Components/NewCityTemplate";
 
 const useStyles = makeStyles(() => ({
