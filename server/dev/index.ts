@@ -2,6 +2,8 @@ import express from "express";
 import { json } from "body-parser";
 import mongoose from "mongoose";
 import path from "path";
+
+import citiesRoutes from "./routes/cities";
 // import cors from 'cors';
 
 // import userRoutes from './routes/users';
@@ -26,6 +28,8 @@ mongoose
 app.use(express.static(path.join(rootDir, "..", "..", "client", "build")));
 // app.use(cors());
 app.use(json());
+
+app.use("/api/cities", citiesRoutes);
 
 // app.use('/api', userRoutes);
 // app.use('/api', notesRoutes);

@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Typography, makeStyles, TextField, Grid } from "@material-ui/core";
+import {
+  Typography,
+  makeStyles,
+  TextField,
+  Grid,
+  Button
+} from "@material-ui/core";
 import { useQuery } from "react-query";
 
 import { getCities } from "../api";
 import City from "../Components/City/City";
+import NewCityModal from "../Components/NewCityModal/NewCityModal";
 // TODO:
 // import NewCityTemplate from "../Components/NewCityTemplate";
 
@@ -18,6 +25,11 @@ const useStyles = makeStyles(() => ({
     marginTop: "10px",
     marginBottom: "25px",
     width: "100%"
+  },
+  citiesList: {
+    margin: 0,
+    padding: 0,
+    width: "100%"
   }
 }));
 
@@ -29,7 +41,8 @@ type CityType = {
 };
 
 const Cities: React.FC = () => {
-  const { title, container, searchBar } = useStyles();
+  const { title, container, searchBar, citiesList } = useStyles();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
   const { isLoading, error, data } = useQuery<CityType[]>("cities", getCities);
 
@@ -50,7 +63,9 @@ const Cities: React.FC = () => {
         variant="outlined"
       />
 
-      <Grid component="ul" container spacing={2}>
+      <Grid className={citiesList} component="ul" container spacing={2}>
+        {/* TODO: placeholder error text */}
+        {error ? <h3>Error: no cities found</h3> : ""}
         {isLoading &&
           !error &&
           [1, 2, 3, 4].map((_, index) => {
@@ -61,21 +76,38 @@ const Cities: React.FC = () => {
             );
           })}
 
-        {data?.map((city, index) => {
-          if (
-            searchFilter === "" ||
-            city.name.toLowerCase().includes(searchFilter)
-          )
-            return (
-              <Grid key={index} container item component="li">
-                <City
-                  country={city.country}
-                  name={city.name}
-                  imageUrl={city.url}
-                />
-              </Grid>
-            );
-        })}
+        {!error &&
+          data?.map((city, index) => {
+            if (
+              searchFilter === "" ||
+              city.name.toLowerCase().includes(searchFilter)
+            )
+              return (
+                <Grid key={index} container item component="li">
+                  <City
+                    country={city.country}
+                    name={city.name}
+                    imageUrl={city.url}
+                  />
+                </Grid>
+              );
+          })}
+      </Grid>
+
+      <NewCityModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+      />
+      <Grid container justify="center">
+        <Button
+          size="large"
+          color="primary"
+          variant="contained"
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+        >
+          New City
+        </Button>
       </Grid>
     </div>
   );
