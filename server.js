@@ -18,7 +18,7 @@ app.use(express.json());
 
 mongoose.connect(process.env.MG_PASS, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
+  useUnifiedTopology: true
 });
 
 // Routes

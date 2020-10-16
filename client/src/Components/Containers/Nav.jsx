@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { logOut } from "../../Redux/Actions/user";
 import MyLink from "../MyLink";
-import DropDownMenu, { MenuItem } from "../DropDownMenu";
+// import DropDownMenu, { MenuItem } from "../DropDownMenu";
 import styles from "../../Styles/navbar.module.css";
 import genericPfp from "../../Images/generic-user.svg";
 import addUser from "../../Images/add-user.svg";
@@ -15,7 +15,18 @@ function Nav() {
 
   return (
     <nav className={styles.navbar}>
-      <DropDownMenu
+      {/* <AppBar position="static">
+  <Toolbar>
+    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+      <MenuIcon />
+    </IconButton>
+    <Typography variant="h6" className={classes.title}>
+      News
+    </Typography>
+    <Button color="inherit">Login</Button>
+  </Toolbar>
+</AppBar> */}
+      {/* <DropDownMenu
         closeOnClick
         button={
           <img
@@ -50,7 +61,7 @@ function Nav() {
         <MyLink to="/cities">Cities</MyLink>
         <MyLink to="/users">Users</MyLink>
         <MyLink to="/">Home</MyLink>
-      </DropDownMenu>
+      </DropDownMenu> */}
     </nav>
   );
 }

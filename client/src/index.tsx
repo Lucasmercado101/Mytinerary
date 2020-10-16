@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
+import "fontsource-roboto";
 
 ReactDOM.render(
   <React.StrictMode>
