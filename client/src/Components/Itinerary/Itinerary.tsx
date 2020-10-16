@@ -42,16 +42,10 @@ type Props = {
 
 const Itinerary: React.FC<Props> = ({ title, description, tags }) => {
   const [isDetailsopen, setIsDetailsopen] = useState(false);
-  const {
-    avatar,
-    showMoreButton,
-    showMoreClosed,
-    showMoreOpen,
-    itinerary
-  } = useStyles();
+  const { avatar, showMoreButton, showMoreClosed, showMoreOpen } = useStyles();
 
   return (
-    <Card component="article" className={itinerary} elevation={2}>
+    <Card component="article" elevation={2}>
       <CardHeader
         component="header"
         avatar={

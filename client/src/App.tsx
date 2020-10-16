@@ -4,11 +4,10 @@ import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 // import { getUserPfp } from "./Redux/Actions/user";
 import { makeStyles } from "@material-ui/core";
-import "./Styles/app.css";
 
-import Landing from "./Components/Containers/Landing";
+import Landing from "./views/Landing";
 import NavBar from "./Components/NavBar/NavBar";
-import Footer from "./Components/Containers/Footer";
+// import Footer from "./Components/Containers/Footer";
 // import Cities from "./Components/Containers/Cities";
 import Cities from "./views/Cities";
 import CityItineraries from "./views/CityItineraries";
