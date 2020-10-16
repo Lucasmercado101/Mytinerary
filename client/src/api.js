@@ -2,9 +2,9 @@ import axios from "axios";
 
 const getAccessToken = () => localStorage.getItem("accessToken");
 
-export const getCities = (config = {}) => {
+export const getCities = () => {
   return axios
-    .get("http://localhost:5000/api/cities", config)
+    .get("http://localhost:5000/api/cities")
     .then((resp) => resp.data);
 };
 
@@ -66,8 +66,8 @@ export const deletePfp = (userID) => {
   if (!userID) throw Error("Pass a userID name to 'deletePfp'");
   const config = {
     headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
+      Authorization: `Bearer ${getAccessToken()}`
+    }
   };
   return axios.delete(
     `http://localhost:5000/api/users/user/pfp/${userID}`,
@@ -79,8 +79,8 @@ export const deleteUser = (userID) => {
   if (!userID) throw Error("Pass a userID name to 'deleteUser'");
   const config = {
     headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
+      Authorization: `Bearer ${getAccessToken()}`
+    }
   };
   return axios.delete(`http://localhost:5000/api/users/user/${userID}`, config);
 };
@@ -91,8 +91,8 @@ export const changePfp = (pfpID, data) => {
   const config = {
     headers: {
       "content-type": "multipart/form-data",
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
+      Authorization: `Bearer ${getAccessToken()}`
+    }
   };
 
   return axios.put(
@@ -108,8 +108,8 @@ export const addPfp = (userID, data) => {
   const config = {
     headers: {
       "content-type": "multipart/form-data",
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
+      Authorization: `Bearer ${getAccessToken()}`
+    }
   };
 
   return axios.post(
@@ -123,8 +123,8 @@ export const postCity = (data) => {
   if (!data) throw Error("Pass data to 'postCity'");
   const config = {
     headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
+      Authorization: `Bearer ${getAccessToken()}`
+    }
   };
 
   return axios.post("http://localhost:5000/api/cities/", data, config);
@@ -134,8 +134,8 @@ export const postItinerary = (data) => {
   if (!data) throw Error("Pass data to 'postItinerary'");
   const config = {
     headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
+      Authorization: `Bearer ${getAccessToken()}`
+    }
   };
 
   return axios.post(
@@ -150,8 +150,8 @@ export const deleteItinerary = (itineraryID) => {
     throw Error("Pass an itineraryID name to 'deleteItinerary'");
   const config = {
     headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
-    },
+      Authorization: `Bearer ${getAccessToken()}`
+    }
   };
 
   return axios
@@ -162,6 +162,6 @@ export const deleteItinerary = (itineraryID) => {
 export const postUser = (data, config = {}) => {
   if (!data) throw Error("Pass data to 'postUser'");
   return axios.post("http://localhost:5000/api/users/create", data, {
-    ...config,
+    ...config
   });
 };

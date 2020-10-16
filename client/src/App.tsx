@@ -8,7 +8,8 @@ import "./Styles/app.css";
 import Landing from "./Components/Containers/Landing";
 import NavBar from "./Components/NavBar/NavBar";
 import Footer from "./Components/Containers/Footer";
-import Cities from "./Components/Containers/Cities";
+// import Cities from "./Components/Containers/Cities";
+import Cities from "./views/Cities";
 import CityItineraries from "./Components/Containers/CityItineraries";
 import CreateAccount from "./Components/Containers/CreateAccount";
 import Users from "./Components/Containers/Users";
@@ -52,7 +53,7 @@ function App() {
           <Route path="/cities" exact component={Cities} />
           <Route path="/cities/:city" exact component={CityItineraries} />
           <Route path="/createAccount" exact component={CreateAccount} />
-          <Route path="/logIn" exact component={LogIn} />
+          <Route path="/login" exact component={LogIn} />
           <Route path="/users" exact component={Users} />
           <Route path="/users/user/:user" exact component={UserPage} />
           <Route component={NotFound} />

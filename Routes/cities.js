@@ -8,6 +8,7 @@ const authenticateToken = require("../authenticateToken");
 router.get("/", (_, res) => {
   City.find()
     .then((data) => {
+      //TODO: extract this sorting into some other function
       const sortedCities = data.sort(function (city, city2) {
         if (city.name.toLowerCase() < city2.name.toLowerCase()) {
           return -1;
@@ -45,12 +46,12 @@ router.post("/", async (req, res) => {
   const city = new City({
     name: trimmedCity,
     country: noExtraSpaces(req.body.country.trim()),
-    url: req.body.url,
+    url: req.body.url
   });
 
   const itinerary = new Itineraries({
     city: trimmedCity,
-    itineraries: [],
+    itineraries: []
   });
 
   const cityData = await City.findOne({ name: trimmedCity }).catch((err) => {

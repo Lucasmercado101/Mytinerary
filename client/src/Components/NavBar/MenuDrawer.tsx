@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { IconButton, Menu, MenuItem, makeStyles } from "@material-ui/core";
 import { Menu as MenuIcon } from "@material-ui/icons";
 
-const useStyles = makeStyles(({ breakpoints }) => ({
+const useStyles = makeStyles(() => ({
   listItem: {
     color: "black",
-    textDecoration: "none"
+    textDecoration: "none",
+    minWidth: "112px"
   }
 }));
 
