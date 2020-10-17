@@ -13,8 +13,8 @@ import Cities from "./views/Cities";
 import CityItineraries from "./views/CityItineraries";
 import Register from "./views/Register";
 import LogIn from "./views/LogIn";
+import Users from "./views/Users";
 // import CreateAccount from "./Components/Containers/CreateAccount";
-// import Users from "./Components/Containers/Users";
 // import UserPage from "./Components/Containers/UserPage";
 // import LogIn from "./Components/Containers/LogIn";
 // import NotFound from "./Components/Containers/NotFound";
@@ -53,9 +53,14 @@ function App() {
         <Switch>
           <Route path="/" exact component={Landing} />
           <Route path="/cities" exact component={Cities} />
-          <Route path="/cities/:city" exact component={CityItineraries} />
+          <Route
+            path="/cities/city/:cityId"
+            exact
+            component={CityItineraries}
+          />
           <Route path="/register" exact component={Register} />
           <Route path="/login" exact component={LogIn} />
+          <Route path="/users" exact component={Users} />
 
           {/* <Route path="/createAccount" exact component={CreateAccount} />
           <Route path="/login" exact component={LogIn} />

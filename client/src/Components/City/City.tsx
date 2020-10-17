@@ -1,22 +1,8 @@
+import React from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Skeleton from "@material-ui/lab/Skeleton";
-import React from "react";
-
-interface DataProps extends React.HTMLAttributes<HTMLElement> {
-  name: string;
-  country: string;
-  imageUrl: string;
-  loading?: never;
-}
-interface SkeletonProps extends React.HTMLAttributes<HTMLElement> {
-  name?: never;
-  country?: never;
-  imageUrl?: never;
-  loading: boolean;
-}
-
-type Props = DataProps | SkeletonProps;
+import Props from "./Props";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -54,7 +40,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const City: React.FC<Props> = ({ name, country, imageUrl, loading }) => {
+const City: React.FC<Props> = ({ name, country, loading, cityId }) => {
   const { container, image, info, nameClass, countryClass } = useStyles();
   if (loading)
     return (
@@ -64,8 +50,14 @@ const City: React.FC<Props> = ({ name, country, imageUrl, loading }) => {
     );
 
   return (
-    <Link to={`/cities/${name}`} className={container}>
-      <img className={image} src={imageUrl} alt={name} />
+    <Link to={`/cities/city/${cityId}`} className={container}>
+      <img
+        className={image}
+        src={`https://source.unsplash.com/daily?${name
+          ?.split(" ")
+          .join("")},architecture`}
+        alt={name}
+      />
       <div className={info}>
         <Typography className={nameClass} variant="subtitle1" component="h2">
           {name}

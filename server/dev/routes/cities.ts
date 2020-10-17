@@ -3,13 +3,23 @@ import City from "../models/city";
 const router = Router();
 
 router.get("/", (req, res) => {
-  res.sendStatus(500);
+  City.find()
+    .then((cities) => res.json(cities))
+    .catch(() => {
+      // TODO: error handling, server error here, since mongo goes to .then
+      // even if there is no data found
+      res.sendStatus(500);
+    });
 });
 
 router.post("/", (req, res) => {
-  const city = new City({ name: "a" });
+  const { name, country } = req.body;
+  const city = new City({ name, country });
+  city
+    .save()
+    .then(() => res.sendStatus(200))
+    .catch((e) => console.log(e));
 });
 
-//TODO: for itineraries. 1 check if city exists,
-// 2. if it does, good, if not create itinarry for city
+// mongoose.Types.ObjectId("asd")
 export default router;

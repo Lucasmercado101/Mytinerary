@@ -7,8 +7,8 @@ export interface City extends mongoose.Document {
 }
 
 var citySchema = new Schema({
-  country: String,
-  name: String
+  country: { type: String, trim: true },
+  name: { type: String, trim: true }
 });
 
 export default mongoose.model<City>("city", citySchema);

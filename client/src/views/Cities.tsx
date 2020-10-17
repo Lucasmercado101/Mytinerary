@@ -11,8 +11,6 @@ import { useQuery } from "react-query";
 import { getCities } from "../api";
 import City from "../Components/City/City";
 import NewCityModal from "../Components/NewCityModal/NewCityModal";
-// TODO:
-// import NewCityTemplate from "../Components/NewCityTemplate";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -64,8 +62,9 @@ const Cities: React.FC = () => {
       />
 
       <Grid className={citiesList} component="ul" container spacing={2}>
-        {/* TODO: placeholder error text */}
+        {/* TODO: placeholder error text, TODO: turn this into a css responsive card grid, woven material style */}
         {error ? <h3>Error: no cities found</h3> : ""}
+
         {isLoading &&
           !error &&
           [1, 2, 3, 4].map((_, index) => {
@@ -85,9 +84,9 @@ const Cities: React.FC = () => {
               return (
                 <Grid key={index} container item component="li">
                   <City
+                    cityId={city._id}
                     country={city.country}
                     name={city.name}
-                    imageUrl={city.url}
                   />
                 </Grid>
               );

@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import path from "path";
 
 import citiesRoutes from "./routes/cities";
+import itinerariesRoutes from "./routes/itineraries";
 // import cors from 'cors';
 
 // import userRoutes from './routes/users';
@@ -30,6 +31,7 @@ app.use(express.static(path.join(rootDir, "..", "..", "client", "build")));
 app.use(json());
 
 app.use("/api/cities", citiesRoutes);
+app.use("/api/itineraries", itinerariesRoutes);
 
 // app.use('/api', userRoutes);
 // app.use('/api', notesRoutes);

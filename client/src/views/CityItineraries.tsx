@@ -1,5 +1,9 @@
 import React, { useEffect } from "react";
 import { makeStyles, Typography, Grid } from "@material-ui/core";
+import { useQuery } from "react-query";
+import { useParams } from "react-router-dom";
+
+import { getItineraries } from "../api";
 import Itinerary from "../Components/Itinerary/Itinerary";
 
 const useStyles = makeStyles(({ palette }) => ({
@@ -42,9 +46,22 @@ const useStyles = makeStyles(({ palette }) => ({
     zIndex: 2
   }
 }));
+type ItineraryType = {
+  title: string;
+  author: string;
+  shortDescription: string;
+  content: string;
+  likes: number;
+  tags: [string?, string?, string?];
+};
 
 const CityItineraries = () => {
+  const { isLoading, error, data } = useQuery<ItineraryType[]>(
+    "itineraries",
+    getItineraries
+  );
   const { cityBanner, image, details, body } = useStyles();
+  const { cityId } = useParams<{ cityId: string }>();
 
   useEffect(() => {
     document.title = "London Itineraries";
@@ -55,7 +72,7 @@ const CityItineraries = () => {
       <header className={cityBanner}>
         <img
           className={image}
-          src="https://source.unsplash.com/1600x900/?rome,aerial"
+          src={`https://source.unsplash.com/daily?London,architecture`}
         />
         <div className={details}>
           <Typography variant="h4" component="h1">
@@ -68,17 +85,20 @@ const CityItineraries = () => {
       </header>
       <div className={body}>
         <Grid container spacing={2}>
-          {[1, 2, 3, 4, 5].map(() => (
-            <Grid item>
-              <Itinerary
-                title="Shrimp and Chorizo Paella"
-                description="This impressive paella is a perfect party dish and a fun meal to cook
+          {data &&
+            data.map(
+              ({ author, content, likes, shortDescription, tags, title }) => (
+                <Grid item>
+                  <Itinerary
+                    title="Shrimp and Chorizo Paella"
+                    description="This impressive paella is a perfect party dish and a fun meal to cook
             together with your guests. Add 1 cup of frozen peas along with the
             mussels, if you like."
-                tags={["Nature", "Architecture", "History "]}
-              />
-            </Grid>
-          ))}
+                    tags={tags}
+                  />
+                </Grid>
+              )
+            )}
         </Grid>
       </div>
     </div>
