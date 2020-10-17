@@ -13,6 +13,7 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
+  //TODO: Check if city already exists
   const { name, country } = req.body;
   const city = new City({ name, country });
   city

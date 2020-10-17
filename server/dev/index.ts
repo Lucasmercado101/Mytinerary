@@ -5,6 +5,7 @@ import path from "path";
 
 import citiesRoutes from "./routes/cities";
 import itinerariesRoutes from "./routes/itineraries";
+import usersRoutes from "./routes/users";
 // import cors from 'cors';
 
 // import userRoutes from './routes/users';
@@ -32,6 +33,7 @@ app.use(json());
 
 app.use("/api/cities", citiesRoutes);
 app.use("/api/itineraries", itinerariesRoutes);
+app.use("/api/users", usersRoutes);
 
 // app.use('/api', userRoutes);
 // app.use('/api', notesRoutes);

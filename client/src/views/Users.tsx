@@ -15,14 +15,8 @@ const useStyles = makeStyles(() => ({
     padding: 5
   },
   image: {
-    height: "75px",
-    width: "75px",
-    objectFit: "cover",
-    objectPosition: "center",
-    borderRadius: "50%"
-  },
-  cardItem: {
-    maxHeight: "140px"
+    height: "50px",
+    width: "50px"
   },
 
   cardTextPrimary: {
@@ -42,41 +36,43 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Users = () => {
-  const {
-    image,
-    cardTextPrimary,
-    cardItem,
-    cardTextSecondary,
-    linkCard,
-    usersClass
-  } = useStyles();
+  const { image, cardTextPrimary, linkCard, usersClass } = useStyles();
 
   return (
     <div className={usersClass}>
       <List>
-        <Link className={linkCard} to="/users/user123">
-          <ListItem className={cardItem} alignItems="flex-start">
-            <ListItemAvatar>
-              <Avatar
-                className={image}
-                src="https://source.unsplash.com/random?face,human"
-                alt="person"
+        <li>
+          <Link className={linkCard} to="/users/user123">
+            <ListItem component="div" alignItems="flex-start">
+              <ListItemAvatar>
+                <Avatar
+                  className={image}
+                  src="https://source.unsplash.com/random?face,human"
+                  alt="person"
+                />
+              </ListItemAvatar>
+              <ListItemText
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  marginLeft: 25
+                }}
+                //Username 18 chars
+                primary={<span className={cardTextPrimary}>Maude73</span>}
+                secondary={
+                  <>
+                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                    Cupiditate ullam, quia nihil suscipit odio illum. Adipisci,
+                    asperiores facilis, voluptates consectetur vero modi tempora
+                    numquam blanditiis fuga deleniti, voluptate facere
+                    recusandae?
+                  </>
+                }
               />
-            </ListItemAvatar>
-            <ListItemText
-              style={{ display: "inline-block", marginLeft: 25 }}
-              className={cardTextSecondary}
-              //Username 18 chars
-              primary={<span className={cardTextPrimary}>Maude73</span>}
-              secondary={
-                <>
-                  Nihil vitae repellendus velit veritatis. Quia doloremque
-                  nesciunt unde laborum ipsam. Est tenetur sit repudiandae modi.
-                </>
-              }
-            />
-          </ListItem>
-        </Link>
+            </ListItem>
+          </Link>
+        </li>
         <Divider variant="inset" component="li" />
       </List>
     </div>

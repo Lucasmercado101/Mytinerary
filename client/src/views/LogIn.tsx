@@ -38,6 +38,7 @@ function LogIn() {
         <Grid item>
           <TextField
             value={formData.username}
+            type="text"
             name="username"
             label="Username"
             onChange={handleInputChange}
@@ -48,6 +49,7 @@ function LogIn() {
           <TextField
             value={formData.password}
             name="password"
+            type="password"
             label="Password"
             onChange={handleInputChange}
             variant="filled"
