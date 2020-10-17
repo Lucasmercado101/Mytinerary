@@ -11,7 +11,8 @@ import NavBar from "./Components/NavBar/NavBar";
 // import Cities from "./Components/Containers/Cities";
 import Cities from "./views/Cities";
 import CityItineraries from "./views/CityItineraries";
-// import CityItineraries from "./Components/Containers/CityItineraries";
+import Register from "./views/Register";
+import LogIn from "./views/LogIn";
 // import CreateAccount from "./Components/Containers/CreateAccount";
 // import Users from "./Components/Containers/Users";
 // import UserPage from "./Components/Containers/UserPage";
@@ -53,6 +54,9 @@ function App() {
           <Route path="/" exact component={Landing} />
           <Route path="/cities" exact component={Cities} />
           <Route path="/cities/:city" exact component={CityItineraries} />
+          <Route path="/register" exact component={Register} />
+          <Route path="/login" exact component={LogIn} />
+
           {/* <Route path="/createAccount" exact component={CreateAccount} />
           <Route path="/login" exact component={LogIn} />
           <Route path="/users" exact component={Users} />
