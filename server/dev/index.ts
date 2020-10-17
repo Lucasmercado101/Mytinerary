@@ -34,8 +34,8 @@ app.use("/api/cities", citiesRoutes);
 // app.use('/api', userRoutes);
 // app.use('/api', notesRoutes);
 
-app.get("*", (_, res) => {
-  res.sendFile(path.join(rootDir, "..", "..", "client", "build", "index.html"));
-});
+// app.get("*", (_, res) => {
+//   res.sendFile(path.join(rootDir, "..", "..", "client", "build", "index.html"));
+// });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));

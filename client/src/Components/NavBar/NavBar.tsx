@@ -1,10 +1,11 @@
 import React from "react";
-import { AppBar, Toolbar, Button, makeStyles } from "@material-ui/core";
+import { AppBar, Toolbar, Button, makeStyles, Grid } from "@material-ui/core";
 import MenuDrawer from "./MenuDrawer";
 
 const useStyles = makeStyles(({ breakpoints }) => ({
-  pfpButton: {
-    marginLeft: "auto"
+  buttons: {
+    marginLeft: "auto",
+    width: "auto"
   },
   bar: {
     [breakpoints.up("xs")]: {
@@ -19,14 +20,23 @@ const useStyles = makeStyles(({ breakpoints }) => ({
 }));
 
 const NavBar: React.FC = () => {
-  const { pfpButton, bar } = useStyles();
+  const { buttons, bar } = useStyles();
   return (
     <AppBar className={bar} position="fixed">
       <Toolbar>
         <MenuDrawer />
-        <Button className={pfpButton} color="inherit">
-          Login
-        </Button>
+        <Grid className={buttons} container spacing={2}>
+          <Grid item>
+            <Button variant="text" color="inherit">
+              log in
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button color="inherit" variant="outlined">
+              sign up
+            </Button>
+          </Grid>
+        </Grid>
       </Toolbar>
     </AppBar>
   );
