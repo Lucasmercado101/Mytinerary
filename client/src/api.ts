@@ -8,10 +8,24 @@ export const getItineraries = () => {
   return axios.get("/api/itineraries").then((resp) => resp.data);
 };
 
-type postCityProps = { cityName: string; cityCountry: string };
+export const getUsers = () => {
+  return axios.get("/api/users").then((resp) => resp.data);
+};
 
-export const postCity = ({ cityName, cityCountry }: postCityProps) => {
-  return axios.post("/api/cities", { name: cityName, country: cityCountry });
+type postCityProps = {
+  title: string;
+  shortDescription: string;
+  content: string;
+  tags: [string?, string?, string?] | string[];
+};
+
+export const postCity = ({
+  title,
+  shortDescription,
+  content,
+  tags
+}: postCityProps) => {
+  return axios.post("/api/cities", { title, shortDescription, content, tags });
 };
 
 type postNewUserProps = {

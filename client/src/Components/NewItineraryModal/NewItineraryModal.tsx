@@ -5,7 +5,8 @@ import {
   TextField,
   Button,
   Grid,
-  Typography
+  Typography,
+  TextareaAutosize
 } from "@material-ui/core";
 
 import { postCity } from "../../api";
@@ -36,7 +37,12 @@ type Props = {
 
 const NewCityModal: React.FC<Props> = ({ isOpen, onRequestClose }) => {
   const { content, modal } = useStyles();
-  const [formData, setFormData] = useState({ city: "", country: "" });
+  const [formData, setFormData] = useState({
+    title: "",
+    shortDescription: "",
+    content: "",
+    tags: ""
+  });
   const [mutate, { isLoading }] = useMutation(postCity);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,21 +56,34 @@ const NewCityModal: React.FC<Props> = ({ isOpen, onRequestClose }) => {
     (value) => value === ""
   );
 
-  const clearFormData = () => setFormData({ city: "", country: "" });
+  const clearFormData = () =>
+    setFormData({
+      title: "",
+      shortDescription: "",
+      content: "",
+      tags: ""
+    });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (formIsNotComplete) return;
+    // const allTags = ;
+    const allTags = ["tag", "tag2"];
     try {
-      await mutate({ cityName: formData.city, cityCountry: formData.country });
-      queryCache.invalidateQueries("cities");
+      await mutate({
+        title: formData.title,
+        shortDescription: formData.shortDescription,
+        content: formData.content,
+        tags: formData.tags ? formData.tags.split(" ").slice(0, 3) : [""]
+      });
+      queryCache.invalidateQueries("itineraries");
       onRequestClose();
     } catch (error) {
       //TODO: error handle here
       console.error(error);
     }
   };
-
+  // 5f8b7d4646257507d43a307f
   return (
     <>
       <Modal
@@ -80,25 +99,46 @@ const NewCityModal: React.FC<Props> = ({ isOpen, onRequestClose }) => {
           <Grid alignItems="center" direction="column" container spacing={2}>
             <Grid item>
               <Typography variant="h4" component="h2">
-                Add a New City
+                New Itinerary
               </Typography>
             </Grid>
             <Grid item>
               <TextField
-                name="city"
+                name="title"
                 onChange={handleInputChange}
-                value={formData.city}
+                value={formData.title}
                 variant="outlined"
-                label="city"
+                label="Title"
               />
             </Grid>
             <Grid item>
               <TextField
-                name="country"
+                name="shortDescription"
                 onChange={handleInputChange}
-                value={formData.country}
+                value={formData.shortDescription}
                 variant="outlined"
-                label="country"
+                label="Brief description"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                multiline
+                rows={5}
+                name="content"
+                onChange={handleInputChange}
+                value={formData.content}
+                variant="outlined"
+                label="Content"
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                name="tags"
+                onChange={handleInputChange}
+                value={formData.tags}
+                variant="outlined"
+                label="Tags"
+                helperText="3 tags max"
               />
             </Grid>
             <Grid justify="center" container item direction="row" spacing={2}>

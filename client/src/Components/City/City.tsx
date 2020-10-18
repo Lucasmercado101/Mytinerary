@@ -1,47 +1,12 @@
 import React from "react";
-import { makeStyles, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Props from "./Props";
-
-const useStyles = makeStyles(() => ({
-  container: {
-    width: "100%",
-    height: "175px",
-    display: "flex",
-    flexDirection: "column",
-    position: "relative"
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    background: "#e3e3e3",
-    objectPosition: "center"
-  },
-  info: {
-    width: "100%",
-    color: "white",
-    background: "rgba(0,0,0,0.8)",
-    position: "absolute",
-    padding: "5px 15px",
-    bottom: 0,
-    left: 0,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "baseline",
-    justifyContent: "space-between"
-  },
-  nameClass: {
-    marginRight: 5
-  },
-  countryClass: {
-    color: "#ccc"
-  }
-}));
+import { useStyles } from "./Styles";
 
 const City: React.FC<Props> = ({ name, country, loading, cityId }) => {
-  const { container, image, info, nameClass, countryClass } = useStyles();
+  const { container, image, info, countryClass } = useStyles();
   if (loading)
     return (
       <div className={container}>
@@ -59,7 +24,7 @@ const City: React.FC<Props> = ({ name, country, loading, cityId }) => {
         alt={name}
       />
       <div className={info}>
-        <Typography className={nameClass} variant="subtitle1" component="h2">
+        <Typography variant="subtitle1" component="h2">
           {name}
         </Typography>
         <Typography className={countryClass} variant="subtitle2" component="h3">

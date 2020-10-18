@@ -9,7 +9,7 @@ import Landing from "./views/Landing";
 import NavBar from "./Components/NavBar/NavBar";
 // import Footer from "./Components/Containers/Footer";
 // import Cities from "./Components/Containers/Cities";
-import Cities from "./views/Cities";
+import Cities from "./views/Cities/Cities";
 import CityItineraries from "./views/CityItineraries";
 import Register from "./views/Register";
 import LogIn from "./views/LogIn";

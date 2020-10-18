@@ -4,7 +4,20 @@ const router = Router();
 
 router.get("/", (req, res) => {
   User.find()
-    .then((users) => res.json(users))
+    .then((users) =>
+      res.json(
+        users.map((user) => {
+          return {
+            _id: user._id,
+            username: user.username,
+            firstname: user.firstname,
+            country: user.country,
+            lastname: user.lastname,
+            profileText: user.profileText
+          };
+        })
+      )
+    )
     .catch(() => {
       // TODO: error handling, server error here, since mongo goes to .then
       // even if there is no data found

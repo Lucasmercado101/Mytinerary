@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
-import { makeStyles, Typography, Grid } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { makeStyles, Typography, Grid, Button } from "@material-ui/core";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 
+import NewItineraryModal from "../Components/NewItineraryModal/NewItineraryModal";
 import { getItineraries } from "../api";
 import Itinerary from "../Components/Itinerary/Itinerary";
 
@@ -56,11 +57,13 @@ type ItineraryType = {
 };
 
 const CityItineraries = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { isLoading, error, data } = useQuery<ItineraryType[]>(
     "itineraries",
     getItineraries
   );
   const { cityBanner, image, details, body } = useStyles();
+  //TODO: check if city exists and fetch it
   const { cityId } = useParams<{ cityId: string }>();
 
   useEffect(() => {
@@ -101,6 +104,22 @@ const CityItineraries = () => {
             )}
         </Grid>
       </div>
+
+      <Grid container justify="center">
+        <Button
+          size="large"
+          color="primary"
+          variant="contained"
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+        >
+          New City
+        </Button>
+      </Grid>
+      <NewItineraryModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

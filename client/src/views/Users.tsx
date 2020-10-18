@@ -9,6 +9,17 @@ import {
   Divider
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { useQuery } from "react-query";
+import { getUsers } from "../api";
+
+type User = {
+  _id: string;
+  username: string;
+  profileText: string;
+  firstname: string;
+  lastname: string;
+  country: string;
+};
 
 const useStyles = makeStyles(() => ({
   usersClass: {
@@ -37,43 +48,48 @@ const useStyles = makeStyles(() => ({
 
 const Users = () => {
   const { image, cardTextPrimary, linkCard, usersClass } = useStyles();
+  const { data, isLoading, error } = useQuery<User[]>("users", getUsers);
 
   return (
     <div className={usersClass}>
       <List>
-        <li>
-          <Link className={linkCard} to="/users/user123">
-            <ListItem component="div" alignItems="flex-start">
-              <ListItemAvatar>
-                <Avatar
-                  className={image}
-                  src="https://source.unsplash.com/random?face,human"
-                  alt="person"
-                />
-              </ListItemAvatar>
-              <ListItemText
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  marginLeft: 25
-                }}
-                //Username 18 chars
-                primary={<span className={cardTextPrimary}>Maude73</span>}
-                secondary={
-                  <>
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Cupiditate ullam, quia nihil suscipit odio illum. Adipisci,
-                    asperiores facilis, voluptates consectetur vero modi tempora
-                    numquam blanditiis fuga deleniti, voluptate facere
-                    recusandae?
-                  </>
-                }
-              />
-            </ListItem>
-          </Link>
-        </li>
-        <Divider variant="inset" component="li" />
+        {data &&
+          data.map((userData) => {
+            return (
+              <>
+                <li>
+                  <Link className={linkCard} to={`/users/${userData._id}`}>
+                    <ListItem component="div" alignItems="flex-start">
+                      {/* TODO: add user image upload */}
+                      <ListItemAvatar>
+                        <Avatar
+                          className={image}
+                          src="https://source.unsplash.com/random?face,human"
+                          alt="person"
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          marginLeft: 25
+                        }}
+                        //Username 18 chars
+                        primary={
+                          <span className={cardTextPrimary}>
+                            {userData.username}
+                          </span>
+                        }
+                        secondary={<>{userData.profileText}</>}
+                      />
+                    </ListItem>
+                  </Link>
+                </li>
+                <Divider variant="inset" component="li" />
+              </>
+            );
+          })}
       </List>
     </div>
   );

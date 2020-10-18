@@ -13,12 +13,16 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  //   const { name, country } = req.body;
-  //   const city = new City({ name, country });
-  //   city
-  //     .save()
-  //     .then(() => res.sendStatus(200))
-  //     .catch((e) => console.log(e));
+  const { title, shortDescription, content, tags, author } = req.body;
+  const itinerary = new Itinerary({
+    title,
+    author,
+    shortDescription,
+    content,
+    likes: 0,
+    tags: tags || []
+  });
+  itinerary.save();
 });
 
 // mongoose.Types.ObjectId("asd")

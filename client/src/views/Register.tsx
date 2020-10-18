@@ -29,6 +29,7 @@ function Register() {
   const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (formIsNotComplete) return;
+    //TODO: username must not be longer than 18 chars
     const {
       username,
       email,
