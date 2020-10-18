@@ -13,18 +13,27 @@ export const getUsers = () => {
 };
 
 type postCityProps = {
+  name: string;
+  country: string;
+};
+
+export const postCity = ({ name, country }: postCityProps) => {
+  return axios.post("/api/cities", { name, country });
+};
+
+type postItineraryProps = {
   title: string;
   shortDescription: string;
   content: string;
   tags: [string?, string?, string?] | string[];
 };
 
-export const postCity = ({
+export const postItinerary = ({
   title,
   shortDescription,
   content,
   tags
-}: postCityProps) => {
+}: postItineraryProps) => {
   return axios.post("/api/cities", { title, shortDescription, content, tags });
 };
 

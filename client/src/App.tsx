@@ -5,6 +5,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 // import { getUserPfp } from "./Redux/Actions/user";
 import { makeStyles } from "@material-ui/core";
 
+// import Landing from "./views/Landing";
 import Landing from "./views/Landing";
 import NavBar from "./Components/NavBar/NavBar";
 // import Footer from "./Components/Containers/Footer";

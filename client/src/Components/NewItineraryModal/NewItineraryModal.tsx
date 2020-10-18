@@ -84,6 +84,7 @@ const NewCityModal: React.FC<Props> = ({ isOpen, onRequestClose }) => {
     }
   };
   // 5f8b7d4646257507d43a307f
+  // 70 max chars for short
   return (
     <>
       <Modal

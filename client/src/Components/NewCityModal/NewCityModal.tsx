@@ -56,7 +56,7 @@ const NewCityModal: React.FC<Props> = ({ isOpen, onRequestClose }) => {
     e.preventDefault();
     if (formIsNotComplete) return;
     try {
-      await mutate({ cityName: formData.city, cityCountry: formData.country });
+      await mutate({ name: formData.city, country: formData.country });
       queryCache.invalidateQueries("cities");
       onRequestClose();
     } catch (error) {
