@@ -7,7 +7,7 @@ import {
   TextField,
   InputAdornment
 } from "@material-ui/core";
-import { Search as LikeIcon } from "@material-ui/icons";
+import { Search as SearchIcon } from "@material-ui/icons";
 import { useQuery } from "react-query";
 import { useParams } from "react-router-dom";
 
@@ -33,19 +33,9 @@ const useStyles = makeStyles(({ breakpoints }) => ({
         width: 25,
         background: "white",
         borderTopLeftRadius: 25,
+        borderBottomLeftRadius: 25,
         zIndex: 3
       }
-      // "&::before": {
-      //   content: '""',
-      //   position: "absolute",
-      //   right: 25,
-      //   bottom: 0,
-      //   width: 25,
-      //   height: 25,
-      //   background: "white",
-      //   borderBottomRightRadius: 25,
-      //   zIndex: 2
-      // }
     }
   },
   image: {
@@ -172,7 +162,7 @@ const CityItineraries = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <LikeIcon />
+                      <SearchIcon />
                     </InputAdornment>
                   )
                 }}

@@ -5,8 +5,10 @@ import {
   TextField,
   Button,
   Grid,
-  Typography
+  Typography,
+  InputAdornment
 } from "@material-ui/core";
+import { Search as SearchIcon } from "@material-ui/icons";
 
 import { postCity } from "../../api";
 import { useMutation, queryCache } from "react-query";

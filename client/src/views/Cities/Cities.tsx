@@ -4,9 +4,11 @@ import {
   TextField,
   Grid,
   Button,
-  Container
+  Container,
+  InputAdornment
 } from "@material-ui/core";
 import { useQuery } from "react-query";
+import { Search as SearchIcon } from "@material-ui/icons";
 
 import { getCities } from "../../api";
 import City from "../../Components/City/City";
@@ -48,10 +50,17 @@ const Cities: React.FC = () => {
           className={searchBar}
           label="Search"
           variant="outlined"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon />
+              </InputAdornment>
+            )
+          }}
         />
       </Container>
       <Grid className={citiesList} component="ul" container spacing={2}>
-        {/* TODO: placeholder error text, TODO: turn this into a css responsive card grid, woven material style */}
+        {/* TODO: placeholder error text */}
         {error ? <h3>Error: no cities found</h3> : ""}
 
         {isLoading &&
