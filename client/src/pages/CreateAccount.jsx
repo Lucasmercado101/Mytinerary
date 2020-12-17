@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, useReducer } from "react";
-import styles from "../../Styles/createAccount.module.css";
-import { button, button__white } from "../../Styles/button.module.css";
+import styles from "../Styles/createAccount.module.css";
+import { button, button__white } from "../Styles/button.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn, createUser } from "../../Redux/Actions/user";
-import addUser from "../../Images/add-user.svg";
-import Button from "../Button";
+import { logIn, createUser } from "../Redux/Actions/user";
+import addUser from "../Images/add-user.svg";
+import Button from "../Components/Button";
 
 const options = [
   "England",
@@ -13,13 +13,13 @@ const options = [
   "Holland",
   "Ireland",
   "Spain",
-  "United States",
+  "United States"
 ];
 
 const initialState = {
   createAccountClicked: false,
   createData: null,
-  logInData: {},
+  logInData: {}
 };
 
 function reducer(state, action) {
@@ -33,7 +33,7 @@ function reducer(state, action) {
         ...state,
         createAccountClicked: false,
         createData: null,
-        logInData: {},
+        logInData: {}
       };
     default:
       throw new Error();
@@ -51,7 +51,7 @@ function CreateAccount(props) {
     email: "",
     firstName: "",
     lastName: "",
-    country: "England",
+    country: "England"
   });
   const [uploadedUserImage, setUploadedUserImage] = useState();
   const [state, localDispatch] = useReducer(reducer, initialState);
@@ -71,7 +71,7 @@ function CreateAccount(props) {
           dispatch(
             logIn({
               username: state.logInData.username,
-              password: state.logInData.password,
+              password: state.logInData.password
             })
           );
           isMounted && props.history.push("/");
@@ -103,7 +103,7 @@ function CreateAccount(props) {
     let data = new FormData();
 
     const config = {
-      headers: { "content-type": "multipart/form-data" },
+      headers: { "content-type": "multipart/form-data" }
     };
 
     for (const [key, value] of Object.entries(formInfo)) {
@@ -142,7 +142,7 @@ function CreateAccount(props) {
         style={{
           backgroundImage: uploadedUserImage
             ? `url(${URL.createObjectURL(uploadedUserImage)})`
-            : "",
+            : ""
         }}
         className={styles.form__userPicture}
         onClick={() => imageUpload.current.click()}

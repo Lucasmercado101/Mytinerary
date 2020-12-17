@@ -1,17 +1,28 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getLastPageVisited } from "../Redux/Actions/lastPage";
 
-function MyLink(props) {
+type Props = {
+  to: string;
+  onClick?: () => void;
+  className?: string;
+  style?: CSSProperties;
+};
+
+const MyLink: React.FC<Props> = ({
+  to,
+  className,
+  onClick,
+  style,
+  children
+}) => {
   const dispatch = useDispatch();
   const location = useLocation().pathname;
-  const destination = props.to || "";
+  const destination = to || "";
 
   function handleClick() {
-    if (props.onClick) {
-      props.onClick();
-    }
+    onClick && onClick();
     if (location !== destination) {
       dispatch(getLastPageVisited(location));
     }
@@ -19,14 +30,14 @@ function MyLink(props) {
 
   return (
     <Link
-      className={props.className}
-      style={props.style}
+      className={className}
+      style={style}
       to={destination}
       onClick={handleClick}
     >
-      {props.children}
+      {children}
     </Link>
   );
-}
+};
 
 export default MyLink;

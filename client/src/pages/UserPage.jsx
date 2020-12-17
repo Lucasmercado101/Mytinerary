@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
-import { useFetch } from "../hooks/useFetch";
-import { getUser, getPfp } from "../../api";
+import { useFetch } from "../Components/hooks/useFetch";
+import { getUser, getPfp } from "../api";
 import { useSelector, useDispatch } from "react-redux";
 import {
   changePfp,
@@ -8,14 +8,14 @@ import {
   deletePfp,
   addPfp,
   justChangedPfp,
-  deleteUser,
-} from "../../Redux/Actions/user";
-import styles from "../../Styles/user.module.css";
-import genericPfp from "../../Images/generic-user.svg";
-import Button from "../Button";
+  deleteUser
+} from "../Redux/Actions/user";
+import styles from "../Styles/user.module.css";
+import genericPfp from "../Images/generic-user.svg";
+import Button from "../Components/Button";
 
 import NotFound from "./NotFound";
-import LoadingRing from "../LoadingRing";
+import LoadingRing from "../Components/LoadingRing";
 
 function UserPage(props) {
   const userData = useSelector((state) => state.user.userData);
@@ -39,7 +39,7 @@ function UserPage(props) {
         ...newUserData,
         pfpData: userPfp,
         hasPfp: userData.pfp ? true : false,
-        pfpID: userData.pfp,
+        pfpID: userData.pfp
       });
     } else {
       fetchUserData(userPageID);

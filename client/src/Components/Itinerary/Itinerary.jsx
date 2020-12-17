@@ -4,17 +4,17 @@ import {
   getUser,
   getPfp,
   getActivities,
-  deleteItinerary as delItinerary,
-} from "../api";
-import { useFetch } from "./hooks/useFetch";
-import styles from "../Styles/itinerary.module.css";
+  deleteItinerary as delItinerary
+} from "../../api";
+import { useFetch } from "../hooks/useFetch";
+import styles from "../../Styles/itinerary.module.css";
 
-import clockIcon from "../Images/clock-icon.svg";
-import genericPfp from "../Images/generic-user.svg";
-import deleteIcon from "../Images/delete.svg";
+import clockIcon from "../../Images/clock-icon.svg";
+import genericPfp from "../../Images/generic-user.svg";
+import deleteIcon from "../../Images/delete.svg";
 
-import MyLink from "./MyLink";
-import LoadingRing from "./LoadingRing";
+import MyLink from "../MyLink";
+import LoadingRing from "../LoadingRing";
 
 function Itinerary({
   title,
@@ -24,7 +24,7 @@ function Itinerary({
   hashtags,
   activities,
   id,
-  onDelete,
+  onDelete
 }) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
   const isAdmin = useSelector((state) => state.user.isAdmin);
@@ -47,7 +47,7 @@ function Itinerary({
       setItineraryUserData({
         username: userData.username,
         pfp: userPfp,
-        userPage: userData._id,
+        userPage: userData._id
       });
   }, [userData, userPfp, isLoggedInUserItinerary]);
 
@@ -60,7 +60,7 @@ function Itinerary({
     if (thereIsData) {
       setItineraryUserData({
         username: data.username,
-        userPage: data._id,
+        userPage: data._id
       });
       data.pfp && fetchPfp(data.pfp);
     }

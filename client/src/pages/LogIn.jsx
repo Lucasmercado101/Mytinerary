@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useReducer } from "react";
-import styles from "../../Styles/logIn.module.css";
+import styles from "../Styles/logIn.module.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn } from "../../Redux/Actions/user";
-import { button, button__white } from "../../Styles/button.module.css";
+import { logIn } from "../Redux/Actions/user";
+import { button, button__white } from "../Styles/button.module.css";
 
 const initialState = {
   logIn: false,
-  logInData: null,
+  logInData: null
 };
 
 function reducer(state, action) {
@@ -25,7 +25,7 @@ function LogIn(props) {
   const isDeletingUser = useSelector((state) => state.user.isDeletingUser);
   const [formInfo, setFormInfo] = useState({
     username: "",
-    password: "",
+    password: ""
   });
   const dispatch = useDispatch();
 

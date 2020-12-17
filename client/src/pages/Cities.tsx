@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getCities } from "../../api";
-import { useFetch } from "../hooks/useFetch";
+import { getCities } from "../api";
+import { useQuery } from "react-query";
 
-import CityCard from "../CityCard";
-import LoadingRing from "../LoadingRing";
-import SearchBar from "../SearchBar";
-import NewCityTemplate from "../NewCityTemplate";
+import CityCard from "../Components/CityCard/CityCard";
+import SearchBar from "../Components/SearchBar";
+import NewCityTemplate from "../Components/NewCityTemplate";
+
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  loadingBar: {
+    display: "block",
+    margin: "auto",
+    marginTop: 150
+  }
+});
 
 function Cities() {
-  const userData = useSelector((state) => state.user.userData);
+  const { loadingBar } = useStyles();
+  const userData = useSelector((state: GlobalState) => state.user.userData);
   const isLoggedIn = Object.keys(userData).length > 0;
-  const [cities, , isFetchingCities, fetchCities] = useFetch(
-    getCities,
-    [],
-    true
-  );
-  const thereAreCities = cities.length > 0;
+  const { data: cities, isLoading, refetch } = useQuery("cities", getCities);
+  const thereAreCities = cities && cities.length > 0;
   const [filteredCities, setFilteredCities] = useState([]);
 
   useEffect(() => {
@@ -24,22 +31,22 @@ function Cities() {
   }, []);
 
   useEffect(() => {
-    cities.length > 0 && setFilteredCities(cities);
+    thereAreCities && setFilteredCities(cities);
   }, [cities]);
 
   return (
     <>
       <h1
         style={{
-          fontWeight: "300",
+          fontWeight: 300,
           textAlign: "center",
-          marginTop: "10px",
+          marginTop: "10px"
         }}
       >
         CITIES
       </h1>
 
-      {!isFetchingCities ? (
+      {!isLoading ? (
         thereAreCities ? (
           <>
             <SearchBar
@@ -66,10 +73,10 @@ function Cities() {
           <h2 style={{ textAlign: "center" }}>There are no cities</h2>
         )
       ) : (
-        <LoadingRing centered />
+        <CircularProgress className={loadingBar} />
       )}
 
-      {isLoggedIn && <NewCityTemplate onPost={fetchCities} />}
+      {isLoggedIn && <NewCityTemplate onPost={refetch} />}
     </>
   );
 }
