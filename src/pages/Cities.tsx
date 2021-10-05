@@ -1,6 +1,7 @@
 import { CityResp, createCity, getCities } from "../api";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Cities() {
   const { data: citiesData, isFetched } = useQuery("cities", getCities);
@@ -28,7 +29,10 @@ function Cities() {
       {isFetched &&
         citiesData &&
         citiesData.data.map((city: CityResp) => (
-          <div key={city.id}> {city.name}</div>
+          <div key={city.id}>
+            {city.name}
+            <Link to={`/cities/${city.id}`}>Go to city</Link>
+          </div>
         ))}
     </div>
   );
