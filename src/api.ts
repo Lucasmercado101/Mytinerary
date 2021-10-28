@@ -4,6 +4,7 @@ axios.defaults.baseURL = "http://localhost:8001";
 
 export interface City {
   name: string;
+  country: string;
 }
 
 export interface CityResp extends City {
