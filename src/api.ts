@@ -23,3 +23,28 @@ export function createCity(city: City) {
     }
   });
 }
+
+// ------ Auth ------
+
+export function login({
+  username,
+  password
+}: {
+  username: string;
+  password: string;
+}) {
+  return axios.post(
+    "/auth/login",
+    { username, password },
+    {
+      headers: {
+        "Content-Type": "application/json"
+      },
+      withCredentials: true
+    }
+  );
+}
+
+export function isLoggedIn() {
+  return axios.get("/auth/isLoggedIn", { withCredentials: true });
+}
