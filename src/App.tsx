@@ -10,7 +10,7 @@ import { AppBar, Toolbar, Typography } from "@mui/material";
 function App() {
   return (
     <ThemeProvider>
-      <AppBar position="static">
+      <AppBar position="sticky">
         <Toolbar>
           {/* <IconButton
             edge="start"
