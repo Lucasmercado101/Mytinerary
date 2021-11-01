@@ -28,7 +28,7 @@ function App() {
 
   useEffect(() => {
     ctx.getUserData();
-  }, [ctx]);
+  }, []);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
