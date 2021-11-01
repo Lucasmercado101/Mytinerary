@@ -2,16 +2,18 @@ import { Box } from ".pnpm/@mui+system@5.0.6_0c6b44af47723f3fbfad0689dde655a8/no
 import { Alert, Button, TextField } from "@mui/material";
 import { useState } from "react";
 import { useMutation } from "react-query";
+import { useHistory } from "react-router-dom";
 import { login } from "../api";
 
 function Login() {
+  const history = useHistory();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const { mutate, error, isError } = useMutation(login);
+  const { mutateAsync, error, isError, isLoading } = useMutation(login);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate({ username: userName, password });
+    mutateAsync({ username: userName, password }).then(() => history.push("/"));
   };
 
   return (
@@ -35,7 +37,7 @@ function Login() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Button variant="contained" type="submit">
+      <Button disabled={isLoading} variant="contained" type="submit">
         Login
       </Button>
       {isError && (
