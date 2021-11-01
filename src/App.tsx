@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Route, useHistory } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Cities from "./pages/Cities";
@@ -18,18 +18,17 @@ import { Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useQuery } from "react-query";
 import { isLoggedIn as isLoggedInQuery } from "./api";
+import { Ctx } from "./Context";
 
 function App() {
   const history = useHistory();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  useQuery("user", isLoggedInQuery, {
-    staleTime: 0,
-    onSuccess: () => {
-      setIsLoggedIn(true);
-    }
-  });
+  const ctx = useContext(Ctx)!;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  useEffect(() => {
+    ctx.getUserData();
+  }, [ctx]);
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -84,7 +83,7 @@ function App() {
             edge="end"
             color="inherit"
           >
-            <Avatar />
+            <Avatar src={ctx?.userData?.profile_pic} />
           </IconButton>
         </Toolbar>
       </AppBar>
