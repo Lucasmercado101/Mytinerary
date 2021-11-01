@@ -80,7 +80,7 @@ function App() {
           <Box sx={{ flexGrow: 1 }} />
           <IconButton
             onClick={() => setIsMenuOpen(true)}
-            size="large"
+            size="medium"
             edge="end"
             color="inherit"
           >
