@@ -1,19 +1,25 @@
 import { Box } from ".pnpm/@mui+system@5.0.6_0c6b44af47723f3fbfad0689dde655a8/node_modules/@mui/system";
 import { Alert, Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useMutation } from "react-query";
 import { useHistory } from "react-router-dom";
 import { login } from "../api";
+import { Ctx } from "../Context";
 
 function Login() {
   const history = useHistory();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const { mutateAsync, error, isError, isLoading } = useMutation(login);
+  const ctx = useContext(Ctx)!;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutateAsync({ username: userName, password }).then(() => history.push("/"));
+    mutateAsync({ username: userName, password }).then((resp) => {
+      localStorage.setItem("user", JSON.stringify(resp.data));
+      ctx.setUserData(resp.data);
+      history.push("/");
+    });
   };
 
   return (
