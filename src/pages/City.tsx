@@ -25,11 +25,11 @@ interface urlParams {
 
 function City() {
   const [isNewItineraryModalOpen, setIsNewItineraryModalOpen] = useState(false);
+  const [newItineraryTags, setNewItineraryTags] = useState(["", "", ""]);
   const [newItineraryData, setNewItineraryData] = useState({
     title: "",
     duration: "",
     price: "",
-    tags: [],
     activities: []
   });
 
@@ -45,8 +45,9 @@ function City() {
   };
 
   const handleSubmit = async () => {
-    handleClose();
     console.log(newItineraryData);
+    console.log(newItineraryTags);
+
     // const { data } = await getCity(newItineraryData.title);
     // setNewItineraryData({
     //   title: "",
@@ -177,13 +178,52 @@ function City() {
             </Typography>
             <Grid container spacing={{ sm: 0, md: 2 }}>
               <Grid item xs={12} md={4}>
-                <TextField margin="dense" label="Tag #1" fullWidth />
+                <TextField
+                  margin="dense"
+                  value={newItineraryTags[0]}
+                  onChange={(e) => {
+                    const newTags = [
+                      e.target.value,
+                      newItineraryTags[1],
+                      newItineraryTags[2]
+                    ];
+                    setNewItineraryTags(newTags);
+                  }}
+                  label="Tag #1"
+                  fullWidth
+                />
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField margin="dense" label="Tag #2" fullWidth />
+                <TextField
+                  value={newItineraryTags[1]}
+                  onChange={(e) => {
+                    const newTags = [
+                      newItineraryTags[0],
+                      e.target.value,
+                      newItineraryTags[2]
+                    ];
+                    setNewItineraryTags(newTags);
+                  }}
+                  margin="dense"
+                  label="Tag #2"
+                  fullWidth
+                />
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField margin="dense" label="Tag #3" fullWidth />
+                <TextField
+                  value={newItineraryTags[2]}
+                  onChange={(e) => {
+                    const newTags = [
+                      newItineraryTags[0],
+                      newItineraryTags[1],
+                      e.target.value
+                    ];
+                    setNewItineraryTags(newTags);
+                  }}
+                  margin="dense"
+                  label="Tag #3"
+                  fullWidth
+                />
               </Grid>
             </Grid>
 
