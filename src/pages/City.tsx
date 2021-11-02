@@ -10,6 +10,8 @@ import {
   DialogTitle,
   Divider,
   Grid,
+  IconButton,
+  InputAdornment,
   List,
   ListItem,
   TextField,
@@ -18,6 +20,8 @@ import {
 import { Box, CircularProgress, Fab } from "@mui/material";
 import Itinerary from "../components/Itinerary";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Close";
+import { v4 as uuidv4 } from "uuid";
 
 interface urlParams {
   id: string;
@@ -26,11 +30,13 @@ interface urlParams {
 function City() {
   const [isNewItineraryModalOpen, setIsNewItineraryModalOpen] = useState(false);
   const [newItineraryTags, setNewItineraryTags] = useState(["", "", ""]);
+  const [newItineraryActivities, setNewItineraryActivities] = useState([
+    { id: uuidv4(), value: "" }
+  ]);
   const [newItineraryData, setNewItineraryData] = useState({
     title: "",
     duration: "",
-    price: "",
-    activities: []
+    price: ""
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,8 +236,63 @@ function City() {
             <Typography variant="h6" mt={2} mb={1}>
               Activities
             </Typography>
-            <TextField fullWidth margin="dense" />
-            <Button variant="outlined" sx={{ mt: 2 }} fullWidth>
+            <List sx={{ p: 0 }}>
+              {newItineraryActivities.map((el, i) => (
+                <ListItem sx={{ p: 0 }} key={el.id}>
+                  <TextField
+                    value={el.value}
+                    onChange={(e) =>
+                      setNewItineraryActivities(
+                        newItineraryActivities.map((itinerary, i) => {
+                          if (el.id === itinerary.id) {
+                            return {
+                              ...itinerary,
+                              value: e.target.value
+                            };
+                          }
+                          return itinerary;
+                        })
+                      )
+                    }
+                    fullWidth
+                    margin="dense"
+                    InputProps={
+                      i === 0
+                        ? undefined
+                        : {
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={() => {
+                                    const newActivities =
+                                      newItineraryActivities.filter(
+                                        (activity) => activity.id !== el.id
+                                      );
+                                    setNewItineraryActivities(newActivities);
+                                  }}
+                                  edge="end"
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </InputAdornment>
+                            )
+                          }
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+            <Button
+              onClick={() => {
+                setNewItineraryActivities([
+                  ...newItineraryActivities,
+                  { id: uuidv4(), value: "" }
+                ]);
+              }}
+              variant="outlined"
+              sx={{ mt: 2 }}
+              fullWidth
+            >
               <AddIcon />
             </Button>
           </DialogContent>
