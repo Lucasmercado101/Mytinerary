@@ -1,16 +1,41 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { getCity } from "../api";
 import { useQuery } from "react-query";
-import { Typography } from "@mui/material";
-import { Box } from ".pnpm/@mui+system@5.0.6_0c6b44af47723f3fbfad0689dde655a8/node_modules/@mui/system";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  List,
+  ListItem,
+  TextField,
+  Typography
+} from "@mui/material";
+import { Box, CircularProgress, Fab } from "@mui/material";
+import Itinerary from "../components/Itinerary";
+import AddIcon from "@mui/icons-material/Add";
 
 interface urlParams {
   id: string;
 }
 
 function City() {
+  const [isNewItineraryModalOpen, setIsNewItineraryModalOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setIsNewItineraryModalOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsNewItineraryModalOpen(false);
+  };
+
   const { id } = useParams<urlParams>();
   const { data, isLoading, error } = useQuery(["city", id], () => getCity(+id));
+
   if (data) {
     const { country, id, name } = data.data;
 
@@ -57,9 +82,71 @@ function City() {
             </Box>
           </Box>
         </div>
-        <Typography variant="h5" mt={2} textAlign="center">
+        <Typography variant="h5" my={2} textAlign="center">
           Available Itineraries
         </Typography>
+        {/* <List>
+          <ListItem>
+            <Itinerary />
+          </ListItem>
+        </List> */}
+        <Fab
+          disabled={isLoading}
+          onClick={() => {
+            setIsNewItineraryModalOpen(true);
+          }}
+          style={{
+            position: "fixed",
+            bottom: "2rem",
+            right: "2rem",
+            zIndex: 10
+          }}
+          color="primary"
+        >
+          {isLoading ? <CircularProgress color="secondary" /> : <AddIcon />}
+        </Fab>
+
+        <Dialog open={isNewItineraryModalOpen} onClose={handleClose}>
+          <DialogTitle>Create a new Itinerary</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="Itinerary Name"
+              fullWidth
+              variant="standard"
+            />
+            <Grid container spacing={{ sm: 0, md: 3 }}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  margin="dense"
+                  type="number"
+                  inputProps={{ min: 1 }}
+                  label="Duration (hours)"
+                  variant="standard"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  margin="dense"
+                  type="number"
+                  inputProps={{ min: 1 }}
+                  label="Price"
+                  variant="standard"
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button variant="text" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant="contained" onClick={handleClose}>
+              Create
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
