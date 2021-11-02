@@ -57,6 +57,9 @@ function City() {
             </Box>
           </Box>
         </div>
+        <Typography variant="h5" mt={2} textAlign="center">
+          Available Itineraries
+        </Typography>
       </div>
     );
   }
