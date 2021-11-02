@@ -33,12 +33,29 @@ function City() {
     activities: []
   });
 
-  const handleClickOpen = () => {
-    setIsNewItineraryModalOpen(true);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewItineraryData({
+      ...newItineraryData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleClose = () => {
     setIsNewItineraryModalOpen(false);
+  };
+
+  const handleSubmit = async () => {
+    handleClose();
+    console.log(newItineraryData);
+    // const { data } = await getCity(newItineraryData.title);
+    // setNewItineraryData({
+    //   title: "",
+    //   duration: "",
+    //   price: "",
+    //   tags: [],
+    //   activities: []
+    // });
+    // setIsNewItineraryModalOpen(false);
   };
 
   const { id } = useParams<urlParams>();
@@ -119,40 +136,48 @@ function City() {
           <DialogContent>
             <TextField
               margin="dense"
+              name="title"
               label="Itinerary Name"
               fullWidth
               variant="standard"
+              value={newItineraryData.title}
+              onChange={handleChange}
             />
             <Grid container spacing={{ sm: 0, md: 3 }}>
               <Grid item xs={12} md={6}>
                 <TextField
                   margin="dense"
+                  name="duration"
                   type="number"
                   inputProps={{ min: 1 }}
                   label="Duration (hours)"
                   variant="standard"
                   fullWidth
-                  required
+                  value={newItineraryData.duration}
+                  onChange={handleChange}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
+                  name="price"
                   margin="dense"
                   type="number"
                   inputProps={{ min: 1 }}
                   label="Price"
                   variant="standard"
-                  required
                   fullWidth
+                  value={newItineraryData.price}
+                  onChange={handleChange}
                 />
               </Grid>
             </Grid>
+
             <Typography variant="h6" mt={2} mb={1}>
               Tags
             </Typography>
             <Grid container spacing={{ sm: 0, md: 2 }}>
               <Grid item xs={12} md={4}>
-                <TextField margin="dense" label="Tag #1" fullWidth required />
+                <TextField margin="dense" label="Tag #1" fullWidth />
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField margin="dense" label="Tag #2" fullWidth />
@@ -161,12 +186,20 @@ function City() {
                 <TextField margin="dense" label="Tag #3" fullWidth />
               </Grid>
             </Grid>
+
+            <Typography variant="h6" mt={2} mb={1}>
+              Activities
+            </Typography>
+            <TextField fullWidth margin="dense" />
+            <Button variant="outlined" sx={{ mt: 2 }} fullWidth>
+              <AddIcon />
+            </Button>
           </DialogContent>
           <DialogActions>
             <Button variant="text" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" onClick={handleClose}>
+            <Button onClick={handleSubmit} variant="contained">
               Create
             </Button>
           </DialogActions>
