@@ -39,6 +39,21 @@ function City() {
     price: ""
   });
 
+  const thereIsAtLeastOneTag = newItineraryTags
+    .filter((el) => el !== "")
+    .some((tag) => tag.trim().length > 0);
+
+  const thereIsAtLeastOneActivity = newItineraryActivities
+    .filter((el) => el.value !== "")
+    .some((activity) => activity.value.trim().length > 0);
+
+  const canCreate =
+    newItineraryData.title.length > 0 &&
+    newItineraryData.duration.length > 0 &&
+    newItineraryData.price.length > 0 &&
+    thereIsAtLeastOneTag &&
+    thereIsAtLeastOneActivity;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewItineraryData({
       ...newItineraryData,
@@ -53,6 +68,7 @@ function City() {
   const handleSubmit = async () => {
     console.log(newItineraryData);
     console.log(newItineraryTags);
+    console.log(newItineraryActivities);
 
     // const { data } = await getCity(newItineraryData.title);
     // setNewItineraryData({
@@ -69,7 +85,7 @@ function City() {
   const { data, isLoading, error } = useQuery(["city", id], () => getCity(+id));
 
   if (data) {
-    const { country, id, name } = data.data;
+    const { country, name } = data.data;
 
     return (
       <div>
@@ -300,7 +316,11 @@ function City() {
             <Button variant="text" onClick={handleClose}>
               Cancel
             </Button>
-            <Button onClick={handleSubmit} variant="contained">
+            <Button
+              disabled={!canCreate}
+              onClick={handleSubmit}
+              variant="contained"
+            >
               Create
             </Button>
           </DialogActions>
