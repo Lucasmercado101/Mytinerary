@@ -81,7 +81,7 @@ function City() {
   };
 
   const { id } = useParams<urlParams>();
-  const { data, isLoading, error } = useQuery(["city", id], () => getCity(+id));
+  const { data, isLoading, error } = useQuery(["city", id], () => getCity(id));
 
   if (data) {
     const { country, name } = data.data;
