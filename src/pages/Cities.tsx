@@ -41,7 +41,6 @@ function Cities() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(newCityName, newCountry);
     if (!newCityName || !newCountry) return;
 
     mutateAsync({
