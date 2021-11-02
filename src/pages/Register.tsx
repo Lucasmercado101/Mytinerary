@@ -1,5 +1,5 @@
 import { Box } from ".pnpm/@mui+system@5.0.6_0c6b44af47723f3fbfad0689dde655a8/node_modules/@mui/system";
-import { Avatar, Button, Icon, TextField } from "@mui/material";
+import { Alert, Avatar, Button, Icon, TextField } from "@mui/material";
 import { useState, useRef } from "react";
 import { register, registerWithProfilePic } from "../api";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
@@ -13,6 +13,8 @@ function Register() {
     password: ""
   });
   const [userImage, setUserImage] = useState<File | null>(null);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [registeringError, setRegisteringError] = useState<string | null>(null);
 
   const { username, password } = formData;
 
@@ -26,14 +28,34 @@ function Register() {
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsRegistering(true);
+    setRegisteringError(null);
     if (!userImage) {
-      register({ username, password }).then(() => history.push("/login"));
+      register({ username, password })
+        .then(() => history.push("/login"))
+        .catch((e) => {
+          setIsRegistering(false);
+          if (e.status === 409) {
+            setRegisteringError("Username already exists");
+          } else {
+            setRegisteringError("Something went wrong");
+          }
+        });
     } else {
       registerWithProfilePic({
         username,
         password,
         profilePic: userImage
-      }).then(() => history.push("/login"));
+      })
+        .then(() => history.push("/login"))
+        .catch((e) => {
+          setIsRegistering(false);
+          if (e.status === 409) {
+            setRegisteringError("Username already exists");
+          } else {
+            setRegisteringError("Something went wrong");
+          }
+        });
     }
     e.preventDefault();
   };
@@ -92,11 +114,10 @@ function Register() {
         accept="image/*"
         onChange={onFileChange}
       />
-      {/* {userImage && <img src={URL.createObjectURL(userImage)} alt="preview" />} */}
-
-      <Button variant="contained" type="submit">
+      <Button disabled={isRegistering} variant="contained" type="submit">
         Register
       </Button>
+      {registeringError && <Alert severity="error">{registeringError}</Alert>}
     </Box>
   );
 }
