@@ -25,7 +25,7 @@ export function createCity(city: City) {
   });
 }
 
-export function getCity(id: number) {
+export function getCity(id: string | number) {
   return axios.get<CityResp>(`/cities/${id}`);
 }
 
