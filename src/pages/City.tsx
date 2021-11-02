@@ -8,6 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   Grid,
   List,
   ListItem,
@@ -24,6 +25,13 @@ interface urlParams {
 
 function City() {
   const [isNewItineraryModalOpen, setIsNewItineraryModalOpen] = useState(false);
+  const [newItineraryData, setNewItineraryData] = useState({
+    title: "",
+    duration: "",
+    price: "",
+    tags: [],
+    activities: []
+  });
 
   const handleClickOpen = () => {
     setIsNewItineraryModalOpen(true);
@@ -124,6 +132,7 @@ function City() {
                   label="Duration (hours)"
                   variant="standard"
                   fullWidth
+                  required
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -133,8 +142,23 @@ function City() {
                   inputProps={{ min: 1 }}
                   label="Price"
                   variant="standard"
+                  required
                   fullWidth
                 />
+              </Grid>
+            </Grid>
+            <Typography variant="h6" mt={2} mb={1}>
+              Tags
+            </Typography>
+            <Grid container spacing={{ sm: 0, md: 2 }}>
+              <Grid item xs={12} md={4}>
+                <TextField margin="dense" label="Tag #1" fullWidth required />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField margin="dense" label="Tag #2" fullWidth />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <TextField margin="dense" label="Tag #3" fullWidth />
               </Grid>
             </Grid>
           </DialogContent>
