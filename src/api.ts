@@ -25,6 +25,10 @@ export function createCity(city: City) {
   });
 }
 
+export function getCity(id: number) {
+  return axios.get<CityResp>(`/cities/${id}`);
+}
+
 // ------ Auth ------
 
 export function login({
