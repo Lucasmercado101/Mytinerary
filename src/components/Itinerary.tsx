@@ -17,13 +17,25 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { CityItinerariesResponse } from "../api";
 import MoneyIcon from "@mui/icons-material/AttachMoney";
 import ClockIcon from "@mui/icons-material/QueryBuilder";
-import { Grid, Box, Chip, ButtonBase, useTheme } from "@mui/material";
+import {
+  TextField,
+  Grid,
+  Box,
+  Chip,
+  ButtonBase,
+  useTheme,
+  List,
+  ListItem,
+  Button
+} from "@mui/material";
 
 const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
   const { activities, creator, hashtags, price, time, title } = data;
   const { userId, profilePic } = creator;
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [areCommentsExpanded, setAreCommentsExpanded] = useState(false);
+  const [newUserComment, setNewUserComment] = useState<null | string>(null);
 
   return (
     <Card sx={{ width: "100%", backgroundColor: "paper" }}>
@@ -88,14 +100,17 @@ const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
           ))}
         </CardContent>
       </Collapse>
-      {/* <ButtonBase
+      <ButtonBase
         sx={{
           p: 2,
           width: "100%",
           display: "flex",
           justifyContent: "space-between"
         }}
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={() => {
+          setAreCommentsExpanded(!areCommentsExpanded);
+          setNewUserComment(null);
+        }}
       >
         <Typography>
           Comments{" "}
@@ -105,14 +120,66 @@ const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
         </Typography>
         <ExpandMoreIcon
           sx={{
-            transform: !isExpanded ? "rotate(0deg)" : "rotate(180deg)",
+            transform: !areCommentsExpanded ? "rotate(0deg)" : "rotate(180deg)",
             marginLeft: "auto",
             transition: theme.transitions.create("transform", {
               duration: theme.transitions.duration.shortest
             })
           }}
         />
-      </ButtonBase> */}
+      </ButtonBase>
+      <Collapse in={areCommentsExpanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Collapse in={newUserComment !== ""} timeout="auto" unmountOnExit>
+            <div style={{ display: "flex" }}>
+              <Button size="small" color="primary">
+                My comments (0)
+              </Button>
+              <Button
+                onClick={() => setNewUserComment("")}
+                size="small"
+                color="primary"
+                sx={{ ml: "auto" }}
+              >
+                Add Comment
+              </Button>
+            </div>
+          </Collapse>
+          <Collapse
+            in={typeof newUserComment === "string"}
+            timeout="auto"
+            unmountOnExit
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField multiline fullWidth />
+              </Grid>
+              <Grid container item xs={12} spacing={3}>
+                <Grid item ml={"auto"}>
+                  <Button
+                    onClick={() => setNewUserComment(null)}
+                    sx={{ px: 3 }}
+                    fullWidth
+                    variant="text"
+                  >
+                    Cancel
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button sx={{ px: 3 }} fullWidth variant="contained">
+                    Submit
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Collapse>
+          {/* <List sx={{ padding: 0, margin: 0 }}>
+          <ListItem sx={{ padding: 0, margin: 0 }}>
+            
+          </ListItem>
+        </List> */}
+        </CardContent>
+      </Collapse>
     </Card>
   );
 };
