@@ -11,6 +11,15 @@ export interface CityResp extends City {
   id: number;
 }
 
+interface Itinerary {
+  id: number;
+  title: string;
+  time: number;
+  price: number;
+  activities: string[];
+  hashtags: string[];
+}
+
 // ------ Cities ------
 
 export function getCities() {
@@ -27,6 +36,16 @@ export function createCity(city: City) {
 
 export function getCity(id: string | number) {
   return axios.get<CityResp>(`/cities/${id}`);
+}
+export interface CityItinerariesResponse extends Itinerary {
+  creator: {
+    userId: number;
+    profilePic?: string;
+  };
+}
+
+export function getCityItineraries(id: string | number) {
+  return axios.get<CityItinerariesResponse[]>(`/cities/${id}/itinerary`);
 }
 
 // ------ Auth ------
