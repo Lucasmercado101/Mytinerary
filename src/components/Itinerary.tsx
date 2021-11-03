@@ -70,7 +70,7 @@ const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
         }}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <Typography>View more</Typography>
+        <Typography>View Activities</Typography>
         <ExpandMoreIcon
           sx={{
             transform: !isExpanded ? "rotate(0deg)" : "rotate(180deg)",
@@ -83,12 +83,36 @@ const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
       </ButtonBase>
       <Collapse in={isExpanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Activities:</Typography>
           {activities.map((activity, i) => (
             <Typography key={i}>- {activity}</Typography>
           ))}
         </CardContent>
       </Collapse>
+      {/* <ButtonBase
+        sx={{
+          p: 2,
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between"
+        }}
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <Typography>
+          Comments{" "}
+          <Typography component="span" color="text.secondary">
+            (25)
+          </Typography>
+        </Typography>
+        <ExpandMoreIcon
+          sx={{
+            transform: !isExpanded ? "rotate(0deg)" : "rotate(180deg)",
+            marginLeft: "auto",
+            transition: theme.transitions.create("transform", {
+              duration: theme.transitions.duration.shortest
+            })
+          }}
+        />
+      </ButtonBase> */}
     </Card>
   );
 };
