@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -16,11 +17,13 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { CityItinerariesResponse } from "../api";
 import MoneyIcon from "@mui/icons-material/AttachMoney";
 import ClockIcon from "@mui/icons-material/QueryBuilder";
-import { Grid, Box, Chip } from "@mui/material";
+import { Grid, Box, Chip, ButtonBase, useTheme } from "@mui/material";
 
 const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
   const { activities, creator, hashtags, price, time, title } = data;
   const { userId, profilePic } = creator;
+  const theme = useTheme();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <Card sx={{ width: "100%", backgroundColor: "paper" }}>
@@ -35,7 +38,7 @@ const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
       />
       <CardContent>
         <Grid container spacing={3}>
-          <Grid container item spacing={1} mx={1}>
+          <Grid container item spacing={1} mx={0}>
             <Grid item xs={6}>
               <Box display="flex" gap={0.5} alignItems="center">
                 <ClockIcon />
@@ -58,14 +61,34 @@ const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
           </Grid>
         </Grid>
       </CardContent>
-      {/* <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-      </CardActions> */}
+      <ButtonBase
+        sx={{
+          p: 2,
+          width: "100%",
+          display: "flex",
+          justifyContent: "space-between"
+        }}
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <Typography>View more</Typography>
+        <ExpandMoreIcon
+          sx={{
+            transform: !isExpanded ? "rotate(0deg)" : "rotate(180deg)",
+            marginLeft: "auto",
+            transition: theme.transitions.create("transform", {
+              duration: theme.transitions.duration.shortest
+            })
+          }}
+        />
+      </ButtonBase>
+      <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+        <CardContent>
+          <Typography paragraph>Activities:</Typography>
+          {activities.map((activity, i) => (
+            <Typography key={i}>- {activity}</Typography>
+          ))}
+        </CardContent>
+      </Collapse>
     </Card>
   );
 };
