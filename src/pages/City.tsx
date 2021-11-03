@@ -336,6 +336,8 @@ function City() {
             </Button>
           </DialogActions>
         </Dialog>
+        {/* For the FAB */}
+        <Box pt={10} />
       </div>
     );
   }
