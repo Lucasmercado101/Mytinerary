@@ -48,6 +48,33 @@ export function getCityItineraries(id: string | number) {
   return axios.get<CityItinerariesResponse[]>(`/cities/${id}/itinerary`);
 }
 
+interface postNewCityItineraryCommentResponse {
+  id: number;
+  comment: string;
+  creator: { creatorId: number; profilePic?: string };
+}
+
+export function postNewCityItineraryComment({
+  authorId,
+  comment,
+  itineraryId
+}: {
+  itineraryId: string | number;
+  authorId: number;
+  comment: string;
+}) {
+  return axios.post<
+    {
+      authorId: number;
+      comment: string;
+    },
+    postNewCityItineraryCommentResponse
+  >(`/cities/${itineraryId}/itinerary`, {
+    authorId,
+    comment
+  });
+}
+
 // ------ Auth ------
 
 export function login({
