@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { getCity } from "../api";
+import { CityItinerariesResponse, getCity, getCityItineraries } from "../api";
 import { useQuery } from "react-query";
 import {
   Button,
@@ -14,13 +14,16 @@ import {
   List,
   ListItem,
   TextField,
-  Typography
+  Typography,
+  Box,
+  CircularProgress,
+  Fab
 } from "@mui/material";
-import { Box, CircularProgress, Fab } from "@mui/material";
 import Itinerary from "../components/Itinerary";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Close";
 import { v4 as uuidv4 } from "uuid";
+import { AxiosResponse } from "axios";
 
 interface urlParams {
   id: string;
@@ -81,7 +84,11 @@ function City() {
   };
 
   const { id } = useParams<urlParams>();
-  const { data, isLoading, error } = useQuery(["city", id], () => getCity(id));
+  // TODO: handle if no city exists
+  const { data, isLoading } = useQuery(["city", id], () => getCity(id));
+  const { data: itineraries, isLoading: itinerariesLoading } = useQuery<
+    AxiosResponse<CityItinerariesResponse[]>
+  >(["cityItineraries", id], () => getCityItineraries(id));
 
   if (data) {
     const { country, name } = data.data;
@@ -132,11 +139,16 @@ function City() {
         <Typography variant="h5" my={2} textAlign="center">
           Available Itineraries
         </Typography>
-        {/* <List>
-          <ListItem>
-            <Itinerary />
-          </ListItem>
-        </List> */}
+
+        {itineraries && (
+          <List>
+            {itineraries.data.map((itinerary) => (
+              <ListItem key={itinerary.id}>
+                <Itinerary data={itinerary} />
+              </ListItem>
+            ))}
+          </List>
+        )}
         <Fab
           disabled={isLoading}
           onClick={() => {
