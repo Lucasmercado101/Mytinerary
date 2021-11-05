@@ -140,7 +140,7 @@ function City() {
           Available Itineraries
         </Typography>
 
-        {itineraries && (
+        {itineraries?.data && (
           <List>
             {itineraries.data.map((itinerary) => (
               <ListItem key={itinerary.id}>
