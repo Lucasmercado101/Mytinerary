@@ -2,6 +2,16 @@ import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:8001";
 
+// TODO:
+// Add a request interceptor
+// axios.interceptors.request.use(function (config) {
+//   // Do something before request is sent
+//   return config;
+// }, function (error) {
+//   // Do something with request error
+//   return Promise.reject(error);
+// });
+
 export interface City {
   name: string;
   country: string;
@@ -48,30 +58,32 @@ export function getCityItineraries(id: string | number) {
   return axios.get<CityItinerariesResponse[]>(`/cities/${id}/itinerary`);
 }
 
+export interface postNewCityItineraryCommentFnInput {
+  itineraryId: string | number;
+  authorId: number;
+  content: string;
+}
+
 interface postNewCityItineraryCommentResponse {
   id: number;
-  comment: string;
+  content: string;
   creator: { creatorId: number; profilePic?: string };
 }
 
 export function postNewCityItineraryComment({
   authorId,
-  comment,
+  content,
   itineraryId
-}: {
-  itineraryId: string | number;
-  authorId: number;
-  comment: string;
-}) {
+}: postNewCityItineraryCommentFnInput) {
   return axios.post<
     {
       authorId: number;
-      comment: string;
+      content: string;
     },
     postNewCityItineraryCommentResponse
-  >(`/cities/${itineraryId}/itinerary`, {
+  >(`/itinerary/${itineraryId}/comment`, {
     authorId,
-    comment
+    content
   });
 }
 
