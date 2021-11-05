@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -14,7 +14,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { CityItinerariesResponse } from "../api";
+import {
+  CityItinerariesResponse,
+  postNewCityItineraryComment,
+  postNewCityItineraryCommentFnInput
+} from "../api";
 import MoneyIcon from "@mui/icons-material/AttachMoney";
 import ClockIcon from "@mui/icons-material/QueryBuilder";
 import {
@@ -28,14 +32,36 @@ import {
   ListItem,
   Button
 } from "@mui/material";
+import { Ctx } from "../Context";
+import { useMutation } from "react-query";
 
-const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
+const Itinerary: React.FC<{
+  data: CityItinerariesResponse;
+}> = ({ data }) => {
+  // TODO:
+  // const ctx = useContext(Ctx)!
+  // const userIsLoggedIn = !!ctx.userData
+
+  const { mutateAsync } = useMutation(
+    (vars: postNewCityItineraryCommentFnInput) =>
+      postNewCityItineraryComment(vars)
+  );
+  const [newComment, setNewComment] = useState("");
   const { activities, creator, hashtags, price, time, title } = data;
   const { userId, profilePic } = creator;
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const [areCommentsExpanded, setAreCommentsExpanded] = useState(false);
   const [newUserComment, setNewUserComment] = useState<null | string>(null);
+
+  const handleSubmit = () => {
+    mutateAsync({
+      authorId: userId,
+      content: newComment,
+      itineraryId: data.id
+    });
+    setNewComment("");
+  };
 
   return (
     <Card sx={{ width: "100%", backgroundColor: "paper" }}>
@@ -152,7 +178,12 @@ const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField multiline fullWidth />
+                <TextField
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  multiline
+                  fullWidth
+                />
               </Grid>
               <Grid container item xs={12} spacing={3}>
                 <Grid item ml={"auto"}>
@@ -166,7 +197,12 @@ const Itinerary: React.FC<{ data: CityItinerariesResponse }> = ({ data }) => {
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button sx={{ px: 3 }} fullWidth variant="contained">
+                  <Button
+                    onClick={handleSubmit}
+                    sx={{ px: 3 }}
+                    fullWidth
+                    variant="contained"
+                  >
                     Submit
                   </Button>
                 </Grid>
