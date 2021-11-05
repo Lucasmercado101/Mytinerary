@@ -58,6 +58,18 @@ export function getCityItineraries(id: string | number) {
   return axios.get<CityItinerariesResponse[]>(`/cities/${id}/itinerary`);
 }
 
+export function postNewCityItinerary({
+  cityId,
+  ...newItineraryData
+}: { cityId: string | number } & Omit<Itinerary, "id">) {
+  return axios.post(`/cities/${cityId}/itinerary`, newItineraryData, {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    withCredentials: true
+  });
+}
+
 export interface postNewCityItineraryCommentFnInput {
   itineraryId: string | number;
   authorId: number;
