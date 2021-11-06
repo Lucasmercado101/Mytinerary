@@ -47,7 +47,7 @@ const Itinerary: React.FC<{
       postNewCityItineraryComment(vars)
   );
   const [newComment, setNewComment] = useState("");
-  const { activities, creator, hashtags, price, time, title } = data;
+  const { activities, creator, hashtags, price, time, title, comments } = data;
   const { id: userId, profilePic } = creator;
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -141,7 +141,7 @@ const Itinerary: React.FC<{
         <Typography>
           Comments{" "}
           <Typography component="span" color="text.secondary">
-            (25)
+            ({comments?.length ?? 0})
           </Typography>
         </Typography>
         <ExpandMoreIcon
@@ -209,11 +209,15 @@ const Itinerary: React.FC<{
               </Grid>
             </Grid>
           </Collapse>
-          {/* <List sx={{ padding: 0, margin: 0 }}>
-          <ListItem sx={{ padding: 0, margin: 0 }}>
-            
-          </ListItem>
-        </List> */}
+          {comments && comments.length > 0 && (
+            <List sx={{ padding: 0, margin: 0 }}>
+              {comments.map((el) => (
+                <ListItem key={el.id} sx={{ padding: 0, margin: 0 }}>
+                  {el.comment}
+                </ListItem>
+              ))}
+            </List>
+          )}
         </CardContent>
       </Collapse>
     </Card>
