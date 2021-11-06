@@ -102,11 +102,17 @@ const Itinerary: React.FC<{
               </Box>
             </Grid>
           </Grid>
-          <Grid container item spacing={1} mx={0}>
+          <Grid
+            item
+            spacing={1}
+            mx={0}
+            display="flex"
+            justifyContent="space-between"
+            flexWrap="wrap"
+            width="100%"
+          >
             {hashtags.map((hashtag, i) => (
-              <Grid key={i} item xs={3}>
-                <Chip label={`#${hashtag}`} variant="filled" />
-              </Grid>
+              <Chip label={`#${hashtag}`} variant="filled" />
             ))}
           </Grid>
         </Grid>
