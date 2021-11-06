@@ -16,6 +16,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   CityItinerariesResponse,
+  itineraryComment,
   postNewCityItineraryComment,
   postNewCityItineraryCommentFnInput
 } from "../api";
@@ -51,6 +52,9 @@ const Itinerary: React.FC<{
   const [newComment, setNewComment] = useState("");
   const { activities, creator, hashtags, price, time, title, comments } = data;
   const { id: userId, profilePic } = creator;
+  const [filteredComments, setFilteredComments] = useState<
+    null | itineraryComment[]
+  >();
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const [areCommentsExpanded, setAreCommentsExpanded] = useState(false);
@@ -167,16 +171,41 @@ const Itinerary: React.FC<{
           {ctx.userData && (
             <Collapse in={newUserComment !== ""} timeout="auto" unmountOnExit>
               <div style={{ display: "flex" }}>
-                <Button size="small" color="primary">
-                  My comments (
-                  {(ctx.userData &&
-                    comments &&
-                    comments.length &&
-                    comments.filter((c) => c.Author.id === ctx.userData!.id)
-                      .length) ??
-                    0}
-                  )
-                </Button>
+                {filteredComments ? (
+                  <Button onClick={() => setFilteredComments(null)}>
+                    All comments
+                  </Button>
+                ) : (
+                  <Button
+                    size="small"
+                    color="primary"
+                    disabled={
+                      !(
+                        ctx.userData &&
+                        comments &&
+                        comments.length &&
+                        comments.filter((c) => c.Author.id === ctx.userData!.id)
+                          .length
+                      )
+                    }
+                    onClick={() =>
+                      setFilteredComments(
+                        comments?.filter(
+                          (c) => c.Author.id === ctx.userData!.id
+                        )
+                      )
+                    }
+                  >
+                    My comments (
+                    {(ctx.userData &&
+                      comments &&
+                      comments.length &&
+                      comments.filter((c) => c.Author.id === ctx.userData!.id)
+                        .length) ??
+                      0}
+                    )
+                  </Button>
+                )}
                 <Button
                   onClick={() => setNewUserComment("")}
                   size="small"
@@ -229,7 +258,7 @@ const Itinerary: React.FC<{
           </Collapse>
           {comments && comments.length > 0 && (
             <List sx={{ padding: 0, margin: 0 }}>
-              {comments.map((el) => (
+              {(filteredComments ?? comments).map((el) => (
                 <ListItem key={el.id} sx={{ px: 0 }}>
                   {el.Author.profilePic && (
                     <ListItemAvatar>
