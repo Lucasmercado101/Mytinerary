@@ -40,9 +40,7 @@ import { useMutation, useQueryClient } from "react-query";
 const Itinerary: React.FC<{
   data: CityItinerariesResponse;
 }> = ({ data }) => {
-  // TODO:
-  // const ctx = useContext(Ctx)!
-  // const userIsLoggedIn = !!ctx.userData
+  const ctx = useContext(Ctx)!;
 
   const queryClient = useQueryClient();
 
@@ -60,7 +58,9 @@ const Itinerary: React.FC<{
 
   const handleSubmit = () => {
     mutateAsync({
-      authorId: userId,
+      // assuming it's logged in if it reached this function
+      // then userData always exists
+      authorId: ctx.userData!.id,
       content: newComment,
       itineraryId: data.id
     }).then(() => {
@@ -164,21 +164,30 @@ const Itinerary: React.FC<{
       </ButtonBase>
       <Collapse in={areCommentsExpanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Collapse in={newUserComment !== ""} timeout="auto" unmountOnExit>
-            <div style={{ display: "flex" }}>
-              <Button size="small" color="primary">
-                My comments (0)
-              </Button>
-              <Button
-                onClick={() => setNewUserComment("")}
-                size="small"
-                color="primary"
-                sx={{ ml: "auto" }}
-              >
-                Add Comment
-              </Button>
-            </div>
-          </Collapse>
+          {ctx.userData && (
+            <Collapse in={newUserComment !== ""} timeout="auto" unmountOnExit>
+              <div style={{ display: "flex" }}>
+                <Button size="small" color="primary">
+                  My comments (
+                  {(ctx.userData &&
+                    comments &&
+                    comments.length &&
+                    comments.filter((c) => c.Author.id === ctx.userData!.id)
+                      .length) ??
+                    0}
+                  )
+                </Button>
+                <Button
+                  onClick={() => setNewUserComment("")}
+                  size="small"
+                  color="primary"
+                  sx={{ ml: "auto" }}
+                >
+                  Add Comment
+                </Button>
+              </div>
+            </Collapse>
+          )}
           <Collapse
             in={typeof newUserComment === "string"}
             timeout="auto"
