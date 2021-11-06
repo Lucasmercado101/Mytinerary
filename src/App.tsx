@@ -83,7 +83,7 @@ function App() {
             edge="end"
             color="inherit"
           >
-            <Avatar src={ctx?.userData?.profile_pic} />
+            <Avatar src={ctx?.userData?.profilePic} />
           </IconButton>
         </Toolbar>
       </AppBar>
