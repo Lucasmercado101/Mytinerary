@@ -30,6 +30,11 @@ interface Itinerary {
   hashtags: string[];
 }
 
+interface User {
+  id: number;
+  profilePic?: string;
+}
+
 // ------ Cities ------
 
 export function getCities() {
@@ -48,10 +53,12 @@ export function getCity(id: string | number) {
   return axios.get<CityResp>(`/cities/${id}`);
 }
 export interface CityItinerariesResponse extends Itinerary {
-  creator: {
-    userId: number;
-    profilePic?: string;
-  };
+  creator: User;
+  comments?: {
+    id: number;
+    comment: string;
+    Author: User;
+  }[];
 }
 
 export function getCityItineraries(id: string | number) {
