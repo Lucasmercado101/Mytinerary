@@ -52,13 +52,16 @@ export function createCity(city: City) {
 export function getCity(id: string | number) {
   return axios.get<CityResp>(`/cities/${id}`);
 }
+
+export interface itineraryComment {
+  id: number;
+  comment: string;
+  Author: User;
+}
+
 export interface CityItinerariesResponse extends Itinerary {
   creator: User;
-  comments?: {
-    id: number;
-    comment: string;
-    Author: User;
-  }[];
+  comments?: itineraryComment[];
 }
 
 export function getCityItineraries(id: string | number) {
