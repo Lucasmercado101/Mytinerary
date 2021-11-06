@@ -48,7 +48,7 @@ const Itinerary: React.FC<{
   );
   const [newComment, setNewComment] = useState("");
   const { activities, creator, hashtags, price, time, title } = data;
-  const { userId, profilePic } = creator;
+  const { id: userId, profilePic } = creator;
   const theme = useTheme();
   const [isExpanded, setIsExpanded] = useState(false);
   const [areCommentsExpanded, setAreCommentsExpanded] = useState(false);
