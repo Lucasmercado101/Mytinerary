@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 axios.defaults.baseURL = "http://localhost:8001";
 
@@ -119,7 +119,17 @@ export function login({
   username: string;
   password: string;
 }) {
-  return axios.post(
+  return axios.post<
+    {
+      username: string;
+      password: string;
+    },
+    AxiosResponse<{
+      id: number;
+      profilePic: string;
+      username: string;
+    }>
+  >(
     "/auth/login",
     { username, password },
     {
