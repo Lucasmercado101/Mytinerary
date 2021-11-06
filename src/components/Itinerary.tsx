@@ -30,10 +30,12 @@ import {
   useTheme,
   List,
   ListItem,
-  Button
+  Button,
+  ListItemAvatar,
+  ListItemText
 } from "@mui/material";
 import { Ctx } from "../Context";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
 const Itinerary: React.FC<{
   data: CityItinerariesResponse;
@@ -42,7 +44,9 @@ const Itinerary: React.FC<{
   // const ctx = useContext(Ctx)!
   // const userIsLoggedIn = !!ctx.userData
 
-  const { mutateAsync } = useMutation(
+  const queryClient = useQueryClient();
+
+  const { mutateAsync, isLoading } = useMutation(
     (vars: postNewCityItineraryCommentFnInput) =>
       postNewCityItineraryComment(vars)
   );
@@ -59,6 +63,10 @@ const Itinerary: React.FC<{
       authorId: userId,
       content: newComment,
       itineraryId: data.id
+    }).then(() => {
+      setNewComment("");
+      setNewUserComment(null);
+      queryClient.invalidateQueries("cityItineraries");
     });
     setNewComment("");
   };
@@ -198,6 +206,7 @@ const Itinerary: React.FC<{
                 </Grid>
                 <Grid item>
                   <Button
+                    disabled={isLoading}
                     onClick={handleSubmit}
                     sx={{ px: 3 }}
                     fullWidth
@@ -212,8 +221,13 @@ const Itinerary: React.FC<{
           {comments && comments.length > 0 && (
             <List sx={{ padding: 0, margin: 0 }}>
               {comments.map((el) => (
-                <ListItem key={el.id} sx={{ padding: 0, margin: 0 }}>
-                  {el.comment}
+                <ListItem key={el.id} sx={{ px: 0 }}>
+                  {el.Author.profilePic && (
+                    <ListItemAvatar>
+                      <Avatar src={el.Author.profilePic} />
+                    </ListItemAvatar>
+                  )}
+                  <ListItemText primary={el.comment} />
                 </ListItem>
               ))}
             </List>
