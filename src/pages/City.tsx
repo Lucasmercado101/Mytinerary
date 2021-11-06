@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { CityItinerariesResponse, getCity, getCityItineraries } from "../api";
+import {
+  CityItinerariesResponse,
+  getCity,
+  getCityItineraries,
+  postNewCityItinerary,
+  postNewCityItineraryInput
+} from "../api";
 import { useQuery } from "react-query";
 import {
   Button,
@@ -23,6 +29,7 @@ import Itinerary from "../components/Itinerary";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Close";
 import { v4 as uuidv4 } from "uuid";
+import { useMutation } from "react-query";
 import { AxiosResponse } from "axios";
 
 interface urlParams {
@@ -30,6 +37,10 @@ interface urlParams {
 }
 
 function City() {
+  const { id } = useParams<urlParams>();
+  const { mutateAsync } = useMutation((vars: postNewCityItineraryInput) =>
+    postNewCityItinerary(vars)
+  );
   const [isNewItineraryModalOpen, setIsNewItineraryModalOpen] = useState(false);
   const [newItineraryTags, setNewItineraryTags] = useState(["", "", ""]);
   const [newItineraryActivities, setNewItineraryActivities] = useState([
@@ -68,22 +79,19 @@ function City() {
   };
 
   const handleSubmit = async () => {
-    console.log(newItineraryData);
-    console.log(newItineraryTags);
-    console.log(newItineraryActivities);
-
-    // const { data } = await getCity(newItineraryData.title);
-    // setNewItineraryData({
-    //   title: "",
-    //   duration: "",
-    //   price: "",
-    //   tags: [],
-    //   activities: []
-    // });
-    // setIsNewItineraryModalOpen(false);
+    mutateAsync({
+      title: newItineraryData.title,
+      time: +newItineraryData.duration,
+      price: +newItineraryData.price,
+      cityId: id,
+      hashtags: newItineraryTags,
+      activities: newItineraryActivities.map((activity) => activity.value)
+    }).then((resp) => {
+      console.log("CREATED");
+    });
+    // TODO: error handler
   };
 
-  const { id } = useParams<urlParams>();
   // TODO: handle if no city exists
   const { data, isLoading } = useQuery(["city", id], () => getCity(id));
   const { data: itineraries, isLoading: itinerariesLoading } = useQuery<
