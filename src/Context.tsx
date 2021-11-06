@@ -1,8 +1,9 @@
 import { createContext, useState } from "react";
 
 interface userData {
+  id: number;
   username: string;
-  profile_pic?: string;
+  profilePic?: string;
 }
 
 export const Ctx = createContext<null | {
