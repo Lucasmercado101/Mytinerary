@@ -9,7 +9,7 @@ interface userData {
 export const Ctx = createContext<null | {
   userData?: userData;
   getUserData: () => void;
-  setUserData: (userData: userData) => void;
+  setUserData: (userData?: userData) => void;
 }>(null);
 
 const Context: React.FC = ({ children }) => {
