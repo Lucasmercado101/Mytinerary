@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   CityItinerariesResponse,
@@ -31,12 +31,16 @@ import DeleteIcon from "@mui/icons-material/Close";
 import { v4 as uuidv4 } from "uuid";
 import { useMutation } from "react-query";
 import { AxiosResponse } from "axios";
+import { Ctx } from "../Context";
+import { useHistory } from "react-router-dom";
 
 interface urlParams {
   id: string;
 }
 
 function City() {
+  const ctx = useContext(Ctx);
+  const history = useHistory();
   const { id } = useParams<urlParams>();
   const { mutateAsync } = useMutation((vars: postNewCityItineraryInput) =>
     postNewCityItinerary(vars)
@@ -148,7 +152,7 @@ function City() {
           Available Itineraries
         </Typography>
 
-        {itineraries?.data && (
+        {itineraries?.data?.length ? (
           <List>
             {itineraries.data.map((itinerary) => (
               <ListItem key={itinerary.id}>
@@ -156,6 +160,22 @@ function City() {
               </ListItem>
             ))}
           </List>
+        ) : (
+          <Typography variant="h6" textAlign="center">
+            No itineraries yet
+            <br />
+            <Button
+              onClick={() => {
+                ctx?.userData
+                  ? setIsNewItineraryModalOpen(true)
+                  : history.push("/login");
+              }}
+              variant="outlined"
+              sx={{ mt: 2 }}
+            >
+              Add one
+            </Button>
+          </Typography>
         )}
         <Fab
           disabled={isLoading}
