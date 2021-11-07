@@ -144,6 +144,10 @@ export function login({
   );
 }
 
+export function logOut() {
+  return axios.post("/auth/logout", {}, { withCredentials: true });
+}
+
 export function isLoggedIn() {
   return axios.get("/auth/isLoggedIn", { withCredentials: true });
 }
