@@ -16,18 +16,23 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useQuery } from "react-query";
-import { isLoggedIn as isLoggedInQuery } from "./api";
+import { logOut } from "./api";
 import { Ctx } from "./Context";
 
 function App() {
   const history = useHistory();
   const ctx = useContext(Ctx)!;
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>();
+
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [userMenuAnchorEl, setUserMenuAnchorEl] =
     useState<null | HTMLElement>();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>();
+
+  const [isLoggedOutUserMenuOpen, setIsLoggedOutUserMenuOpen] = useState(false);
+  const [loggedOutMenuAnchorEl, setLoggedOutMenuAnchorEl] =
+    useState<null | HTMLElement>();
 
   useEffect(() => {
     ctx.getUserData();
@@ -43,7 +48,46 @@ function App() {
     setIsMenuOpen(false);
   };
 
-  const renderLoggedOutUserMenu = (
+  const handleLoggedOutUserMenuClose = () => {
+    setIsLoggedOutUserMenuOpen(false);
+    setLoggedOutMenuAnchorEl(null);
+  };
+
+  const renderUserMenu = (
+    <Menu
+      anchorEl={loggedOutMenuAnchorEl}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "right"
+      }}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right"
+      }}
+      open={isLoggedOutUserMenuOpen}
+      onClose={handleLoggedOutUserMenuClose}
+    >
+      <MenuItem
+        onClick={() => {
+          history.push("/login");
+          handleLoggedOutUserMenuClose();
+        }}
+      >
+        Log In
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          history.push("/register");
+          handleLoggedOutUserMenuClose();
+        }}
+      >
+        Register Account
+      </MenuItem>
+    </Menu>
+  );
+
+  const renderLoggedInUserMenu = (
     <Menu
       anchorEl={userMenuAnchorEl}
       anchorOrigin={{
@@ -55,24 +99,18 @@ function App() {
         vertical: "top",
         horizontal: "right"
       }}
-      open={isUserMenuOpen}
+      open={isUserMenuOpen && ctx.userData !== undefined}
       onClose={handleUserMenuClose}
     >
       <MenuItem
-        onClick={() => {
-          history.push("/login");
-          handleUserMenuClose();
-        }}
+        onClick={() =>
+          logOut().then(() => {
+            ctx.setUserData();
+            localStorage.removeItem("user");
+          })
+        }
       >
-        Log In
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          history.push("/register");
-          handleUserMenuClose();
-        }}
-      >
-        Register Account
+        Log Out
       </MenuItem>
     </Menu>
   );
@@ -129,9 +167,13 @@ function App() {
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
           <IconButton
-            onClick={() => {
-              setUserMenuAnchorEl(userMenuAnchorEl);
-              setIsUserMenuOpen(true);
+            onClick={(e) => {
+              ctx.userData
+                ? setUserMenuAnchorEl(e.currentTarget)
+                : setLoggedOutMenuAnchorEl(e.currentTarget);
+              ctx.userData
+                ? setIsUserMenuOpen(true)
+                : setIsLoggedOutUserMenuOpen(true);
             }}
             size="medium"
             edge="end"
@@ -146,8 +188,9 @@ function App() {
       <Route exact path="/cities/:id" component={City} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/register" component={Register} />
-      {renderLoggedOutUserMenu}
       {renderMenu}
+      {renderLoggedInUserMenu}
+      {renderUserMenu}
     </ThemeProvider>
   );
 }
