@@ -30,7 +30,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Close";
 import { v4 as uuidv4 } from "uuid";
 import { useMutation } from "react-query";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { Ctx } from "../Context";
 import { useHistory } from "react-router-dom";
 
@@ -96,9 +96,17 @@ function City() {
     // TODO: error handler
   };
 
-  // TODO: handle if no city exists
-  const { data, isLoading } = useQuery(["city", id], () => getCity(id));
-  const { data: itineraries, isLoading: itinerariesLoading } = useQuery<
+  const { data, isLoading, isError, error } = useQuery(
+    ["city", id],
+    () => getCity(id),
+    {
+      retry: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false
+    }
+  );
+  const { data: itineraries } = useQuery<
     AxiosResponse<CityItinerariesResponse[]>
   >(["cityItineraries", id], () => getCityItineraries(id));
 
@@ -367,6 +375,22 @@ function City() {
         {/* For the FAB */}
         <Box pt={10} />
       </div>
+    );
+  }
+  if (isLoading) {
+    return (
+      <Typography textAlign="center" variant="h4" mt={2}>
+        Loading...
+      </Typography>
+    );
+  }
+  if (isError && (error as AxiosError).response?.status === 404) {
+    return (
+      <Typography textAlign="center" mt={2} variant="h2">
+        404
+        <br />
+        City not found
+      </Typography>
     );
   }
 
