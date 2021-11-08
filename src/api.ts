@@ -56,7 +56,7 @@ export function getCity(id: string | number) {
 export interface itineraryComment {
   id: number;
   comment: string;
-  Author: User;
+  author: User;
 }
 
 export interface CityItinerariesResponse extends Itinerary {
