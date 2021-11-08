@@ -45,7 +45,8 @@ export function createCity(city: City) {
   return axios.post("/cities", city, {
     headers: {
       "Content-Type": "application/json"
-    }
+    },
+    withCredentials: true
   });
 }
 
