@@ -7,7 +7,7 @@ import {
   postNewCityItinerary,
   postNewCityItineraryInput
 } from "../api";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import {
   Button,
   Dialog,
@@ -39,6 +39,7 @@ interface urlParams {
 }
 
 function City() {
+  const queryClient = useQueryClient();
   const ctx = useContext(Ctx);
   const history = useHistory();
   const { id } = useParams<urlParams>();
@@ -82,20 +83,6 @@ function City() {
     setIsNewItineraryModalOpen(false);
   };
 
-  const handleSubmit = async () => {
-    mutateAsync({
-      title: newItineraryData.title,
-      time: +newItineraryData.duration,
-      price: +newItineraryData.price,
-      cityId: id,
-      hashtags: newItineraryTags,
-      activities: newItineraryActivities.map((activity) => activity.value)
-    }).then((resp) => {
-      console.log("CREATED");
-    });
-    // TODO: error handler
-  };
-
   const { data, isLoading, isError, error } = useQuery(
     ["city", id],
     () => getCity(id),
@@ -109,6 +96,19 @@ function City() {
   const { data: itineraries } = useQuery<
     AxiosResponse<CityItinerariesResponse[]>
   >(["cityItineraries", id], () => getCityItineraries(id));
+
+  const handleSubmit = async () => {
+    mutateAsync({
+      title: newItineraryData.title,
+      time: +newItineraryData.duration,
+      price: +newItineraryData.price,
+      cityId: id,
+      hashtags: newItineraryTags,
+      activities: newItineraryActivities.map((activity) => activity.value)
+    }).then(() => {
+      queryClient.invalidateQueries(["cityItineraries", id]);
+    });
+  };
 
   if (data) {
     const { country, name } = data.data;
