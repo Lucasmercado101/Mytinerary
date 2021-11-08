@@ -191,14 +191,14 @@ const Itinerary: React.FC<{
                         ctx.userData &&
                         comments &&
                         comments.length &&
-                        comments.filter((c) => c.Author.id === ctx.userData!.id)
+                        comments.filter((c) => c.author.id === ctx.userData!.id)
                           .length
                       )
                     }
                     onClick={() =>
                       setFilteredComments(
                         comments?.filter(
-                          (c) => c.Author.id === ctx.userData!.id
+                          (c) => c.author.id === ctx.userData!.id
                         )
                       )
                     }
@@ -207,7 +207,7 @@ const Itinerary: React.FC<{
                     {(ctx.userData &&
                       comments &&
                       comments.length &&
-                      comments.filter((c) => c.Author.id === ctx.userData!.id)
+                      comments.filter((c) => c.author.id === ctx.userData!.id)
                         .length) ??
                       0}
                     )
@@ -267,9 +267,9 @@ const Itinerary: React.FC<{
             <List sx={{ padding: 0, margin: 0 }}>
               {(filteredComments ?? comments).map((el) => (
                 <ListItem key={el.id} sx={{ px: 0 }}>
-                  {el.Author.profilePic && (
+                  {el.author.profilePic && (
                     <ListItemAvatar>
-                      <Avatar src={el.Author.profilePic} />
+                      <Avatar src={el.author.profilePic} />
                     </ListItemAvatar>
                   )}
                   <ListItemText primary={el.comment} />
