@@ -15,13 +15,13 @@ import {
   ListItemButton,
   ListItemText,
   TextField,
-  Typography
+  Typography,
+  Modal,
+  Paper,
+  Box,
+  Button
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { Modal } from ".pnpm/@mui+material@5.0.6_1232132bd4823eec07a6df6246241393/node_modules/@mui/material";
-import { Paper } from ".pnpm/@mui+material@5.0.6_1232132bd4823eec07a6df6246241393/node_modules/@mui/material";
-import { Box } from ".pnpm/@mui+system@5.0.6_b094b78811fc8d2f00a90f13d0251fb6/node_modules/@mui/system";
-import { Button } from ".pnpm/@mui+material@5.0.6_1232132bd4823eec07a6df6246241393/node_modules/@mui/material";
 
 function Cities() {
   const history = useHistory();
