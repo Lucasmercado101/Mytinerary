@@ -35,14 +35,11 @@ import {
   ListItemAvatar,
   ListItemText
 } from "@mui/material";
-import { Ctx } from "../Context";
 import { useMutation, useQueryClient } from "react-query";
 
 const Itinerary: React.FC<{
   data: CityItinerariesResponse;
 }> = ({ data }) => {
-  const ctx = useContext(Ctx)!;
-
   const queryClient = useQueryClient();
 
   const { mutateAsync, isLoading } = useMutation(
@@ -64,7 +61,9 @@ const Itinerary: React.FC<{
     mutateAsync({
       // assuming it's logged in if it reached this function
       // then userData always exists
-      authorId: ctx.userData!.id,
+      //! TODO:
+      authorId: 1,
+      // authorId: ctx.userData!.id,
       content: newComment,
       itineraryId: data.id
     }).then(() => {
@@ -175,7 +174,7 @@ const Itinerary: React.FC<{
       </ButtonBase>
       <Collapse in={areCommentsExpanded} timeout="auto" unmountOnExit>
         <CardContent>
-          {ctx.userData && (
+          {/* {ctx.userData && (
             <Collapse in={newUserComment !== ""} timeout="auto" unmountOnExit>
               <div style={{ display: "flex" }}>
                 {filteredComments ? (
@@ -223,7 +222,7 @@ const Itinerary: React.FC<{
                 </Button>
               </div>
             </Collapse>
-          )}
+          )} */}
           <Collapse
             in={typeof newUserComment === "string"}
             timeout="auto"

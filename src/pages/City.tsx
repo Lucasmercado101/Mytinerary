@@ -31,7 +31,6 @@ import DeleteIcon from "@mui/icons-material/Close";
 import { v4 as uuidv4 } from "uuid";
 import { useMutation } from "react-query";
 import { AxiosError, AxiosResponse } from "axios";
-import { Ctx } from "../Context";
 import { useHistory } from "react-router-dom";
 
 interface urlParams {
@@ -40,7 +39,6 @@ interface urlParams {
 
 function City() {
   const queryClient = useQueryClient();
-  const ctx = useContext(Ctx);
   const history = useHistory();
   const { id } = useParams<urlParams>();
   const { mutateAsync } = useMutation((vars: postNewCityItineraryInput) =>
@@ -174,9 +172,9 @@ function City() {
             <br />
             <Button
               onClick={() => {
-                ctx?.userData
-                  ? setIsNewItineraryModalOpen(true)
-                  : history.push("/login");
+                // ctx?.userData
+                //   ? setIsNewItineraryModalOpen(true)
+                //   : history.push("/login");
               }}
               variant="outlined"
               sx={{ mt: 2 }}

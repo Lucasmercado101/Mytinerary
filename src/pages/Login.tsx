@@ -4,22 +4,19 @@ import { useContext, useState } from "react";
 import { useMutation } from "react-query";
 import { useHistory } from "react-router-dom";
 import { login } from "../api";
-import { Ctx } from "../Context";
+import { authStates } from "../machines/auth.machine";
+import { useAuthContext } from "../useAuthMachineContext";
 
 function Login() {
+  const [state, send] = useAuthContext();
   const history = useHistory();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const { mutateAsync, error, isError, isLoading } = useMutation(login);
-  const ctx = useContext(Ctx)!;
+  // const { mutateAsync, error, isError, isLoading } = useMutation(login);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutateAsync({ username: userName, password }).then((resp) => {
-      localStorage.setItem("user", JSON.stringify(resp.data));
-      ctx.setUserData(resp.data);
-      history.push("/");
-    });
+    send({ type: "LOG_IN", payload: { username: userName, password } });
   };
 
   return (
@@ -43,16 +40,20 @@ function Login() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Button disabled={isLoading} variant="contained" type="submit">
+      <Button
+        disabled={state.matches(authStates.loggingIn)}
+        variant="contained"
+        type="submit"
+      >
         Login
       </Button>
-      {isError && (
+      {/* {state.matches(authStates.loggedOut) && state.context.error !== undefined && (
         <Alert severity="error">
           {(error as any).response.status === 404
             ? "Invalid username or password"
             : "An Error has occurred on the server, please try again."}
         </Alert>
-      )}
+      )} */}
     </Box>
   );
 }

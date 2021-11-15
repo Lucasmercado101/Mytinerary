@@ -93,12 +93,15 @@ export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
             target: authStates.loggedIn,
             actions: [
               assign({
-                user: (context, event) => {
+                user: (_, event) => {
                   const resp = event.data as loginResponse;
                   return resp.data;
                 }
-              })
-              // "saveUserToLocalStorage"
+              }),
+              (_, event) => {
+                const resp = event.data as loginResponse;
+                localStorage.setItem("user", JSON.stringify(resp.data));
+              }
             ]
           },
           onError: {
@@ -131,10 +134,5 @@ export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
     guards: {
       userIsInLocalStorage: () => !!localStorage.getItem("user")
     }
-    // actions: {
-    //   saveUserToLocalStorage: (_, event) => {
-    //     localStorage.setItem("user", JSON.stringify(event.data));
-    //   }
-    // }
   }
 );
