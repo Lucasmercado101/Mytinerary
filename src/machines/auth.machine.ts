@@ -1,5 +1,5 @@
 import { createMachine, assign } from "xstate";
-import { isLoggedIn, logOut } from "../api";
+import { isLoggedIn, logOut, login } from "../api";
 
 interface AuthContext {
   user?: {
@@ -10,10 +10,8 @@ interface AuthContext {
 }
 
 type AuthEvent =
-  | { type: "LOG_IN"; payload: { user: { id: number; username: string } } }
+  | { type: "LOG_IN"; payload: { username: string; password: string } }
   | { type: "LOG_OUT" }
-  | { type: "LOGGING_IN" }
-  | { type: "LOGGING_OUT" }
   | { type: "IS_LOGGED_IN" }
   | { type: "IS_LOGGED_OUT" };
 
@@ -35,7 +33,6 @@ export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
     id: "authMachine",
     initial: states.checkingIfLoggedIn,
     context: undefined,
-
     states: {
       [states.checkingIfLoggedIn]: {
         on: {
@@ -44,7 +41,7 @@ export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
         },
         invoke: {
           id: "checkIfLoggedIn",
-          src: "checkIfLoggedIn",
+          src: isLoggedIn,
           onDone: [
             {
               target: states.loggedIn,
@@ -66,13 +63,10 @@ export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
       },
       [states.loggedOut]: {
         on: {
-          LOGGING_IN: states.loggingIn
+          LOG_IN: states.loggingIn
         }
       },
       [states.loggingIn]: {
-        on: {
-          LOG_IN: states.loggedIn
-        },
         invoke: {
           id: "logIn",
           src: "logIn",
@@ -80,9 +74,12 @@ export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
             target: states.loggedIn,
             actions: [
               assign({
-                user: (context, event) => event.data
-              }),
-              "saveUserToLocalStorage"
+                user: (context, event) => {
+                  console.log(event);
+                  return undefined;
+                }
+              })
+              // "saveUserToLocalStorage"
             ]
           },
           onError: {
@@ -103,7 +100,10 @@ export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
   },
   {
     services: {
-      checkIfLoggedIn: isLoggedIn,
+      logIn: async (_, event) => {
+        if (event.type !== "LOG_IN") return;
+        return await login(event.payload);
+      },
       logOut: async () => {
         localStorage.removeItem("user");
         await logOut();
