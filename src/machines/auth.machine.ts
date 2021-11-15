@@ -1,12 +1,14 @@
 import { createMachine, assign } from "xstate";
-import { isLoggedIn, logOut, login } from "../api";
+import { isLoggedIn, logOut, login, loginResponse } from "../api";
 
+type user = {
+  id: number;
+  username: string;
+  profilePic?: string;
+};
 interface AuthContext {
-  user?: {
-    id: number;
-    username: string;
-    profilePic?: string;
-  };
+  user?: user;
+  error?: any;
 }
 
 type AuthEvent =
@@ -15,7 +17,7 @@ type AuthEvent =
   | { type: "IS_LOGGED_IN" }
   | { type: "IS_LOGGED_OUT" };
 
-enum states {
+export enum authStates {
   checkingIfLoggedIn = "checkingIfLoggedIn",
   loggedIn = "loggedIn",
   loggedOut = "loggedOut",
@@ -25,91 +27,91 @@ enum states {
 
 type AuthTypestate =
   | {
-      value: states.checkingIfLoggedIn;
+      value: authStates.checkingIfLoggedIn;
       context: AuthContext;
     }
   | {
-      value: states.loggedIn;
+      value: authStates.loggedIn;
+      context: AuthContext & { user: user };
+    }
+  | {
+      value: authStates.loggedOut;
+      context: AuthContext & { error?: any };
+    }
+  | {
+      value: authStates.loggingIn;
       context: AuthContext;
     }
   | {
-      value: states.loggedOut;
-      context: AuthContext;
-    }
-  | {
-      value: states.loggingIn;
-      context: AuthContext;
-    }
-  | {
-      value: states.loggingOut;
+      value: authStates.loggingOut;
       context: AuthContext;
     };
 
 export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
   {
     id: "authMachine",
-    initial: states.checkingIfLoggedIn,
+    initial: authStates.checkingIfLoggedIn,
     context: undefined,
     states: {
-      [states.checkingIfLoggedIn]: {
+      [authStates.checkingIfLoggedIn]: {
         on: {
-          IS_LOGGED_IN: states.loggedIn,
-          IS_LOGGED_OUT: states.loggedOut
+          IS_LOGGED_IN: authStates.loggedIn,
+          IS_LOGGED_OUT: authStates.loggedOut
         },
         invoke: {
           id: "checkIfLoggedIn",
           src: isLoggedIn,
           onDone: [
             {
-              target: states.loggedIn,
+              target: authStates.loggedIn,
               cond: "userIsInLocalStorage"
             },
             {
-              target: states.loggedOut
+              target: authStates.loggedOut
             }
           ],
           onError: {
-            target: states.loggedOut
+            target: authStates.loggedOut
           }
         }
       },
-      [states.loggedIn]: {
+      [authStates.loggedIn]: {
         on: {
-          LOG_OUT: states.loggingOut
+          LOG_OUT: authStates.loggingOut
         }
       },
-      [states.loggedOut]: {
+      [authStates.loggedOut]: {
         on: {
-          LOG_IN: states.loggingIn
+          LOG_IN: authStates.loggingIn
         }
       },
-      [states.loggingIn]: {
+      [authStates.loggingIn]: {
         invoke: {
           id: "logIn",
           src: "logIn",
           onDone: {
-            target: states.loggedIn,
+            target: authStates.loggedIn,
             actions: [
               assign({
                 user: (context, event) => {
-                  console.log(event);
-                  return undefined;
+                  const resp = event.data as loginResponse;
+                  return resp.data;
                 }
               })
               // "saveUserToLocalStorage"
             ]
           },
           onError: {
-            target: states.loggedOut
+            target: authStates.loggedOut
           }
         }
       },
-      [states.loggingOut]: {
+      [authStates.loggingOut]: {
         invoke: {
           id: "logOut",
           src: "logOut",
           onDone: {
-            target: states.loggedOut
+            target: authStates.loggedOut
           }
         }
       }
