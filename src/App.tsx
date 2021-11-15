@@ -18,9 +18,13 @@ import { Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { logOut } from "./api";
 import { useAuthContext } from "./useAuthMachineContext";
+import { authStates } from "./machines/auth.machine";
 
 function App() {
   const [state, send] = useAuthContext();
+  const userPfp =
+    (state.matches(authStates.loggedIn) && state.context.user.profilePic) || "";
+
   const history = useHistory();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -33,10 +37,6 @@ function App() {
   const [isLoggedOutUserMenuOpen, setIsLoggedOutUserMenuOpen] = useState(false);
   const [loggedOutMenuAnchorEl, setLoggedOutMenuAnchorEl] =
     useState<null | HTMLElement>();
-
-  useEffect(() => {
-    ctx.getUserData();
-  }, []);
 
   const handleUserMenuClose = () => {
     setUserMenuAnchorEl(null);
@@ -99,14 +99,14 @@ function App() {
         vertical: "top",
         horizontal: "right"
       }}
-      open={isUserMenuOpen && ctx.userData !== undefined}
+      open={isUserMenuOpen}
       onClose={handleUserMenuClose}
     >
       <MenuItem
         onClick={() =>
           logOut().then(() => {
-            ctx.setUserData();
-            localStorage.removeItem("user");
+            // ctx.setUserData();
+            // localStorage.removeItem("user");
           })
         }
       >
@@ -168,18 +168,19 @@ function App() {
           <Box sx={{ flexGrow: 1 }} />
           <IconButton
             onClick={(e) => {
-              ctx.userData
-                ? setUserMenuAnchorEl(e.currentTarget)
-                : setLoggedOutMenuAnchorEl(e.currentTarget);
-              ctx.userData
-                ? setIsUserMenuOpen(true)
-                : setIsLoggedOutUserMenuOpen(true);
+              if (state.matches(authStates.loggedIn)) {
+                setUserMenuAnchorEl(e.currentTarget);
+                setIsUserMenuOpen(true);
+              } else {
+                setLoggedOutMenuAnchorEl(e.currentTarget);
+                setIsLoggedOutUserMenuOpen(true);
+              }
             }}
             size="medium"
             edge="end"
             color="inherit"
           >
-            <Avatar src={ctx?.userData?.profilePic} />
+            <Avatar src={userPfp} />
           </IconButton>
         </Toolbar>
       </AppBar>
