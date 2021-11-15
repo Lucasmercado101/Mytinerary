@@ -17,14 +17,11 @@ import {
 import { Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { logOut } from "./api";
-import { Ctx } from "./Context";
-import { useMachine } from "@xstate/react";
-import { authMachine } from "./machines/auth.machine";
+import { useAuthContext } from "./useAuthMachineContext";
 
 function App() {
-  const [state, send] = useMachine(authMachine, { devTools: true });
+  const [state, send] = useAuthContext();
   const history = useHistory();
-  const ctx = useContext(Ctx)!;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>();

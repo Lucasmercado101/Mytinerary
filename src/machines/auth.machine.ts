@@ -23,10 +23,27 @@ enum states {
   loggingOut = "loggingOut"
 }
 
-type AuthTypestate = {
-  value: states.checkingIfLoggedIn;
-  context: AuthContext;
-};
+type AuthTypestate =
+  | {
+      value: states.checkingIfLoggedIn;
+      context: AuthContext;
+    }
+  | {
+      value: states.loggedIn;
+      context: AuthContext;
+    }
+  | {
+      value: states.loggedOut;
+      context: AuthContext;
+    }
+  | {
+      value: states.loggingIn;
+      context: AuthContext;
+    }
+  | {
+      value: states.loggingOut;
+      context: AuthContext;
+    };
 
 export const authMachine = createMachine<AuthContext, AuthEvent, AuthTypestate>(
   {

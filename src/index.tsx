@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { BrowserRouter as Router } from "react-router-dom";
 import { QueryClientProvider, QueryClient } from "react-query";
-import ContextProvider from "./Context";
+import { AuthProvider } from "./useAuthMachineContext";
 import { inspect } from "@xstate/inspect";
 const client = new QueryClient();
 
@@ -17,9 +17,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <QueryClientProvider client={client}>
-        <ContextProvider>
+        <AuthProvider>
           <App />
-        </ContextProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </Router>
   </React.StrictMode>,
