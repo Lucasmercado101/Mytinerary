@@ -116,6 +116,12 @@ export function postNewCityItineraryComment({
 
 // ------ Auth ------
 
+export type loginResponse = AxiosResponse<{
+  id: number;
+  profilePic: string;
+  username: string;
+}>;
+
 export function login({
   username,
   password
@@ -128,11 +134,7 @@ export function login({
       username: string;
       password: string;
     },
-    AxiosResponse<{
-      id: number;
-      profilePic: string;
-      username: string;
-    }>
+    loginResponse
   >(
     "/auth/login",
     { username, password },
